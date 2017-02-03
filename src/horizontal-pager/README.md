@@ -39,7 +39,7 @@ Returns an API to a horizontal-pager instance. Use to set the options on the ins
 Requires a global `document` to be available when called. Starts event listening, and renders initial styles on the elements found by the given `options.targetClass`. No arguments, no return.
 
 #### destroy ()
-Requires a global `document` to be available when called. Stops event listening and any pending animations. Resets styles on the elements found by the given `options.targetClass`. No arguments, no return.
+Requires a global `document` to be available when called. Stops event listening and any pending animations. No arguments, no return.
 
 ## How To Use
 ### Vanilla JS
