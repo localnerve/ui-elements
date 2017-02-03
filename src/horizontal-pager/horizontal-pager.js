@@ -1,5 +1,16 @@
 /**
  * horizontal-pager
+ *
+ * A small, fast, no-dep, horizontal pager.
+ * Features:
+ *   Vertical and horizontal scrolling supported.
+ *   Can start at any page.
+ * Missing:
+ *   No continuous (last-first) option.
+ *   No direct navigate option.
+ *
+ * Copyright (c) 2017 Alex Grant (@localnerve), LocalNerve LLC
+ * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
 /* global document, setTimeout, requestAnimationFrame, cancelAnimationFrame */
 
