@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, width=device-width" name="viewport">
+  <style>
+    body {
+      margin: 0;
+      padding: 1em;
+      font-family: Roboto-Regular, HelveticaNeue, Arial, sans-serif
+    }
+  </style>
+  <script>
+    (function () {
+      'use strict';
+
+      /**
+       * Add new repos here by hypenated directory name
+       */
+      var repos = [
+        repoObj('horizontal-pager')
+      ];
+
+      /**
+       * @param {String} name - The hypenated directory name of the repo.
+       * @returns {Object} The repo object for populateRepoList.
+       */
+      function repoObj (name) {
+        // hyphen to space
+        var repoName = name.replace(/(^.|\-.)/g,
+        function (m1, m2, offset, string) {
+          return offset > 0 ? ' '+m2.charAt(1).toUpperCase() : m2.toUpperCase();
+        });
+        return {
+          name: repoName,
+          url: 'dist/' + name
+        };
+      }
+
+      /**
+       * Build the repo list from `repos`.
+       */
+      function populateRepoList () {
+        var repoList = document.querySelector('#repo-list');
+
+        repos.forEach(function (repo) {
+          var item = document.createElement('li');
+          var anchor = document.createElement('a');
+          var href = document.createAttribute('href');
+
+          anchor.innerText = repo.name;
+          href.value = repo.url;
+
+          anchor.attributes.setNamedItem(href);
+          item.appendChild(anchor);
+          repoList.appendChild(item);
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', populateRepoList, {
+        once: true
+      });
+    }());
+  </script>
+</head>
+<body>
+  <h1>LocalNerve UI Elements</h1>
+  <small>A repo of useful vanilla ui elements</small>
+  <ul id="repo-list">
+  </ul>
+</body>
+</html>

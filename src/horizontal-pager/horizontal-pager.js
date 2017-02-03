@@ -1,0 +1,370 @@
+/**
+ * horizontal-pager
+ */
+/* global document, setTimeout, requestAnimationFrame, cancelAnimationFrame */
+
+class HorizontalPager {
+  /**
+   * HorizontalPager constructor.
+   * @public
+   *
+   * @param {Object} options - HorizontalScroller options.
+   * @param {String} options.targetClass - The class that identifies the scroll
+   * target. Must be supplied.
+   * @param {Number} [options.startIndex] - Which scroll target to show initially.
+   * Defaults to 0.
+   * @param {Number} [options.scrollThreshold] - Less than 1, a decimal
+   * percentage beyond which a touch will cause a complete scroll.
+   * Defaults to 0.35.
+   * @param {Number} [options.maxFind] - Maximum parent level to search to find
+   * target Class (touch target to targetClass). Defaults to 10.
+   * @param {Number} [options.doneThreshold] - The translateX pixel value below
+   * which to stop animations. Defaults to 1.
+   * @param {Function} [options.done] - A function to call after a scroll has
+   * completed.
+   * @param {Function} [options.willComplete] - A function to call when a scroll
+   * will complete very soon.
+   */
+  constructor (options) {
+    Object.assign(this, {
+      targetClass: '',
+      maxFind: 10,
+      doneThreshold: 1,
+      startIndex: 0,
+      scrollThreshold: 0.35
+    }, options);
+
+    this.onStart = this.onStart.bind(this);
+    this.onMove = this.onMove.bind(this);
+    this.onEnd = this.onEnd.bind(this);
+    this.update = this.update.bind(this);
+
+    this.targetRect = null;
+    this.target = null;
+    this.nextSib = null;
+    this.prevSib = null;
+    this.touching = false;
+    this.startX = 0;
+    this.startY = 0;
+    this.currentX = 0;
+    this.translateX = 0;
+    this.targetX = 0;
+    this.atEdge = false;
+    this.willCompleteCalled = false;
+    this.isScrolling = undefined;
+    this.rafs = [];
+
+    this.addEventListeners();
+    this.setupTargets();
+  }
+
+  /**
+   * Wireup events.
+   * @private
+   */
+  addEventListeners () {
+    document.addEventListener('touchstart', this.onStart, {
+      passive: true
+    });
+    document.addEventListener('mousedown', this.onStart, {
+      passive: true
+    });
+    document.addEventListener('touchmove', this.onMove);
+    document.addEventListener('mousemove', this.onMove);
+    document.addEventListener('touchend', this.onEnd, {
+      passive: true
+    });
+    document.addEventListener('mouseup', this.onEnd, {
+      passive: true
+    });
+  }
+
+  /**
+   * Setup the scroll targets.
+   * @private
+   */
+  setupTargets () {
+    let style;
+    let i;
+    const targets = document.querySelectorAll(`.${this.targetClass}`);
+
+    for (i = 0; i < targets.length; i++) {
+      style = targets[i].style;
+
+      style.position = (i === this.startIndex) ? 'static' : 'absolute';
+      style.transform = `translate3d(${((i - this.startIndex) * 100)}%, 0px, 0px)`;
+      style.display = 'block';
+      style.top = 0;
+      style.left = 0;
+      style.width = '100%';
+    }
+  }
+
+  /**
+   * Find the target of scrolling. Operate on siblings at that level.
+   * Scroll target is 'found' by detecting a class in the classList.
+   * Recursive until 'found' or a maximum search level is reached.
+   * @private
+   *
+   * @param {Object} target - The DOMNode to check.
+   * @param {Number} level - The current search level. Checked against maxFind.
+   */
+  findTarget (target, level) {
+    if (level >= this.maxFind || !target) {
+      this.target = null;
+      return;
+    }
+
+    if (target.classList && target.classList.contains(this.targetClass)) {
+      this.target = target;
+      this.nextSib = target.nextElementSibling;
+      this.prevSib = target.previousElementSibling;
+    } else {
+      this.findTarget(target.parentNode, level + 1);
+    }
+  }
+
+  /**
+   * Cancel all pending animation frames and set animation done state.
+   * @private
+   */
+  resetAnimations () {
+    this.rafs.forEach(raf => cancelAnimationFrame(raf));
+    this.rafs.length = 0;
+
+    const nextStyle = this.nextSib ? this.nextSib.style : {};
+    const prevStyle = this.prevSib ? this.prevSib.style : {};
+    const targetStyle = this.target ? this.target.style : {};
+    const resetStyle = {
+      position: 'absolute',
+      willChange: 'initial'
+    };
+
+    Object.assign(nextStyle, resetStyle);
+    Object.assign(prevStyle, resetStyle);
+    Object.assign(targetStyle, resetStyle);
+    this.target = null;
+  }
+
+  /**
+   * Create percentage translateX value.
+   * If done, make sure the value is off by 100% magnitude.
+   * NOTE: This presumes all targets are the same width.
+   * @private
+   *
+   * @param {Boolean} done - True if done, and adjustment required.
+   * Otherwise, pass the value through.
+   * @param {Number} value - The value to adjust, if required.
+   */
+  transX (done, value) {
+    if (done && Math.abs(value) < this.targetRect.width) {
+      return (100 * (value < 0 ? -1 : 1));
+    }
+    return (value / this.targetRect.width) * 100;
+  }
+
+  /**
+   * Check if scroll animation done, stop if it is.
+   * @private
+   *
+   * @param {Boolean} targetDone - True if the scroll target is done, false otherwise.
+   * @param {Boolean} nextDone - True if the next page is done, false otherwise.
+   * @param {Boolean} prevDone - True if the prev page is done, false otherwise.
+   */
+  slideDone (targetDone, nextDone, prevDone) {
+    if (nextDone || prevDone) {
+      const direction = nextDone ? 1 : -1;
+      const nextStyle = this.nextSib ? this.nextSib.style : {};
+      const prevStyle = this.prevSib ? this.prevSib.style : {};
+
+      this.target.style.position = 'absolute';
+      this.target.style.willChange = 'initial';
+
+      if (nextDone) {
+        nextStyle.position = 'static';
+        prevStyle.willChange = 'initial';
+      } else {
+        prevStyle.position = 'static';
+        nextStyle.willChange = 'initial';
+      }
+
+      if (typeof this.done === 'function') {
+        setTimeout(this.done, 0, direction);
+      }
+    }
+
+    if (targetDone || nextDone || prevDone) {
+      this.target = null;
+    }
+  }
+
+  /**
+   * touchstart handler, passive.
+   * @private
+   *
+   * @param {Object} evt - The TouchEvent object.
+   */
+  onStart (evt) {
+    this.resetAnimations();
+    this.findTarget(evt.target, 0);
+
+    if (!this.target) {
+      return;
+    }
+
+    this.targetRect = this.target.getBoundingClientRect();
+    this.startX = evt.pageX || evt.touches[0].pageX;
+    this.startY = evt.pageY || evt.touches[0].pageY;
+    this.currentX = this.startX;
+    this.touching = true;
+    this.willCompleteCalled = false;
+    this.isVertical = undefined;
+    this.atEdge = false;
+
+    this.target.style.willChange = 'transform';
+    this.target.style.position = 'static';
+
+    if (this.nextSib) {
+      this.nextSib.style.willChange = 'transform';
+    }
+    if (this.prevSib) {
+      this.prevSib.style.willChange = 'transform';
+    }
+
+    this.rafs.push(requestAnimationFrame(this.update));
+  }
+
+  /**
+   * touchmove handler.
+   * @private
+   *
+   * @param {Object} evt - The TouchEvent object.
+   */
+  onMove (evt) {
+    if (!this.target) {
+      return;
+    }
+
+    this.currentX = evt.pageX || evt.touches[0].pageX;
+
+    if (typeof this.isVertical === 'undefined') {
+      this.isVertical = (
+        Math.abs(this.currentX - this.startX) <
+          Math.abs((evt.pageY || evt.touches[0].pageY) - this.startY)
+      );
+    }
+
+    if (this.isVertical) {
+      this.currentX = this.startX;
+    } else {
+      evt.preventDefault();
+    }
+  }
+
+  /**
+   * touchend handler.
+   * @private
+   */
+  onEnd () {
+    if (!this.target) {
+      return;
+    }
+
+    const translateX = this.currentX - this.startX;
+    const threshold = this.targetRect.width * this.scrollThreshold;
+
+    this.targetX = 0;
+
+    if (Math.abs(translateX) > threshold && !this.atEdge) {
+      const direction = translateX > 0; // positive: swipe-right, move left
+
+      this.targetX = direction ?
+        this.targetRect.width : -this.targetRect.width;
+
+      if (!this.willCompleteCalled) {
+        this.willCompleteCalled = true;
+        if (typeof this.willComplete === 'function') {
+          setTimeout(this.willComplete, 0, direction ? -1 : 1);
+        }
+      }
+    }
+
+    this.touching = false;
+  }
+
+  /**
+   * RAF handler.
+   * @private
+   */
+  update () {
+    if (!this.target) {
+      return;
+    }
+
+    this.rafs.push(requestAnimationFrame(this.update));
+
+    // Calc translateX units. If not touching, ease out.
+    if (this.touching) {
+      this.translateX = this.currentX - this.startX;
+
+      // Detect edge, add resistance and limit
+      this.atEdge = (!this.prevSib && this.translateX > 0) ||
+        (!this.nextSib && this.translateX < 0);
+      if (this.atEdge) {
+        this.translateX = this.translateX / (
+          (Math.abs(this.translateX) / this.targetRect.width) + 1
+        );
+      }
+    } else {
+      this.translateX += (this.targetX - this.translateX) / 4;
+    }
+    const nextX = (this.translateX + this.targetRect.width).toFixed(6);
+    const prevX = (this.translateX - this.targetRect.width).toFixed(6);
+
+    // Detect animation done
+    const targetDone = this.isVertical || (
+      !this.touching && Math.abs(this.translateX) < this.doneThreshold
+    );
+    const nextDone = Math.abs(nextX) < this.doneThreshold;
+    const prevDone = Math.abs(prevX) < this.doneThreshold;
+
+    // Update transform translateX
+    this.target.style.transform = `translateX(${
+      (targetDone ? 0 : this.transX(nextDone || prevDone, this.translateX))
+    }%)`;
+    if (this.nextSib) {
+      this.nextSib.style.transform = `translateX(${
+        (nextDone ? 0 : this.transX(targetDone, nextX))
+      }%)`;
+    }
+    if (this.prevSib) {
+      this.prevSib.style.transform = `translateX(${
+        (prevDone ? 0 : this.transX(targetDone, prevX))
+      }%)`;
+    }
+
+    // If slide done, cleanup
+    this.slideDone(targetDone, nextDone, prevDone);
+  }
+
+  /**
+   * Call to cleanup, stop animations, and events.
+   * @public
+   */
+  destroy () {
+    this.resetAnimations();
+    document.removeEventListener('touchstart', this.onStart);
+    document.removeEventListener('mousedown', this.onStart);
+    document.removeEventListener('touchmove', this.onMove);
+    document.removeEventListener('mousemove', this.onMove);
+    document.removeEventListener('touchend', this.onEnd);
+    document.removeEventListener('mouseup', this.onEnd);
+  }
+}
+
+export default function createHorizontalPager (options) {
+  const horizontalPager = new HorizontalPager(options);
+  return {
+    destroy: horizontalPager.destroy
+  };
+}
