@@ -73,7 +73,7 @@ class HorizontalPager {
     this.targetX = 0;
     this.atEdge = false;
     this.willCompleteCalled = false;
-    this.isScrolling = undefined;
+    this.isVertical = undefined;
     this.rafs = [];
   }
 
