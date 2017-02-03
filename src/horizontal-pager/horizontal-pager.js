@@ -3,11 +3,20 @@
  *
  * A small, fast, no-dep, horizontal pager.
  * Features:
- *   Vertical and horizontal scrolling supported.
- *   Can start at any page.
+ *   1.  Horizontal swipes navigate to next/prev page.
+ *   2.  Uses requestAnimationFrame aligned (decoupled) animations.
+ *   3.  Vertical scrolling supported.
+ *   4.  Can start at any page index.
+ *   5.  Edge resistance.
+ *   6.  Track finger when down, then ease out animation.
+ *   7.  Passive event listeners where possible.
+ *   8.  When finger up and navigation certain to complete, calls `willComplete`
+ *       callback (optional).
+ *   9.  Optional `done` callback for notification after navigation complete.
+ *   10. Css class identifies scroll level items (pages).
  * Missing:
- *   No continuous (last-first) option.
- *   No direct navigate option.
+ *   1.  No continuous option (last-wraps-to-first or vice-versa).
+ *   2.  No direct navigate ability (goto directly to page N).
  *
  * Copyright (c) 2017 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
@@ -28,18 +37,18 @@ class HorizontalPager {
    * percentage beyond which a touch will cause a complete scroll.
    * Defaults to 0.35.
    * @param {Number} [options.maxFind] - Maximum parent level to search to find
-   * target Class (touch target to targetClass). Defaults to 10.
+   * target Class (touch target to targetClass). Defaults to 20.
    * @param {Number} [options.doneThreshold] - The translateX pixel value below
-   * which to stop animations. Defaults to 1.
+   * which to stop animations. Defaults to 1 (Will not animate below 1px).
    * @param {Function} [options.done] - A function to call after a scroll has
    * completed.
    * @param {Function} [options.willComplete] - A function to call when a scroll
    * will complete very soon.
    */
   constructor (options) {
-    Object.assign(this, {
+    this.opts = Object.assign({}, {
       targetClass: '',
-      maxFind: 10,
+      maxFind: 20,
       doneThreshold: 1,
       startIndex: 0,
       scrollThreshold: 0.35
@@ -50,6 +59,8 @@ class HorizontalPager {
     this.onEnd = this.onEnd.bind(this);
     this.update = this.update.bind(this);
 
+    this.initialized = false;
+    this.destroyed = false;
     this.targetRect = null;
     this.target = null;
     this.nextSib = null;
@@ -64,9 +75,6 @@ class HorizontalPager {
     this.willCompleteCalled = false;
     this.isScrolling = undefined;
     this.rafs = [];
-
-    this.addEventListeners();
-    this.setupTargets();
   }
 
   /**
@@ -91,19 +99,21 @@ class HorizontalPager {
   }
 
   /**
-   * Setup the scroll targets.
+   * Setup the scroll targets (pages).
    * @private
    */
   setupTargets () {
     let style;
     let i;
-    const targets = document.querySelectorAll(`.${this.targetClass}`);
+    const targetClass = this.opts.targetClass;
+    const startIndex = this.opts.startIndex;
+    const targets = document.querySelectorAll(`.${targetClass}`);
 
     for (i = 0; i < targets.length; i++) {
       style = targets[i].style;
 
-      style.position = (i === this.startIndex) ? 'static' : 'absolute';
-      style.transform = `translate3d(${((i - this.startIndex) * 100)}%, 0px, 0px)`;
+      style.position = (i === startIndex) ? 'static' : 'absolute';
+      style.transform = `translate3d(${((i - startIndex) * 100)}%, 0px, 0px)`;
       style.display = 'block';
       style.top = 0;
       style.left = 0;
@@ -121,12 +131,12 @@ class HorizontalPager {
    * @param {Number} level - The current search level. Checked against maxFind.
    */
   findTarget (target, level) {
-    if (level >= this.maxFind || !target) {
+    if (level >= this.opts.maxFind || !target) {
       this.target = null;
       return;
     }
 
-    if (target.classList && target.classList.contains(this.targetClass)) {
+    if (target.classList && target.classList.contains(this.opts.targetClass)) {
       this.target = target;
       this.nextSib = target.nextElementSibling;
       this.prevSib = target.previousElementSibling;
@@ -199,8 +209,8 @@ class HorizontalPager {
         nextStyle.willChange = 'initial';
       }
 
-      if (typeof this.done === 'function') {
-        setTimeout(this.done, 0, direction);
+      if (typeof this.opts.done === 'function') {
+        setTimeout(this.opts.done, 0, direction);
       }
     }
 
@@ -282,7 +292,7 @@ class HorizontalPager {
     }
 
     const translateX = this.currentX - this.startX;
-    const threshold = this.targetRect.width * this.scrollThreshold;
+    const threshold = this.targetRect.width * this.opts.scrollThreshold;
 
     this.targetX = 0;
 
@@ -294,8 +304,8 @@ class HorizontalPager {
 
       if (!this.willCompleteCalled) {
         this.willCompleteCalled = true;
-        if (typeof this.willComplete === 'function') {
-          setTimeout(this.willComplete, 0, direction ? -1 : 1);
+        if (typeof this.opts.willComplete === 'function') {
+          setTimeout(this.opts.willComplete, 0, direction ? -1 : 1);
         }
       }
     }
@@ -334,10 +344,10 @@ class HorizontalPager {
 
     // Detect animation done
     const targetDone = this.isVertical || (
-      !this.touching && Math.abs(this.translateX) < this.doneThreshold
+      !this.touching && Math.abs(this.translateX) < this.opts.doneThreshold
     );
-    const nextDone = Math.abs(nextX) < this.doneThreshold;
-    const prevDone = Math.abs(prevX) < this.doneThreshold;
+    const nextDone = Math.abs(nextX) < this.opts.doneThreshold;
+    const prevDone = Math.abs(prevX) < this.opts.doneThreshold;
 
     // Update transform translateX
     this.target.style.transform = `translateX(${
@@ -359,23 +369,50 @@ class HorizontalPager {
   }
 
   /**
+   * Call to start browser event handling, and render targets into position.
+   * Requires browser.
+   * @public
+   */
+  initialize () {
+    if (!this.initialized) {
+      this.initialized = true;
+      this.addEventListeners();
+      this.setupTargets();
+    }
+  }
+
+  /**
    * Call to cleanup, stop animations, and events.
+   * Requires browser.
    * @public
    */
   destroy () {
-    this.resetAnimations();
-    document.removeEventListener('touchstart', this.onStart);
-    document.removeEventListener('mousedown', this.onStart);
-    document.removeEventListener('touchmove', this.onMove);
-    document.removeEventListener('mousemove', this.onMove);
-    document.removeEventListener('touchend', this.onEnd);
-    document.removeEventListener('mouseup', this.onEnd);
+    if (this.initialized && !this.destroyed) {
+      this.destroyed = true;
+      this.resetAnimations();
+      document.removeEventListener('touchstart', this.onStart);
+      document.removeEventListener('mousedown', this.onStart);
+      document.removeEventListener('touchmove', this.onMove);
+      document.removeEventListener('mousemove', this.onMove);
+      document.removeEventListener('touchend', this.onEnd);
+      document.removeEventListener('mouseup', this.onEnd);
+    }
   }
 }
 
+/**
+ * Create the public interface for HorizontalPager.
+ * @see HorizontalPager constructor for options details.
+ *
+ * @param {Object} options - HorizontalPager options.
+ * @param {String} options.targetClass - classname to identify pager targets.
+ * @returns {Object} The public interface for HorizontalPager.
+ */
 export default function createHorizontalPager (options) {
   const horizontalPager = new HorizontalPager(options);
+
   return {
-    destroy: horizontalPager.destroy
+    initialize: horizontalPager.initialize.bind(horizontalPager),
+    destroy: horizontalPager.destroy.bind(horizontalPager)
   };
 }
