@@ -59,6 +59,7 @@ class HorizontalPager {
     this.onEnd = this.onEnd.bind(this);
     this.update = this.update.bind(this);
 
+    this.dataId = 'data-hpid';
     this.initialized = false;
     this.destroyed = false;
     this.targetRect = null;
@@ -110,6 +111,7 @@ class HorizontalPager {
     const targets = document.querySelectorAll(`.${targetClass}`);
 
     for (i = 0; i < targets.length; i++) {
+      targets[i].setAttribute(this.dataId, i);
       style = targets[i].style;
 
       style.position = (i === startIndex) ? 'static' : 'absolute';
@@ -132,39 +134,54 @@ class HorizontalPager {
    */
   findTarget (target, level) {
     if (level >= this.opts.maxFind || !target) {
-      this.target = null;
-      return;
+      return {
+        target: null
+      };
     }
 
     if (target.classList && target.classList.contains(this.opts.targetClass)) {
-      this.target = target;
-      this.nextSib = target.nextElementSibling;
-      this.prevSib = target.previousElementSibling;
-    } else {
-      this.findTarget(target.parentNode, level + 1);
+      return {
+        target,
+        nextSib: target.nextElementSibling,
+        prevSib: target.previousElementSibling
+      };
     }
+    return this.findTarget(target.parentNode, level + 1);
   }
 
   /**
    * Cancel all pending animation frames and set animation done state.
    * @private
+   *
+   * @param {Object} [newTarget] - The new, next target for paging.
+   * If supplied, directs style resets to happen. Will not reset styles for
+   * the next target.
    */
-  resetAnimations () {
+  resetAnimations (newTarget) {
     this.rafs.forEach(raf => cancelAnimationFrame(raf));
     this.rafs.length = 0;
 
-    const nextStyle = this.nextSib ? this.nextSib.style : {};
-    const prevStyle = this.prevSib ? this.prevSib.style : {};
-    const targetStyle = this.target ? this.target.style : {};
-    const resetStyle = {
-      position: 'absolute',
-      willChange: 'initial'
-    };
+    if (newTarget) {
+      const newId = newTarget.getAttribute(this.dataId);
+      const resetStyle = {
+        position: 'absolute',
+        willChange: 'initial'
+      };
 
-    Object.assign(nextStyle, resetStyle);
-    Object.assign(prevStyle, resetStyle);
-    Object.assign(targetStyle, resetStyle);
-    this.target = null;
+      const nextStyle =
+        (this.nextSib && this.nextSib.getAttribute(this.dataId) !== newId) ?
+          this.nextSib.style : {};
+      const prevStyle =
+        (this.prevSib && this.prevSib.getAttribute(this.dataId) !== newId) ?
+          this.prevSib.style : {};
+      const targetStyle =
+        (this.target && this.target.getAttribute(this.dataId) !== newId) ?
+          this.target.style : {};
+
+      Object.assign(nextStyle, resetStyle);
+      Object.assign(prevStyle, resetStyle);
+      Object.assign(targetStyle, resetStyle);
+    }
   }
 
   /**
@@ -226,12 +243,16 @@ class HorizontalPager {
    * @param {Object} evt - The TouchEvent object.
    */
   onStart (evt) {
-    this.resetAnimations();
-    this.findTarget(evt.target, 0);
-
-    if (!this.target) {
+    const found = this.findTarget(evt.target, 0);
+    if (!found.target) {
       return;
     }
+
+    this.resetAnimations(found.target);
+
+    this.target = found.target;
+    this.nextSib = found.nextSib;
+    this.prevSib = found.prevSib;
 
     this.targetRect = this.target.getBoundingClientRect();
     this.startX = evt.pageX || evt.touches[0].pageX;
