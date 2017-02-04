@@ -124,7 +124,9 @@ class HorizontalPager {
   }
 
   /**
-   * Cancel all pending animation frames and set animation done state.
+   * Cancel any pending animation frames and reset styles if will not complete.
+   * Does not touch nextTarget, rather, the previous target items in `this`.
+   * Presumes nextTarget will be updated after this.
    * @private
    *
    * @param {Object} [newTarget] - The new, next target for paging.
@@ -136,7 +138,7 @@ class HorizontalPager {
     this.rafs.length = 0;
 
     if (newTarget) {
-      const { willComplete } = this.endStatus();
+      const { willComplete } = this.touchStatus();
 
       if (!willComplete) {
         const newId = newTarget.getAttribute(this.dataId);
@@ -180,19 +182,20 @@ class HorizontalPager {
   }
 
   /**
-   * Calculate the touchend status values.
+   * Get the touch status by calculating the current translateX
+   * progress and comparing against the threshold of `completeness`.
+   * Also calculates direction.
+   * @private
    *
-   * @returns {Object} containing willComplete boolean and directional boolean.
+   * @returns {Object} contains two booleans: willComplete and movingLeft.
    */
-  endStatus () {
+  touchStatus () {
     const threshold = this.targetRect.width * this.opts.scrollThreshold;
     const translateX = this.currentX - this.startX;
-    const willComplete = Math.abs(translateX) > threshold && !this.atEdge;
-    const movingLeft = translateX > 0; // true if moving left to prev, swiping right.
 
     return {
-      willComplete,
-      movingLeft
+      willComplete: Math.abs(translateX) > threshold && !this.atEdge,
+      movingLeft: translateX > 0 // true if moving left to prev, swiping right.
     };
   }
 
@@ -308,7 +311,7 @@ class HorizontalPager {
       return;
     }
 
-    const { willComplete, movingLeft } = this.endStatus();
+    const { willComplete, movingLeft } = this.touchStatus();
 
     this.targetX = 0;
 
