@@ -1,6 +1,6 @@
 # horizontal-pager
 
-> A small, fast, no-dependency, horizontal pager.
+> WIP - A small, fast, no-dependency, horizontal pager.
 
 ## Features
   1.  Horizontal touch navigates to next/prev pages.
