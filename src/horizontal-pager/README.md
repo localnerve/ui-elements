@@ -26,27 +26,29 @@
 Returns an API to a horizontal-pager instance. Use to set the options on the instance.  
 `targetClass` is the only required option.
 ##### Options
-  * {String} `options.targetClass` - The class that identifies the page blocks. Must be supplied.
-  * {Number} `[options.startIndex]` - Which scroll target to show initially. Defaults to 0, the first returned from querySelectorAll on targetClass.
-  * {Number} `[options.scrollThreshold]` - Less than 1, a decimal percentage beyond which a touch will cause a complete scroll. Defaults to 0.35 (35 percent).
-  * {Number} `[options.maxFind]` - Maximum parent level to search to find target Class (touch target to targetClass). Defaults to 20. If your page content has a lot of deep markup, you might have to adjust this number.
-  * {Number} `[options.doneThreshold]` - The translateX pixel value below which to stop animations. Defaults to 1 (Will not animate below 1px).
-  * {Function} `[options.done]` - A function to call after a scroll has completed.
-  * {Function} `[options.willComplete]` - A function to call when a scroll will complete very soon.
+  | Option Name | Data Type | Description                                                                  |
+  | -------------------------------------------------------------------------------------------------------|
+  | `targetClass` | String | The class that identifies the scroll targets (pages in the horizontal-pager). Must be supplied. |
+  | `[startIndex]` | Number | Which scroll target to show initially. Optional, defaults to 0, the first element returned from querySelectorAll on targetClass. |
+  | `[scrollThreshold]` | Number | Less than 1, the percentage of width beyond which a touch will cause a complete scroll to the next page. Optional, defaults to 0.35 (35 percent). |
+  | `[maxFind]` | Number | Maximum parent level to search to find target Class (touch target to targetClass). Optional, defaults to 50. If your page content has a lot of deep markup, you might have to adjust this number. |
+  | `[doneThreshold]` | Number | The translateX pixel value below which to stop animations. Defaults to 1 (Will not animate below 1px). |
+  | `[done]` | Function | A function to call after a scroll has completed. |
+  | `[willComplete]` | Function | A function to call when a scroll will complete very soon (called when scrollThreshold is surpassed and `touchend` is fired). |
 
 ### Instance API
 #### initialize ()
-Requires a global `document` to be available when called. Starts event listening, and renders initial styles on the elements found by the given `options.targetClass`. No arguments, no return.
+Starts event listening, and renders initial styles on the elements found by the given `options.targetClass`. Requires a global `document` to be available when called. No arguments, no return.
 
 #### destroy ()
-Requires a global `document` to be available when called. Stops event listening and any pending animations. No arguments, no return.
+Stops event listening and any pending animations. Requires a global `document` to be available when called. No arguments, no return.
 
 ## How To Use
 ### Vanilla JS
 See `DOMContentLoaded`, `unload` event handlers in the [example](index.js).
 
 ### General Usage (frameworks, universal)
-Deliver the `horizontal-pager.js` script with your markup. After that, here's the **when**'s:
-  1.  **When** you have the options ready, call the top-level api function `createHorizontalPager` to assign options and get the instance API. No browser required.
+Deliver the `horizontal-pager.js` script with your markup. After that, here are the **when**s:
+  1.  **When** you have the options ready/known, call the top-level api function `createHorizontalPager` to assign options and get the instance API. No browser required.
   2.  **When** a global `document` is available, call `initialize` to start the horizontal pager.
   3.  **After** `initialize` has been called AND **when** a global `document` is available, call `destroy` to stop everything.

@@ -36,8 +36,9 @@ class HorizontalPager {
    * @param {Number} [options.scrollThreshold] - Less than 1, a decimal
    * percentage beyond which a touch will cause a complete scroll.
    * Defaults to 0.35.
-   * @param {Number} [options.maxFind] - Maximum parent level to search to find
-   * target Class (touch target to targetClass). Defaults to 20.
+   * @param {Number} [options.maxFind] - Control boundary for scroll target search.
+   * It is maximum element depth allowed to search up from the touch target to
+   * the targetClass. Defaults to 50.
    * @param {Number} [options.doneThreshold] - The translateX pixel value below
    * which to stop animations. Defaults to 1 (Will not animate below 1px).
    * @param {Function} [options.done] - A function to call after a scroll has
@@ -48,7 +49,7 @@ class HorizontalPager {
   constructor (options) {
     this.opts = Object.assign({}, {
       targetClass: '',
-      maxFind: 20,
+      maxFind: 50,
       doneThreshold: 1,
       startIndex: 0,
       scrollThreshold: 0.35
@@ -124,20 +125,23 @@ class HorizontalPager {
   }
 
   /**
-   * Find the target of scrolling. Operate on siblings at that level.
+   * Search up the tree to find the target of scrolling (a 'page'). Operates on
+   * siblings at that level.
    * Scroll target is 'found' by detecting a class in the classList.
-   * Recursive until 'found' or a maximum search level is reached.
+   * Recursive until 'found' or a boundary is reached.
    * @private
    *
    * @param {Object} target - The DOMNode to check.
    * @param {Number} level - The current search level. Checked against maxFind.
    */
   findTarget (target, level) {
-    if (level >= this.opts.maxFind || !target) {
+    if (!target || target.nodeType === 9 || level >= this.opts.maxFind) {
       return {
         target: null
       };
     }
+
+    const nextLevel = target.nodeType === 1 ? level + 1 : level;
 
     if (target.classList && target.classList.contains(this.opts.targetClass)) {
       return {
@@ -146,7 +150,8 @@ class HorizontalPager {
         prevSib: target.previousElementSibling
       };
     }
-    return this.findTarget(target.parentNode, level + 1);
+
+    return this.findTarget(target.parentNode, nextLevel);
   }
 
   /**
