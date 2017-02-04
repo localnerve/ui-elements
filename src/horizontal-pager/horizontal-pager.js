@@ -136,25 +136,29 @@ class HorizontalPager {
     this.rafs.length = 0;
 
     if (newTarget) {
-      const newId = newTarget.getAttribute(this.dataId);
-      const resetStyle = {
-        position: 'absolute',
-        willChange: 'initial'
-      };
+      const { willComplete } = this.endStatus();
 
-      const nextStyle =
-        (this.nextSib && this.nextSib.getAttribute(this.dataId) !== newId) ?
-          this.nextSib.style : {};
-      const prevStyle =
-        (this.prevSib && this.prevSib.getAttribute(this.dataId) !== newId) ?
-          this.prevSib.style : {};
-      const targetStyle =
-        (this.target && this.target.getAttribute(this.dataId) !== newId) ?
-          this.target.style : {};
+      if (!willComplete) {
+        const newId = newTarget.getAttribute(this.dataId);
+        const resetStyle = {
+          position: 'absolute',
+          willChange: 'initial'
+        };
 
-      Object.assign(nextStyle, resetStyle);
-      Object.assign(prevStyle, resetStyle);
-      Object.assign(targetStyle, resetStyle);
+        const nextStyle =
+          (this.nextSib && this.nextSib.getAttribute(this.dataId) !== newId) ?
+            this.nextSib.style : {};
+        const prevStyle =
+          (this.prevSib && this.prevSib.getAttribute(this.dataId) !== newId) ?
+            this.prevSib.style : {};
+        const targetStyle =
+          (this.target && this.target.getAttribute(this.dataId) !== newId) ?
+            this.target.style : {};
+
+        Object.assign(nextStyle, resetStyle);
+        Object.assign(prevStyle, resetStyle);
+        Object.assign(targetStyle, resetStyle);
+      }
     }
   }
 
@@ -173,6 +177,23 @@ class HorizontalPager {
       return (100 * (value < 0 ? -1 : 1));
     }
     return (value / this.targetRect.width) * 100;
+  }
+
+  /**
+   * Calculate the touchend status values.
+   *
+   * @returns {Object} containing willComplete boolean and directional boolean.
+   */
+  endStatus () {
+    const threshold = this.targetRect.width * this.opts.scrollThreshold;
+    const translateX = this.currentX - this.startX;
+    const willComplete = Math.abs(translateX) > threshold && !this.atEdge;
+    const movingLeft = translateX > 0; // true if moving left to prev, swiping right.
+
+    return {
+      willComplete,
+      movingLeft
+    };
   }
 
   /**
@@ -222,16 +243,17 @@ class HorizontalPager {
       return;
     }
 
+    this.targetRect = newTarget.getBoundingClientRect();
+    this.startX = evt.pageX || evt.touches[0].pageX;
+    this.startY = evt.pageY || evt.touches[0].pageY;
+    this.currentX = this.startX;
+
     this.resetAnimations(newTarget);
 
     this.target = newTarget;
     this.nextSib = newTarget.nextElementSibling;
     this.prevSib = newTarget.previousElementSibling;
 
-    this.targetRect = this.target.getBoundingClientRect();
-    this.startX = evt.pageX || evt.touches[0].pageX;
-    this.startY = evt.pageY || evt.touches[0].pageY;
-    this.currentX = this.startX;
     this.touching = true;
     this.willCompleteCalled = false;
     this.isVertical = undefined;
@@ -286,16 +308,14 @@ class HorizontalPager {
       return;
     }
 
-    const translateX = this.currentX - this.startX;
-    const threshold = this.targetRect.width * this.opts.scrollThreshold;
+    const { willComplete, movingLeft } = this.endStatus();
 
     this.targetX = 0;
 
-    if (Math.abs(translateX) > threshold && !this.atEdge) {
-      const moveLeft = translateX > 0;
-      const direction = moveLeft ? -1 : 1;
+    if (willComplete) {
+      const direction = movingLeft ? -1 : 1;
 
-      this.targetX = moveLeft ?
+      this.targetX = movingLeft ?
         this.targetRect.width : -this.targetRect.width;
 
       this.targetIndex += direction;
