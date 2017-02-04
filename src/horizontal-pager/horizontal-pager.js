@@ -36,9 +36,6 @@ class HorizontalPager {
    * @param {Number} [options.scrollThreshold] - Less than 1, a decimal
    * percentage beyond which a touch will cause a complete scroll.
    * Defaults to 0.35.
-   * @param {Number} [options.maxFind] - Control boundary for scroll target search.
-   * It is maximum element depth allowed to search up from the touch target to
-   * the targetClass. Defaults to 50.
    * @param {Number} [options.doneThreshold] - The translateX pixel value below
    * which to stop animations. Defaults to 1 (Will not animate below 1px).
    * @param {Function} [options.done] - A function to call after a scroll has
@@ -49,9 +46,8 @@ class HorizontalPager {
   constructor (options) {
     this.opts = Object.assign({}, {
       targetClass: '',
-      maxFind: 50,
-      doneThreshold: 1,
       startIndex: 0,
+      doneThreshold: 1,
       scrollThreshold: 0.35
     }, options);
 
@@ -60,6 +56,7 @@ class HorizontalPager {
     this.onEnd = this.onEnd.bind(this);
     this.update = this.update.bind(this);
 
+    this.targetIndex = this.opts.startIndex;
     this.dataId = 'data-hpid';
     this.initialized = false;
     this.destroyed = false;
@@ -76,6 +73,7 @@ class HorizontalPager {
     this.atEdge = false;
     this.willCompleteCalled = false;
     this.isVertical = undefined;
+    this.targets = [];
     this.rafs = [];
   }
 
@@ -109,11 +107,12 @@ class HorizontalPager {
     let i;
     const targetClass = this.opts.targetClass;
     const startIndex = this.opts.startIndex;
-    const targets = document.querySelectorAll(`.${targetClass}`);
 
-    for (i = 0; i < targets.length; i++) {
-      targets[i].setAttribute(this.dataId, i);
-      style = targets[i].style;
+    this.targets = document.querySelectorAll(`.${targetClass}`);
+
+    for (i = 0; i < this.targets.length; i++) {
+      this.targets[i].setAttribute(this.dataId, i);
+      style = this.targets[i].style;
 
       style.position = (i === startIndex) ? 'static' : 'absolute';
       style.transform = `translate3d(${((i - startIndex) * 100)}%, 0px, 0px)`;
@@ -122,36 +121,6 @@ class HorizontalPager {
       style.left = 0;
       style.width = '100%';
     }
-  }
-
-  /**
-   * Search up the tree to find the target of scrolling (a 'page'). Operates on
-   * siblings at that level.
-   * Scroll target is 'found' by detecting a class in the classList.
-   * Recursive until 'found' or a boundary is reached.
-   * @private
-   *
-   * @param {Object} target - The DOMNode to check.
-   * @param {Number} level - The current search level. Checked against maxFind.
-   */
-  findTarget (target, level) {
-    if (!target || target.nodeType === 9 || level >= this.opts.maxFind) {
-      return {
-        target: null
-      };
-    }
-
-    const nextLevel = target.nodeType === 1 ? level + 1 : level;
-
-    if (target.classList && target.classList.contains(this.opts.targetClass)) {
-      return {
-        target,
-        nextSib: target.nextElementSibling,
-        prevSib: target.previousElementSibling
-      };
-    }
-
-    return this.findTarget(target.parentNode, nextLevel);
   }
 
   /**
@@ -248,16 +217,16 @@ class HorizontalPager {
    * @param {Object} evt - The TouchEvent object.
    */
   onStart (evt) {
-    const found = this.findTarget(evt.target, 0);
-    if (!found.target) {
+    const newTarget = this.targets[this.targetIndex];
+    if (!newTarget) {
       return;
     }
 
-    this.resetAnimations(found.target);
+    this.resetAnimations(newTarget);
 
-    this.target = found.target;
-    this.nextSib = found.nextSib;
-    this.prevSib = found.prevSib;
+    this.target = newTarget;
+    this.nextSib = newTarget.nextElementSibling;
+    this.prevSib = newTarget.previousElementSibling;
 
     this.targetRect = this.target.getBoundingClientRect();
     this.startX = evt.pageX || evt.touches[0].pageX;
@@ -323,15 +292,18 @@ class HorizontalPager {
     this.targetX = 0;
 
     if (Math.abs(translateX) > threshold && !this.atEdge) {
-      const direction = translateX > 0; // positive: swipe-right, move left
+      const moveLeft = translateX > 0;
+      const direction = moveLeft ? -1 : 1;
 
-      this.targetX = direction ?
+      this.targetX = moveLeft ?
         this.targetRect.width : -this.targetRect.width;
+
+      this.targetIndex += direction;
 
       if (!this.willCompleteCalled) {
         this.willCompleteCalled = true;
         if (typeof this.opts.willComplete === 'function') {
-          setTimeout(this.opts.willComplete, 0, direction ? -1 : 1);
+          setTimeout(this.opts.willComplete, 0, direction);
         }
       }
     }
