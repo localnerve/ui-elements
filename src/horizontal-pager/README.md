@@ -26,15 +26,15 @@
 Returns an API to a horizontal-pager instance. Use to set the options on the instance.  
 `targetClass` is the only required option.
 ##### Options
-  | Option Name | Data Type | Description                                                                  |
-  | -------------------------------------------------------------------------------------------------------|
-  | `targetClass` | String | The class that identifies the scroll targets (pages in the horizontal-pager). Must be supplied. |
-  | `[startIndex]` | Number | Which scroll target to show initially. Optional, defaults to 0, the first element returned from querySelectorAll on targetClass. |
-  | `[scrollThreshold]` | Number | Less than 1, the percentage of width beyond which a touch will cause a complete scroll to the next page. Optional, defaults to 0.35 (35 percent). |
-  | `[maxFind]` | Number | Maximum parent level to search to find target Class (touch target to targetClass). Optional, defaults to 50. If your page content has a lot of deep markup, you might have to adjust this number. |
-  | `[doneThreshold]` | Number | The translateX pixel value below which to stop animations. Defaults to 1 (Will not animate below 1px). |
-  | `[done]` | Function | A function to call after a scroll has completed. |
-  | `[willComplete]` | Function | A function to call when a scroll will complete very soon (called when scrollThreshold is surpassed and `touchend` is fired). |
+| Option Name | Data Type | Description |
+| :--- | :--- | :--- |
+| `targetClass` | String | The class that identifies the scroll targets (pages in the horizontal-pager). Must be supplied. |
+| `[startIndex]` | Number | Which scroll target to show initially. Optional, defaults to 0, the first element returned from querySelectorAll on targetClass. |
+| `[scrollThreshold]` | Number | Less than 1, the percentage of width beyond which a touch will cause a complete scroll to the next page. Optional, defaults to 0.35 (35 percent). |
+| `[maxFind]` | Number | Maximum parent level to search to find target Class (touch target to targetClass). Optional, defaults to 50. If your page content has a lot of deep markup, you might have to adjust this number. |
+| `[doneThreshold]` | Number | The translateX pixel value below which to stop animations. Defaults to 1 (Will not animate below 1px). |
+| `[done]` | Function | A function to call after a scroll has completed. |
+| `[willComplete]` | Function | A function to call when a scroll will complete very soon (called when scrollThreshold is surpassed and `touchend` is fired). |
 
 ### Instance API
 #### initialize ()
