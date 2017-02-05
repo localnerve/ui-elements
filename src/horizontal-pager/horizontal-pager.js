@@ -71,7 +71,7 @@ class HorizontalPager {
     this.translateX = 0;
     this.targetX = 0;
     this.atEdge = false;
-    this.willCompleteCalled = false;
+    this.willCompleteOnce = false;
     this.isVertical = undefined;
     this.targets = [];
     this.rafs = [];
@@ -258,7 +258,7 @@ class HorizontalPager {
     this.prevSib = newTarget.previousElementSibling;
 
     this.touching = true;
-    this.willCompleteCalled = false;
+    this.willCompleteOnce = false;
     this.isVertical = undefined;
     this.atEdge = false;
 
@@ -321,10 +321,9 @@ class HorizontalPager {
       this.targetX = movingLeft ?
         this.targetRect.width : -this.targetRect.width;
 
-      this.targetIndex += direction;
-
-      if (!this.willCompleteCalled) {
-        this.willCompleteCalled = true;
+      if (!this.willCompleteOnce) {
+        this.willCompleteOnce = true;
+        this.targetIndex += direction;
         if (typeof this.opts.willComplete === 'function') {
           setTimeout(this.opts.willComplete, 0, direction);
         }
