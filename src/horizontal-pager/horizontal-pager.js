@@ -237,16 +237,17 @@ class HorizontalPager {
 
   /**
    * touchstart handler, passive.
-   * Gets called once per touch (two fingers = two calls).
+   * Gets called once per touch (two fingers = two calls), but limits to first.
    * @private
    *
    * @param {Object} evt - The TouchEvent object.
    */
   onStart (evt) {
-    const newTarget = this.targets[this.targetIndex];
-    if (!newTarget) {
+    if (this.touching) {
       return;
     }
+
+    const newTarget = this.targets[this.targetIndex];
 
     this.targetRect = newTarget.getBoundingClientRect();
     this.startX = evt.pageX || evt.touches[0].pageX;
@@ -310,34 +311,32 @@ class HorizontalPager {
 
   /**
    * touchend handler, passive.
-   * Gets called once per touch (two fingers = two calls).
+   * Gets called once per touch (two fingers = two calls), but limits to first.
    * @private
    */
   onEnd () {
-    if (!this.target) {
+    if (!this.touching) {
       return;
     }
+    this.touching = false;
 
     const { willComplete, movingLeft } = this.touchStatus();
 
     this.targetX = 0;
 
     if (willComplete) {
-      const direction = movingLeft ? -1 : 1;
-
       this.targetX = movingLeft ?
         this.targetRect.width : -this.targetRect.width;
 
       if (!this.willCompleteOnce) {
         this.willCompleteOnce = true;
+        const direction = movingLeft ? -1 : 1;
         this.targetIndex += direction;
         if (typeof this.opts.willComplete === 'function') {
           setTimeout(this.opts.willComplete, 0, direction);
         }
       }
     }
-
-    this.touching = false;
   }
 
   /**
