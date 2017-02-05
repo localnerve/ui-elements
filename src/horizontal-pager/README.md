@@ -22,9 +22,11 @@
 
 ## API
 ### Top-level API
-#### createHorizontalPager (options)
-Returns an API to a horizontal-pager instance. Use to set the options on the instance.  
-`targetClass` is the only required option.
+#### *Instance* createHorizontalPager (options)
+Returns an API to a horizontal-pager instance, sets the instance options, starts event listening, and renders initial styles on the elements found by the given `ptions.targetClass`.  
+`targetClass` is the only required option.  
+Requires a global `document` to be available when called.
+
 ##### Options
 | Option Name | Data Type | Description |
 | :--- | :--- | :--- |
@@ -36,8 +38,6 @@ Returns an API to a horizontal-pager instance. Use to set the options on the ins
 | `[willComplete]` | Function | A function to call when a scroll will complete very soon (called when scrollThreshold is surpassed and `touchend` is fired). |
 
 ### Instance API
-#### initialize ()
-Starts event listening, and renders initial styles on the elements found by the given `options.targetClass`. Requires a global `document` to be available when called. No arguments, no return.
 
 #### destroy ()
 Stops event listening and any pending animations. Requires a global `document` to be available when called. No arguments, no return.
@@ -47,7 +47,11 @@ Stops event listening and any pending animations. Requires a global `document` t
 See `DOMContentLoaded`, `unload` event handlers in the [example](index.js).
 
 ### General Usage (frameworks, universal)
-Deliver the `horizontal-pager.js` script with your markup. After that, here are the **when**s:
-  1.  **When** you have the options ready/known, call the top-level api function `createHorizontalPager` to assign options and get the instance API. No browser required.
-  2.  **When** a global `document` is available, call `initialize` to start the horizontal pager.
-  3.  **After** `initialize` has been called AND **when** a global `document` is available, call `destroy` to stop everything.
+Deliver the `horizontal-pager.js` script with your page. In a universal app, you won't want to render on the server, but you WILL want to deliver the `startIndex` to the client to initially render the proper `targetClass` page for the current route. On the client, give the `startIndex` and `targetClass` options to the top-level api function `createHorizontalPager` prior to the first client render.
+Client-side Usage:
+  1.  Call the top-level api function `createHorizontalPager` (the default export), and give it the options. This starts listening to events, and returns an interface to the horizontal-pager instance.
+    * Requires a global `document` to be available.
+      * In `React`, a good place to do this is in `componentDidMount`.
+  2.  When you're done, call `destroy` on the horizontal-pager instance to stop animations and events.
+    * Requires a global `document` to be available.
+      * In `React`, a good place to do this is in `componentWillUnmount`.

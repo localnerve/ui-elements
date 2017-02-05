@@ -29,7 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
     targetClass: 'page-item',
     willComplete: updateBubble
   });
-  horizontalPager.initialize();
 }, {
   once: true
 });

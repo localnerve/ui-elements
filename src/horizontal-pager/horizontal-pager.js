@@ -58,8 +58,6 @@ class HorizontalPager {
 
     this.targetIndex = this.opts.startIndex;
     this.dataId = 'data-hpid';
-    this.initialized = false;
-    this.destroyed = false;
     this.targetRect = null;
     this.target = null;
     this.nextSib = null;
@@ -75,6 +73,9 @@ class HorizontalPager {
     this.isVertical = undefined;
     this.targets = [];
     this.rafs = [];
+
+    this.addEventListeners();
+    this.setupTargets();
   }
 
   /**
@@ -236,6 +237,7 @@ class HorizontalPager {
 
   /**
    * touchstart handler, passive.
+   * Gets called once per touch (two fingers = two calls).
    * @private
    *
    * @param {Object} evt - The TouchEvent object.
@@ -277,6 +279,10 @@ class HorizontalPager {
 
   /**
    * touchmove handler.
+   * Gets called tons.
+   * Heavy lifting moved to RAF handler `update`.
+   * Sets this.currentX. Sets this.isVertical once per touch.
+   * If vertical movement detected, goes passive.
    * @private
    *
    * @param {Object} evt - The TouchEvent object.
@@ -303,7 +309,8 @@ class HorizontalPager {
   }
 
   /**
-   * touchend handler.
+   * touchend handler, passive.
+   * Gets called once per touch (two fingers = two calls).
    * @private
    */
   onEnd () {
@@ -334,7 +341,7 @@ class HorizontalPager {
   }
 
   /**
-   * RAF handler.
+   * The animation frame handler.
    * @private
    */
   update () {
@@ -389,34 +396,18 @@ class HorizontalPager {
   }
 
   /**
-   * Call to start browser event handling, and render targets into position.
-   * Requires browser.
-   * @public
-   */
-  initialize () {
-    if (!this.initialized) {
-      this.initialized = true;
-      this.addEventListeners();
-      this.setupTargets();
-    }
-  }
-
-  /**
    * Call to cleanup, stop animations, and events.
    * Requires browser.
    * @public
    */
   destroy () {
-    if (this.initialized && !this.destroyed) {
-      this.destroyed = true;
-      this.resetAnimations();
-      document.removeEventListener('touchstart', this.onStart);
-      document.removeEventListener('mousedown', this.onStart);
-      document.removeEventListener('touchmove', this.onMove);
-      document.removeEventListener('mousemove', this.onMove);
-      document.removeEventListener('touchend', this.onEnd);
-      document.removeEventListener('mouseup', this.onEnd);
-    }
+    this.resetAnimations();
+    document.removeEventListener('touchstart', this.onStart);
+    document.removeEventListener('mousedown', this.onStart);
+    document.removeEventListener('touchmove', this.onMove);
+    document.removeEventListener('mousemove', this.onMove);
+    document.removeEventListener('touchend', this.onEnd);
+    document.removeEventListener('mouseup', this.onEnd);
   }
 }
 
@@ -432,7 +423,6 @@ export default function createHorizontalPager (options) {
   const horizontalPager = new HorizontalPager(options);
 
   return {
-    initialize: horizontalPager.initialize.bind(horizontalPager),
     destroy: horizontalPager.destroy.bind(horizontalPager)
   };
 }
