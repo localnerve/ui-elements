@@ -83,20 +83,16 @@ class HorizontalPager {
    * @private
    */
   addEventListeners () {
-    document.addEventListener('touchstart', this.onStart, {
+    const options = {
       passive: true
-    });
-    document.addEventListener('mousedown', this.onStart, {
-      passive: true
-    });
-    document.addEventListener('touchmove', this.onMove);
-    document.addEventListener('mousemove', this.onMove);
-    document.addEventListener('touchend', this.onEnd, {
-      passive: true
-    });
-    document.addEventListener('mouseup', this.onEnd, {
-      passive: true
-    });
+    };
+
+    document.addEventListener('touchstart', this.onStart, options);
+    document.addEventListener('mousedown', this.onStart, options);
+    document.addEventListener('touchmove', this.onMove, options);
+    document.addEventListener('mousemove', this.onMove, options);
+    document.addEventListener('touchend', this.onEnd, options);
+    document.addEventListener('mouseup', this.onEnd, options);
   }
 
   /**
@@ -279,20 +275,15 @@ class HorizontalPager {
   }
 
   /**
-   * touchmove handler.
+   * touchmove handler, passive.
    * Gets called tons.
    * Heavy lifting moved to RAF handler `update`.
-   * Sets this.currentX. Sets this.isVertical once per touch.
-   * If vertical movement detected, goes passive.
+   * Sets this.currentX. Sets this.isVertical once per touch (limited to one).
    * @private
    *
    * @param {Object} evt - The TouchEvent object.
    */
   onMove (evt) {
-    if (!this.target) {
-      return;
-    }
-
     this.currentX = evt.pageX || evt.touches[0].pageX;
 
     if (typeof this.isVertical === 'undefined') {
@@ -304,8 +295,6 @@ class HorizontalPager {
 
     if (this.isVertical) {
       this.currentX = this.startX;
-    } else {
-      evt.preventDefault();
     }
   }
 
