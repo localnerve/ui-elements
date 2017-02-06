@@ -74,8 +74,9 @@ class HorizontalPager {
     this.targets = [];
     this.rafs = [];
 
-    this.addEventListeners();
-    this.setupTargets();
+    if (this.setupTargets() > 1) {
+      this.addEventListeners();
+    }
   }
 
   /**
@@ -98,6 +99,8 @@ class HorizontalPager {
   /**
    * Setup the scroll targets (pages).
    * @private
+   *
+   * @returns {Number} The number of scroll targets found.
    */
   setupTargets () {
     let style;
@@ -107,7 +110,9 @@ class HorizontalPager {
 
     this.targets = document.querySelectorAll(`.${targetClass}`);
 
-    for (i = 0; i < this.targets.length; i++) {
+    const targetsLength = this.targets.length;
+
+    for (i = 0; i < targetsLength; i++) {
       this.targets[i].setAttribute(this.dataId, i);
       style = this.targets[i].style;
 
@@ -118,6 +123,8 @@ class HorizontalPager {
       style.left = 0;
       style.width = '100%';
     }
+
+    return targetsLength;
   }
 
   /**
