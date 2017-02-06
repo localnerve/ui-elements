@@ -98,7 +98,8 @@ function createBundle (env) {
 
 gulp.task('copy', () =>
   gulp.src([
-    `${srcRoot}/**/index.html`,
+    `${srcRoot}/**/*.html`,
+    `${srcRoot}/**/*.css`,
     `${srcRoot}/**/${jsBundle}`
   ])
     .pipe(gulp.dest('dist'))
