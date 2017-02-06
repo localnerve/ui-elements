@@ -162,6 +162,41 @@ class HorizontalPager {
   }
 
   /**
+   * If animation done, complete it and signal done.
+   * @private
+   *
+   * @param {Boolean} targetDone - True if the scroll target is done, false otherwise.
+   * @param {Boolean} nextDone - True if the next page is done, false otherwise.
+   * @param {Boolean} prevDone - True if the prev page is done, false otherwise.
+   */
+  completeAnimations (targetDone, nextDone, prevDone) {
+    if (nextDone || prevDone) {
+      const direction = nextDone ? 1 : -1;
+      const nextStyle = this.nextSib ? this.nextSib.style : {};
+      const prevStyle = this.prevSib ? this.prevSib.style : {};
+
+      this.target.style.position = 'absolute';
+      this.target.style.willChange = 'initial';
+
+      if (nextDone) {
+        nextStyle.position = 'static';
+        prevStyle.willChange = 'initial';
+      } else {
+        prevStyle.position = 'static';
+        nextStyle.willChange = 'initial';
+      }
+
+      if (typeof this.opts.done === 'function') {
+        setTimeout(this.opts.done, 0, direction);
+      }
+    }
+
+    if (targetDone || nextDone || prevDone) {
+      this.target = null;
+    }
+  }
+
+  /**
    * Create percentage translateX value.
    * If done, make sure the value is off by 100% magnitude.
    * NOTE: This presumes all targets are the same width.
@@ -194,41 +229,6 @@ class HorizontalPager {
       willComplete: Math.abs(translateX) > threshold && !this.atEdge,
       movingLeft: translateX > 0 // true if moving left to prev, swiping right.
     };
-  }
-
-  /**
-   * Check if scroll animation done, stop if it is.
-   * @private
-   *
-   * @param {Boolean} targetDone - True if the scroll target is done, false otherwise.
-   * @param {Boolean} nextDone - True if the next page is done, false otherwise.
-   * @param {Boolean} prevDone - True if the prev page is done, false otherwise.
-   */
-  slideDone (targetDone, nextDone, prevDone) {
-    if (nextDone || prevDone) {
-      const direction = nextDone ? 1 : -1;
-      const nextStyle = this.nextSib ? this.nextSib.style : {};
-      const prevStyle = this.prevSib ? this.prevSib.style : {};
-
-      this.target.style.position = 'absolute';
-      this.target.style.willChange = 'initial';
-
-      if (nextDone) {
-        nextStyle.position = 'static';
-        prevStyle.willChange = 'initial';
-      } else {
-        prevStyle.position = 'static';
-        nextStyle.willChange = 'initial';
-      }
-
-      if (typeof this.opts.done === 'function') {
-        setTimeout(this.opts.done, 0, direction);
-      }
-    }
-
-    if (targetDone || nextDone || prevDone) {
-      this.target = null;
-    }
   }
 
   /**
@@ -379,8 +379,7 @@ class HorizontalPager {
       }%)`;
     }
 
-    // If slide done, cleanup
-    this.slideDone(targetDone, nextDone, prevDone);
+    this.completeAnimations(targetDone, nextDone, prevDone);
   }
 
   /**
