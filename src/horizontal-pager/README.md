@@ -22,7 +22,7 @@
 ## API
 ### Top-level API
 #### *Instance* createHorizontalPager (options)
-Returns an API to a horizontal-pager instance, sets the instance options, starts event listening, and renders initial styles on the elements found by the given `ptions.targetClass`.  
+Returns an API to a horizontal-pager instance, sets the instance options, starts event listening, and renders initial styles on the elements found by the given `options.targetClass`.  
 `targetClass` is the only required option.  
 Requires a global `document` to be available when called.
 
