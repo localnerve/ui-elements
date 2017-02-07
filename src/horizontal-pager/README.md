@@ -51,7 +51,7 @@ Moves to the previous target as identified by `targetClass`. If the current targ
 Moves `distance` targets away from the current `targetClass`. If the specified distance would move out of bounds, nothing happens. A `distance` of -1 is a synonym for `prev`. No return.
 
 #### moveAbs (index)
-Moves to the `targetClass` at the zero-based index. If an out of bounds index is specified, nothing happens. No return.
+Moves to the `targetClass` at the zero-based index. If an out of bounds or current index is specified, nothing happens. No return.
 
 #### targetCount ()
 Returns the number of `targetClass` items found by the horizontal-pager.
