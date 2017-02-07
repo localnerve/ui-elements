@@ -413,7 +413,7 @@ class HorizontalPager {
 
       let fullWidth;
       let originalWidth;
-      let lastWidthCount = 0;
+      let lastWidthCount;
 
       requestAnimationFrame(() => {
         this.target = this.targets[this.targetIndex];
@@ -427,6 +427,7 @@ class HorizontalPager {
         this.targetX = this.targetWidth * distance * -1;
         this.touching = false;
 
+        lastWidthCount = 0;
         originalWidth = this.targetWidth;
         fullWidth = this.targetWidth * Math.abs(distance);
 
@@ -445,11 +446,11 @@ class HorizontalPager {
             const diff = fullWidth - Math.abs(this.translateX);
 
             if (diff < this.opts.doneThreshold) {
-              this.completeAnimations(false, moveNext, moveNext);
+              this.completeAnimations(false, moveNext, !moveNext);
             } else if (widthCount - lastWidthCount > 0) {
               lastWidthCount = widthCount;
 
-              this.completeAnimations(false, moveNext, moveNext, true);
+              this.completeAnimations(false, moveNext, !moveNext, true);
 
               this.targetWidth += originalWidth;
 
@@ -501,7 +502,7 @@ class HorizontalPager {
    * Move to the Nth targetClass (page).
    * @public
    *
-   * @param {Number} index - The index to move to.
+   * @param {Number} index - The zero-based index to move to.
    */
   moveAbs (index) {
     this.animate(index - this.targetIndex);
