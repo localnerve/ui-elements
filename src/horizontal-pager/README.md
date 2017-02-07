@@ -18,7 +18,6 @@
 
 ## Missing Features
   1.  No continuous option (infinite, last-wraps-to-first and vice-versa).
-  2.  No direct navigate ability after started (can't go directly to page N).
 
 ## API
 ### Top-level API
@@ -35,12 +34,27 @@ Requires a global `document` to be available when called.
 | `[scrollThreshold]` | Number | Less than 1, the percentage of width beyond which a touch will cause a complete scroll to the next page. Optional, defaults to 0.35 (35 percent). |
 | `[doneThreshold]` | Number | The translateX pixel value below which to stop animations. Defaults to 1 (Will not animate below 1px). |
 | `[done]` | Function | A function to call after a scroll has completed. |
-| `[willComplete]` | Function | A function to call when a scroll will complete very soon (called when scrollThreshold is surpassed and `touchend` is fired). |
+| `[willComplete]` | Function | A function to call when a scroll will complete very soon. For touch, called when scrollThreshold is surpassed and `touchend` is fired. Receives the distance moved as a single argument, -1 for previous, for example. |
 
 ### Instance API
 
 #### destroy ()
 Stops event listening and any pending animations. Requires a global `document` to be available when called. No arguments, no return.
+
+#### next ()
+Moves to the next target as identified by `targetClass`. If the current target is the end, nothing happens. No arguments, no return.
+
+#### prev ()
+Moves to the previous target as identified by `targetClass`. If the current target is the beginning, nothing happens. No arguments, no return.
+
+#### moveRel (distance)
+Moves `distance` targets away from the current `targetClass`. If the specified distance would move out of bounds, nothing happens. A `distance` of -1 is a synonym for `prev`. No return.
+
+#### moveAbs (index)
+Moves to the `targetClass` at the zero-based index. If an out of bounds index is specified, nothing happens. No return.
+
+#### targetCount ()
+Returns the number of `targetClass` items found by the horizontal-pager.
 
 ## How To Use
 ### Vanilla JS

@@ -58,7 +58,7 @@ class HorizontalPager {
 
     this.targetIndex = this.opts.startIndex;
     this.dataId = 'data-hpid';
-    this.targetRect = null;
+    this.targetWidth = 0;
     this.target = null;
     this.nextSib = null;
     this.prevSib = null;
@@ -110,9 +110,7 @@ class HorizontalPager {
 
     this.targets = document.querySelectorAll(`.${targetClass}`);
 
-    const targetsLength = this.targets.length;
-
-    for (i = 0; i < targetsLength; i++) {
+    for (i = 0; i < this.targets.length; i++) {
       this.targets[i].setAttribute(this.dataId, i);
       style = this.targets[i].style;
 
@@ -124,7 +122,7 @@ class HorizontalPager {
       style.width = '100%';
     }
 
-    return targetsLength;
+    return this.targets.length;
   }
 
   /**
@@ -175,8 +173,9 @@ class HorizontalPager {
    * @param {Boolean} targetDone - True if the scroll target is done, false otherwise.
    * @param {Boolean} nextDone - True if the next page is done, false otherwise.
    * @param {Boolean} prevDone - True if the prev page is done, false otherwise.
+   * @param {Boolean} styleOnly - True if only update styles.
    */
-  completeAnimations (targetDone, nextDone, prevDone) {
+  completeAnimations (targetDone, nextDone, prevDone, styleOnly) {
     if (nextDone || prevDone) {
       const direction = nextDone ? 1 : -1;
       const nextStyle = this.nextSib ? this.nextSib.style : {};
@@ -193,12 +192,12 @@ class HorizontalPager {
         nextStyle.willChange = 'initial';
       }
 
-      if (typeof this.opts.done === 'function') {
+      if (!styleOnly && typeof this.opts.done === 'function') {
         setTimeout(this.opts.done, 0, direction);
       }
     }
 
-    if (targetDone || nextDone || prevDone) {
+    if (!styleOnly && (targetDone || nextDone || prevDone)) {
       this.target = null;
     }
   }
@@ -214,10 +213,10 @@ class HorizontalPager {
    * @param {Number} value - The value to adjust, if required.
    */
   transX (done, value) {
-    if (done && Math.abs(value) < this.targetRect.width) {
+    if (done && Math.abs(value) < this.targetWidth) {
       return (100 * (value < 0 ? -1 : 1));
     }
-    return (value / this.targetRect.width) * 100;
+    return (value / this.targetWidth) * 100;
   }
 
   /**
@@ -229,7 +228,7 @@ class HorizontalPager {
    * @returns {Object} contains two booleans: willComplete and movingLeft.
    */
   touchStatus () {
-    const threshold = this.targetRect.width * this.opts.scrollThreshold;
+    const threshold = this.targetWidth * this.opts.scrollThreshold;
     const translateX = this.currentX - this.startX;
 
     return {
@@ -252,7 +251,7 @@ class HorizontalPager {
 
     const newTarget = this.targets[this.targetIndex];
 
-    this.targetRect = newTarget.getBoundingClientRect();
+    this.targetWidth = newTarget.getBoundingClientRect().width;
     this.startX = evt.pageX || evt.touches[0].pageX;
     this.startY = evt.pageY || evt.touches[0].pageY;
     this.currentX = this.startX;
@@ -321,8 +320,7 @@ class HorizontalPager {
     this.targetX = 0;
 
     if (willComplete) {
-      this.targetX = movingLeft ?
-        this.targetRect.width : -this.targetRect.width;
+      this.targetX = movingLeft ? this.targetWidth : -this.targetWidth;
 
       if (!this.willCompleteOnce) {
         this.willCompleteOnce = true;
@@ -339,12 +337,12 @@ class HorizontalPager {
    * The animation frame handler.
    * @private
    */
-  update () {
+  update (complete) {
     if (!this.target) {
       return;
     }
 
-    this.rafs.push(requestAnimationFrame(this.update));
+    this.rafs.push(requestAnimationFrame(this.update.bind(this, complete)));
 
     // Calc translateX units. If not touching, ease out.
     if (this.touching) {
@@ -355,14 +353,14 @@ class HorizontalPager {
         (!this.nextSib && this.translateX < 0);
       if (this.atEdge) {
         this.translateX = this.translateX / (
-          (Math.abs(this.translateX) / this.targetRect.width) + 1
+          (Math.abs(this.translateX) / this.targetWidth) + 1
         );
       }
     } else {
       this.translateX += (this.targetX - this.translateX) / 4;
     }
-    const nextX = (this.translateX + this.targetRect.width).toFixed(6);
-    const prevX = (this.translateX - this.targetRect.width).toFixed(6);
+    const nextX = (this.translateX + this.targetWidth).toFixed(6);
+    const prevX = (this.translateX - this.targetWidth).toFixed(6);
 
     // Detect animation done
     const targetDone = this.isVertical || (
@@ -386,11 +384,136 @@ class HorizontalPager {
       }%)`;
     }
 
-    this.completeAnimations(targetDone, nextDone, prevDone);
+    // Complete
+    if (typeof complete === 'function') {
+      complete(targetDone, nextDone, prevDone);
+    } else {
+      this.completeAnimations(targetDone, nextDone, prevDone);
+    }
   }
 
   /**
-   * Call to cleanup, stop animations, and events.
+   * Schedule scroll animation without touch.
+   * @private
+   *
+   * @param {Number} distance - The value determines the number of targets to
+   * animate ahead (or behind) to. The sign determines the direction, positive
+   * is next, negative is prev.
+   */
+  animate (distance) {
+    const moveNext = distance > 0;
+    const rangeCheck = this.targetIndex + distance >= 0 &&
+      this.targetIndex + distance <= this.targets.length - 1;
+    const edgeCheck = moveNext ?
+      this.targetIndex < this.targets.length - 1 : this.targetIndex > 0;
+
+    if (distance && rangeCheck && edgeCheck) {
+      this.target = null;
+      this.resetAnimations();
+
+      let fullWidth;
+      let lastWidthCount = 0;
+
+      requestAnimationFrame(() => {
+        this.target = this.targets[this.targetIndex];
+        this.targetWidth = this.target.getBoundingClientRect().width;
+        this.prevSib = this.target.previousElementSibling;
+        this.nextSib = this.target.nextElementSibling;
+
+        this.currentX = this.currentX || 0;
+        this.startX = this.currentX;
+        this.translateX = this.currentX - this.startX;
+        this.targetX = this.targetWidth * distance * -1;
+        this.touching = false;
+
+        fullWidth = this.targetWidth * Math.abs(distance);
+
+        this.targetIndex += distance;
+        if (typeof this.opts.willComplete === 'function') {
+          setTimeout(this.opts.willComplete, 0, distance);
+        }
+
+        if (Math.abs(distance) === 1) {
+          this.rafs.push(requestAnimationFrame(this.update));
+        } else {
+          this.rafs.push(requestAnimationFrame(this.update.bind(this, () => {
+            const widthCount = Math.trunc(
+              Math.abs(this.translateX) / this.targetWidth
+            );
+            const diff = fullWidth - Math.abs(this.translateX);
+
+            if (diff < this.opts.doneThreshold) {
+              this.completeAnimations(false, moveNext, moveNext);
+            } else if (widthCount - lastWidthCount > 0) {
+              lastWidthCount = widthCount;
+
+              this.completeAnimations(false, moveNext, moveNext, true);
+
+              this.targetWidth += this.targetWidth;
+
+              if (moveNext) {
+                this.prevSib = this.target;
+                this.target = this.nextSib;
+                this.nextSib = this.target.nextElementSibling;
+              } else {
+                this.nextSib = this.target;
+                this.target = this.prevSib;
+                this.prevSib = this.target.previousElementSibling;
+              }
+            }
+          })));
+        }
+      });
+    }
+  }
+
+  /**
+   * Move to the next targetClass (page).
+   * If at the end, does nothing.
+   * @public
+   */
+  next () {
+    this.animate(1);
+  }
+
+  /**
+   * Move to the previous targetClass (page).
+   * If at the beginning, does nothing.
+   * @public
+   */
+  prev () {
+    this.animate(-1);
+  }
+
+  /**
+   * Move N from current targetClass (page).
+   * @public
+   *
+   * @param {Number} distance - The number of pages to move forward (+) or back (-)
+   */
+  moveRel (distance) {
+    this.animate(distance);
+  }
+
+  /**
+   * Move to the Nth targetClass (page).
+   * @public
+   *
+   * @param {Number} index - The index to move to.
+   */
+  moveAbs (index) {
+    this.animate(index - this.targetIndex);
+  }
+
+  /**
+   * @returns {Number} The number of targetClass targets.
+   */
+  targetCount () {
+    return this.targets.length;
+  }
+
+  /**
+   * Call to stop animations and events.
    * Requires browser.
    * @public
    */
@@ -417,6 +540,11 @@ export default function createHorizontalPager (options) {
   const horizontalPager = new HorizontalPager(options);
 
   return {
-    destroy: horizontalPager.destroy.bind(horizontalPager)
+    destroy: horizontalPager.destroy.bind(horizontalPager),
+    next: horizontalPager.next.bind(horizontalPager),
+    prev: horizontalPager.prev.bind(horizontalPager),
+    moveRel: horizontalPager.moveRel.bind(horizontalPager),
+    moveAbs: horizontalPager.moveAbs.bind(horizontalPager),
+    targetCount: horizontalPager.targetCount.bind(horizontalPager)
   };
 }

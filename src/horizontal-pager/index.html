@@ -8,11 +8,20 @@
       margin: 0;
       font-family: Roboto-Regular, HelveticaNeue, Arial, sans-serif
     }
+
+    .button-container {
+      text-align: center;
+      margin: 0.5em;
+    }
     button {
+      display: inline-block;
       background: #3774de;
-      border-radius: 3px;
-      border-width: 0; 
-      min-width: 60%;
+      color: #fff;
+      font-size: 1em;
+      border-radius: 0.5rem;
+      border-width: 0;
+      min-width: 30%;
+      min-height: 3em;
     }
     .header {
       background-color: #3774de;
@@ -85,7 +94,25 @@
           <div class="temporary-overlay" style="display: none;"></div>
           <div class="page-item-content">
             <h2>Hello World 1</h2>
-            <button onclick="javascript: alert('world 1');">Hello</button>
+            <div class="button-container">
+              <button onclick="javascript: window.horizontalPager.moveRel(2)">
+                Move up 2
+              </button>
+              <button onclick="javascript: window.horizontalPager.moveAbs(5)">
+                Move to end
+              </button>
+            </div>
+            <div class="button-container">
+              <button onclick="javascript: window.horizontalPager.prev();">
+                Prev
+              </button>
+              <button onclick="javascript: alert('hello world 1');">
+                Hello
+              </button>
+              <button onclick="javascript: window.horizontalPager.next();">
+                Next
+              </button>
+            </div>
             <p>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas pharetra tellus tellus, nec condimentum dolor eleifend eu. Sed mi tellus, tincidunt at orci luctus, iaculis ultrices diam. Ut varius mattis lacus, at vestibulum nisl rhoncus eget. Nulla tincidunt enim a turpis interdum lobortis in nec libero. Donec mollis diam non viverra scelerisque. Quisque varius sem sed arcu bibendum, sit amet scelerisque est pharetra. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Cras vel elementum nisl, non dapibus felis. Aenean ultricies dictum leo, at venenatis urna gravida vitae.
             </p>
@@ -109,7 +136,17 @@
           <div class="temporary-overlay" style="display: none;"></div>
           <div class="page-item-content">
             <h2>Hello World 2</h2>
-            <button onclick="javascript: alert('world 2');">Hello</button>
+            <div class="button-container">
+              <button onclick="javascript: window.horizontalPager.prev();">
+                Prev
+              </button>
+              <button onclick="javascript: alert('hello world 2');">
+                Hello
+              </button>
+              <button onclick="javascript: window.horizontalPager.next();">
+                Next
+              </button>
+            </div>
             <p>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas pharetra tellus tellus, nec condimentum dolor eleifend eu. Sed mi tellus, tincidunt at orci luctus, iaculis ultrices diam. Ut varius mattis lacus, at vestibulum nisl rhoncus eget. Nulla tincidunt enim a turpis interdum lobortis in nec libero. Donec mollis diam non viverra scelerisque. Quisque varius sem sed arcu bibendum, sit amet scelerisque est pharetra. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Cras vel elementum nisl, non dapibus felis. Aenean ultricies dictum leo, at venenatis urna gravida vitae.
             </p>
@@ -133,7 +170,25 @@
           <div class="temporary-overlay" style="display: none;"></div>
           <div class="page-item-content">
             <h2>Hello World 3</h2>
-            <button onclick="javascript: alert('world 3');">Hello</button>
+            <div class="button-container">
+              <button onclick="javascript: window.horizontalPager.moveRel(-2)">
+                Move back 2
+              </button>
+              <button onclick="javascript: window.horizontalPager.moveRel(3)">
+                Move up 3
+              </button>
+            </div>
+            <div class="button-container">
+              <button onclick="javascript: window.horizontalPager.prev();">
+                Prev
+              </button>
+              <button onclick="javascript: alert('hello world 3');">
+                Hello
+              </button>
+              <button onclick="javascript: window.horizontalPager.next();">
+                Next
+              </button>
+            </div>
             <p>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas pharetra tellus tellus, nec condimentum dolor eleifend eu. Sed mi tellus, tincidunt at orci luctus, iaculis ultrices diam. Ut varius mattis lacus, at vestibulum nisl rhoncus eget. Nulla tincidunt enim a turpis interdum lobortis in nec libero. Donec mollis diam non viverra scelerisque. Quisque varius sem sed arcu bibendum, sit amet scelerisque est pharetra. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Cras vel elementum nisl, non dapibus felis. Aenean ultricies dictum leo, at venenatis urna gravida vitae.
             </p>
@@ -157,7 +212,17 @@
           <div class="temporary-overlay" style="display: none;"></div>
           <div class="page-item-content">
             <h2>Hello World 4</h2>
-            <button onclick="javascript: alert('world 4');">Hello</button>
+            <div class="button-container">
+              <button onclick="javascript: window.horizontalPager.prev();">
+                Prev
+              </button>
+              <button onclick="javascript: alert('hello world 4');">
+                Hello
+              </button>
+              <button onclick="javascript: window.horizontalPager.next();">
+                Next
+              </button>
+            </div>
             <p>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas pharetra tellus tellus, nec condimentum dolor eleifend eu. Sed mi tellus, tincidunt at orci luctus, iaculis ultrices diam. Ut varius mattis lacus, at vestibulum nisl rhoncus eget. Nulla tincidunt enim a turpis interdum lobortis in nec libero. Donec mollis diam non viverra scelerisque. Quisque varius sem sed arcu bibendum, sit amet scelerisque est pharetra. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Cras vel elementum nisl, non dapibus felis. Aenean ultricies dictum leo, at venenatis urna gravida vitae.
             </p>
@@ -181,7 +246,17 @@
           <div class="temporary-overlay" style="display: none;"></div>
           <div class="page-item-content">
             <h2>Hello World 5</h2>
-            <button onclick="javascript: alert('world 5');">Hello</button>
+            <div class="button-container">
+              <button onclick="javascript: window.horizontalPager.prev();">
+                Prev
+              </button>
+              <button onclick="javascript: alert('hello world 5');">
+                Hello
+              </button>
+              <button onclick="javascript: window.horizontalPager.next();">
+                Next
+              </button>
+            </div>
             <p>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas pharetra tellus tellus, nec condimentum dolor eleifend eu. Sed mi tellus, tincidunt at orci luctus, iaculis ultrices diam. Ut varius mattis lacus, at vestibulum nisl rhoncus eget. Nulla tincidunt enim a turpis interdum lobortis in nec libero. Donec mollis diam non viverra scelerisque. Quisque varius sem sed arcu bibendum, sit amet scelerisque est pharetra. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Cras vel elementum nisl, non dapibus felis. Aenean ultricies dictum leo, at venenatis urna gravida vitae.
             </p>
@@ -205,7 +280,22 @@
           <div class="temporary-overlay" style="display: none;"></div>
           <div class="page-item-content">
             <h2>Hello World 6</h2>
-            <button onclick="javascript: alert('world 6');">Hello</button>
+            <div class="button-container">
+              <button onclick="javascript: window.horizontalPager.moveAbs(0)">
+                Move to front
+              </button>
+            </div>
+            <div class="button-container">
+              <button onclick="javascript: window.horizontalPager.prev();">
+                Prev
+              </button>
+              <button onclick="javascript: alert('hello world 6');">
+                Hello
+              </button>
+              <button onclick="javascript: window.horizontalPager.next();">
+                Next
+              </button>
+            </div>
             <p>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas pharetra tellus tellus, nec condimentum dolor eleifend eu. Sed mi tellus, tincidunt at orci luctus, iaculis ultrices diam. Ut varius mattis lacus, at vestibulum nisl rhoncus eget. Nulla tincidunt enim a turpis interdum lobortis in nec libero. Donec mollis diam non viverra scelerisque. Quisque varius sem sed arcu bibendum, sit amet scelerisque est pharetra. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Cras vel elementum nisl, non dapibus felis. Aenean ultricies dictum leo, at venenatis urna gravida vitae.
             </p>

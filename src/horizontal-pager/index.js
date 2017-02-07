@@ -4,35 +4,41 @@
  * Copyright (c) 2017 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
-/* global document */
+/* global window, document */
 /* eslint-disable import/no-unresolved */
 import createHorizontalPager from './horizontal-pager';
 
 /**
  * HorizontalPager callback to update the page indicator bubbles.
  *
- * @param {Number} direction - +1 for forward (left), -1 for back (right)
+ * @param {Number} distance - +1 for forward (left), -1 for back (right)
  */
-function updateBubble (direction) {
+function updateBubble (distance) {
   const selectedBbl = document.querySelector('.bbl.selected');
-  const nextSibling = direction > 0 ?
-    selectedBbl.nextElementSibling : selectedBbl.previousElementSibling;
+  let sibling = selectedBbl;
+  let dist = distance;
+
+  while (distance > 0 ? dist-- : dist++) {
+    sibling = distance > 0 ?
+      sibling.nextElementSibling : sibling.previousElementSibling;
+  }
 
   selectedBbl.classList.remove('selected');
-  nextSibling.classList.add('selected');
+  sibling.classList.add('selected');
 }
 
-let horizontalPager;
-
 document.addEventListener('DOMContentLoaded', () => {
-  horizontalPager = createHorizontalPager({
+  const horizontalPager = createHorizontalPager({
     targetClass: 'page-item',
     willComplete: updateBubble
   });
+  // Create a global to expose to the API.
+  window.horizontalPager = horizontalPager;
 }, {
   once: true
 });
 
-document.addEventListener('unload', () => horizontalPager && horizontalPager.destroy(), {
-  once: true
-});
+document.addEventListener('unload', () =>
+  window.horizontalPager && window.horizontalPager.destroy(), {
+    once: true
+  });
