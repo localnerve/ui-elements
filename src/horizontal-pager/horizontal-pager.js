@@ -412,6 +412,7 @@ class HorizontalPager {
       this.resetAnimations();
 
       let fullWidth;
+      let originalWidth;
       let lastWidthCount = 0;
 
       requestAnimationFrame(() => {
@@ -426,6 +427,7 @@ class HorizontalPager {
         this.targetX = this.targetWidth * distance * -1;
         this.touching = false;
 
+        originalWidth = this.targetWidth;
         fullWidth = this.targetWidth * Math.abs(distance);
 
         this.targetIndex += distance;
@@ -438,7 +440,7 @@ class HorizontalPager {
         } else {
           this.rafs.push(requestAnimationFrame(this.update.bind(this, () => {
             const widthCount = Math.trunc(
-              Math.abs(this.translateX) / this.targetWidth
+              Math.abs(this.translateX) / originalWidth
             );
             const diff = fullWidth - Math.abs(this.translateX);
 
@@ -449,7 +451,7 @@ class HorizontalPager {
 
               this.completeAnimations(false, moveNext, moveNext, true);
 
-              this.targetWidth += this.targetWidth;
+              this.targetWidth += originalWidth;
 
               if (moveNext) {
                 this.prevSib = this.target;
