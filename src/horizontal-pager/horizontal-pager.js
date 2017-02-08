@@ -3,20 +3,24 @@
  *
  * A small, fast, no-dep, horizontal pager.
  * Features:
- *   1.  Horizontal swipes navigate to next/prev page.
- *   2.  Uses requestAnimationFrame aligned (decoupled) animations.
- *   3.  Vertical scrolling supported.
- *   4.  Can start at any page index.
- *   5.  Edge resistance.
- *   6.  Track finger when down, then ease out animation.
- *   7.  Passive event listeners where possible.
- *   8.  When finger up and navigation certain to complete, calls `willComplete`
- *       callback (optional).
- *   9.  Optional `done` callback for notification after navigation complete.
- *   10. Css class identifies scroll level items (pages).
+ *  1.  Horizontal touch navigates to next/prev pages.
+ *  2.  Can navigate to a page by relative distance, or absolute index.
+ *  3.  Initial render at any page.
+ *  4.  Uses `requestAnimationFrame` aligned (decoupled) animations.
+ *  5.  Does not interfere with vertical/complex page interactions.
+ *  6.  Tracks finger when down, then ease-out.
+ *  7.  Edge resistance.
+ *  8.  Minimal DOM update approach.
+ *  9.  Passive event listeners.
+ * 10.  When finger up and navigation certain to complete, calls `willComplete`
+ *      callback (optional).
+ * 11.  Optional `done` callback for notification after navigation complete.
+ * 12.  A css class identifies scroll level items (pages).
+ * 13. 8.5k min bundle, 2.5k gzip
+ *
  * Missing:
  *   1.  No continuous option (last-wraps-to-first or vice-versa).
- *   2.  No direct navigate ability (goto directly to page N).
+ *   2.  No touch velocity considerations.
  *
  * Copyright (c) 2017 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.

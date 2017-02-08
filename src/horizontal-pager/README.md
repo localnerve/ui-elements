@@ -4,20 +4,22 @@
 
 ## Features
   1.  Horizontal touch navigates to next/prev pages.
-  2.  Uses `requestAnimationFrame` aligned (decoupled) animations.
-  3.  Vertical page scrolling and complex pages fully supported via passive event listeners.
-  4.  Tracks finger when down, then ease-out.
-  5.  Edge resistance.
-  6.  Can start at any page.
-  7.  Minimal DOM update approach.
-  8.  Passive event listeners where possible.
-  9.  When finger up and navigation certain to complete, calls `willComplete`
-      callback (optional).
-  10.  Optional `done` callback for notification after navigation complete.
-  11. A css class identifies scroll level items (pages).
+  2.  Can navigate to a page by relative distance, or absolute index.
+  3.  Initial render at any page.
+  4.  Uses `requestAnimationFrame` aligned (decoupled) animations.
+  5.  Does not interfere with vertical/complex page interactions.
+  6.  Tracks finger when down, then ease-out.
+  7.  Edge resistance.
+  8.  Minimal DOM update approach.
+  9.  Passive event listeners.
+  10. When navigation certain to complete, calls optional `willComplete` callback.
+  11. Optional `done` callback for notification after navigation complete.
+  12. A css class identifies scroll level items (pages).
+  13. 8.5k min bundle, 2.5k gzip
 
 ## Missing Features
   1.  No continuous option (infinite, last-wraps-to-first and vice-versa).
+  2.  No touch velocity considerations.
 
 ## API
 ### Top-level API
