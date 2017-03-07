@@ -47,7 +47,8 @@ class ScrollCollapse {
 
     this._scrollSource = document.querySelector(options.scrollSelector);
     this._top = {
-      el: document.querySelector(options.topCollapseSelector)
+      el: document.querySelector(options.topCollapseSelector),
+      height: 0
     };
     this._bot = {
       el: document.querySelector(options.bottomCollapseSelector)
@@ -184,7 +185,7 @@ class ScrollCollapse {
     const topSavedHeight = this._top.el.getBoundingClientRect().height;
 
     // ignore if resize during collapse.
-    if (!topSavedHeight) {
+    if (topSavedHeight < this._top.height) {
       return;
     }
 
