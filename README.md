@@ -4,6 +4,7 @@
 
 ## UI Elements
  * [horizontal-pager](/src/horizontal-pager)
+ * [scroll-collapse](/src/scroll-collapse)
 
 ## How To Run
 Requires NodeJS to run the demos.
