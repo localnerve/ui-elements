@@ -218,10 +218,19 @@ class ScrollCollapse {
       this._scrollSource.addEventListener('scroll', this._onScroll, {
         passive: true
       });
+
+      this._scrollSource.style.willChange = 'scroll-position';
+      this._top.el.style.willChange = 'opacity, height, margin-top, margin-bottom';
+      this._bot.el.style.willChange = 'opacity, height, margin-top, margin-bottom';
+
       if (this._lastY > 0) {
         // Restore the previous scroll
         this._onScroll();
       }
+    } else {
+      this._scrollSource.style.willChange = 'auto';
+      this._top.el.style.willChange = 'auto';
+      this._bot.el.style.willChange = 'auto';
     }
   }
 
