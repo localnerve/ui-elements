@@ -2,7 +2,7 @@
 
 > A small, no-dependency scroll behavior that vertically collapses (and expands) two regions in relation to a scroll progress.  
 
-> This is a WIP under development and can change at any time. The ongoing challenge is get an implementation to have the least impact on layout (reflows), getting as much of the work as possible into the compositor.
+> This is a WIP under development and can change at any time. An ongoing challenge is to get an implementation that has the least impact on layout (reflows), getting as much of the work as possible into the compositor - without making something that is brittle.
 
 ## Exports
 ### Top-level API
