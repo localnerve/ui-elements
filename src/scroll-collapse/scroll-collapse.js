@@ -35,6 +35,8 @@ class ScrollCollapse {
    * area to collapse.
    * @param {String} options.bottomCollapseSelector - The selector identifying the
    * bottom area to collapse.
+   * @param {Array} options.props - The properties to animate for vertical collapse.
+   * Can also include opacity.
    * @param {Function} [options.notify] - Called when collapse starts and when it reverses.
    * @param {Number} [options.resizeWait] - Millis to wait before handling a resize
    * update. Disregards more resize events during this time. Defaults to 350.
@@ -42,6 +44,16 @@ class ScrollCollapse {
   constructor (options) {
     this._opts = Object.assign({}, {
       resizeWait: 350,
+      props: [
+        'opacity',
+        'height',
+        'marginTop',
+        'marginBottom',
+        'paddingTop',
+        'paddingBottom',
+        'borderTopWidth',
+        'borderBottomWidth'
+      ],
       notify: () => {}
     }, options);
 
@@ -53,6 +65,7 @@ class ScrollCollapse {
     this._bot = {
       el: document.querySelector(options.bottomCollapseSelector)
     };
+    this._props = this._opts.props;
 
     this._lastY = 0;
     this._tickScroll = false;
@@ -96,44 +109,69 @@ class ScrollCollapse {
   }
 
   /**
+   * Make the css-style prop name (dash) for the given camel-cased property name.
+   * For each capital letter found, replace with -(lowercase).
+   *
+   * @param {Array} prop - camel-cased property name.
+   */
+  static toStyleHyphen (prop) {
+    return prop.replace(/[A-Z]/g,
+      (match, offset) => (offset ? '-' : '') + match.toLowerCase());
+  }
+
+  /**
+   * Calculate new property values from the difference of a property in q
+   * by cross-multiplying against current change of Y in domainY (ratio).
+   * Apply a property-specific gain if one is supplied.
+   *
+   * @param {Object} q - The container of saved property values.
+   * @param {Number} ratio - Y/domainY, the percentage changed.
+   * @param {Object} gains - A container of property-specific gains to apply.
+   * @param {Array} props - The properties in q to calculate against.
+   */
+  static calcValues (q, ratio, gains, ...props) {
+    const values = {};
+
+    props.forEach((prop) => {
+      const gain = gains[prop] || 1.0;
+      values[prop] = (q[prop] - (q[prop] * ratio)).toFixed(2) * gain;
+    });
+
+    return values;
+  }
+
+  /**
    * Update the given element for a collapse animation (down or up).
    *
-   * @param {Object} target - An object containing the live element and saved dimensions.
-   * @param {Object} target.el - An HTMLElement object. Updated with the new values.
-   * @param {Number} target.height - The saved height dimension for the element.
-   * @param {Number} target.marginBottom - The saved marginBottom dimension for the element.
-   * @param {Number} target.marginTop - The saved marginTop dimension for the element.
-   * @param {Number} target.opacity - The saved opacity for the element.
-   * @param {Number} lastY - The last recorded value of Y.
-   * @param {Number} domainY - The domain of Y.
+   * @param {Object} target - An object containing the live element (el) and saved dimensions.
+   * @param {Object} target.el - An HTMLElement object with a style prop.
+   * @param {Object} target.el.style - A CSSStyleDeclaration for the element.
+   * @param {Number} changeY - The last recorded value of Y divided by domain of Y.
    * @param {Boolean} isUp - True if the scroll is traveling up.
+   * @param {Array} props - The style properties to change.
    * @returns {Boolean} true if the target was updated.
    */
-  static collapse (target, lastY, domainY, isUp) {
+  static collapse (target, changeY, isUp, props) {
     let updated = false;
-    const acc = isUp ? 1.5 : (1 / 1.5); // 50% acceleration
+    const acc = isUp ? 1.6 : (1 / 1.6); // 60% de/acceleration
     const style = target.el.style;
 
     if (style.height !== '0px' || isUp) {
-      const newHeight = (target.height - ((lastY * target.height) / domainY))
-        .toFixed(2);
+      const values =
+        ScrollCollapse.calcValues(target, changeY, {
+          opacity: acc
+        }, ...props);
 
-      const newMarginBot = (target.marginBottom - ((lastY * target.marginBottom) / domainY))
-        .toFixed(2);
+      if (props.includes('opacity')) {
+        style.opacity = values.opacity < 0.15 ? 0 : Math.min(values.opacity, 1.0);
+      }
 
-      const newMarginTop = (target.marginTop - ((lastY * target.marginTop) / domainY))
-        .toFixed(2);
+      props.forEach((prop) => {
+        if (prop === 'opacity') return;
+        style[prop] = `${values[prop] < 1 ? 0 : values[prop]}px`;
+      });
 
-      const newOpacity = Math.min(
-        (target.opacity - ((lastY * target.opacity) / domainY)).toFixed(2) * acc,
-        1.0);
-
-      style.opacity = newOpacity < 0.15 ? 0 : newOpacity;
-      style.marginTop = `${newMarginTop < 1 ? 0 : newMarginTop}px`;
-      style.marginBottom = `${newMarginBot < 1 ? 0 : newMarginBot}px`;
-      style.height = `${newHeight < 1 ? 0 : newHeight}px`;
-
-      updated = newHeight > 0;
+      updated = values.height > 0;
     }
 
     return updated;
@@ -191,20 +229,32 @@ class ScrollCollapse {
 
     const topStyle = window.getComputedStyle(this._top.el);
     this._top.height = topClientHeight;
-    this._top.marginBottom = ScrollCollapse.getStyleNumber(topStyle, 'margin-bottom');
-    this._top.marginTop = ScrollCollapse.getStyleNumber(topStyle, 'margin-top');
-    this._top.opacity = ScrollCollapse.getStyleNumber(topStyle, 'opacity');
+    this._props.forEach((prop) => {
+      if (prop === 'height') return;
+      this._top[prop] = ScrollCollapse.getStyleNumber(
+        topStyle, ScrollCollapse.toStyleHyphen(prop)
+      );
+    });
 
     const botStyle = window.getComputedStyle(this._bot.el);
     this._bot.height = this._bot.el.getBoundingClientRect().height;
-    this._bot.marginBottom = ScrollCollapse.getStyleNumber(botStyle, 'margin-bottom');
-    this._bot.marginTop = ScrollCollapse.getStyleNumber(botStyle, 'margin-top');
-    this._bot.opacity = ScrollCollapse.getStyleNumber(botStyle, 'opacity');
+    this._props.forEach((prop) => {
+      if (prop === 'height') return;
+      this._bot[prop] = ScrollCollapse.getStyleNumber(
+        botStyle, ScrollCollapse.toStyleHyphen(prop)
+      );
+    });
 
     const scrollClientHeight = this._scrollSource.getBoundingClientRect().height;
     const overflowHeight = this._scrollSource.scrollHeight - scrollClientHeight;
-    const topHeight = this._top.height + this._top.marginTop + this._top.marginBottom;
-    const botHeight = this._bot.height + this._bot.marginTop + this._bot.marginBottom;
+    const topHeight = this._props.reduce((acc, prop) => {
+      if (prop === 'opacity') return acc;
+      return acc + this._top[prop];
+    }, 0);
+    const botHeight = this._props.reduce((acc, prop) => {
+      if (prop === 'opacity') return acc;
+      return acc + this._bot[prop];
+    }, 0);
 
     if (overflowHeight <= scrollClientHeight + topHeight + botHeight) {
       this._scrollSrcHeight = overflowHeight - topHeight - botHeight;
@@ -220,8 +270,10 @@ class ScrollCollapse {
       });
 
       this._scrollSource.style.willChange = 'scroll-position';
-      this._top.el.style.willChange = 'opacity, height, margin-top, margin-bottom';
-      this._bot.el.style.willChange = 'opacity, height, margin-top, margin-bottom';
+      this._top.el.style.willChange =
+        this._props.map(prop => ScrollCollapse.toStyleHyphen(prop)).join(',');
+      this._bot.el.style.willChange =
+        this._props.map(prop => ScrollCollapse.toStyleHyphen(prop)).join(',');
 
       if (this._lastY > 0) {
         // Restore the previous scroll
@@ -244,12 +296,10 @@ class ScrollCollapse {
   _updateScroll (isZero, isUp) {
     const updated =
     ScrollCollapse.collapse(
-      this._top, this._lastY,
-      this._scrollSrcHeight, isUp
+      this._top, this._lastY / this._scrollSrcHeight, isUp, this._props
     );
     ScrollCollapse.collapse(
-      this._bot, this._lastY,
-      this._scrollSrcHeight, isUp
+      this._bot, this._lastY / this._scrollSrcHeight, isUp, this._props
     );
 
     if (isZero) {

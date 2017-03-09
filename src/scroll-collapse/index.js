@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     topCollapseSelector: '.logo',
     bottomCollapseSelector: '.collapsible-footer',
     scrollSelector: '.text-container',
+    props: ['opacity', 'height', 'marginTop', 'marginBottom'],
     notify: (event) => {
       switch (event) {
         case SCConstants.START_COLLAPSE:
