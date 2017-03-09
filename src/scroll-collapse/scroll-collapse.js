@@ -129,7 +129,7 @@ class ScrollCollapse {
    * @param {Object} gains - A container of property-specific gains to apply.
    * @param {Array} props - The properties in q to calculate against.
    */
-  static calcValues (q, ratio, gains, ...props) {
+  static calcValues (q, ratio, gains, props) {
     const values = {};
 
     props.forEach((prop) => {
@@ -160,7 +160,7 @@ class ScrollCollapse {
       const values =
         ScrollCollapse.calcValues(target, changeY, {
           opacity: acc
-        }, ...props);
+        }, props);
 
       if (props.includes('opacity')) {
         style.opacity = values.opacity < 0.15 ? 0 : Math.min(values.opacity, 1.0);
