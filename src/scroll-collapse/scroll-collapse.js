@@ -182,15 +182,15 @@ class ScrollCollapse {
    * @private
    */
   _updateSize () {
-    const topSavedHeight = this._top.el.getBoundingClientRect().height;
+    const topClientHeight = this._top.el.getBoundingClientRect().height;
 
     // ignore if resize during collapse.
-    if (topSavedHeight < this._top.height) {
+    if (topClientHeight < this._top.height) {
       return;
     }
 
     const topStyle = window.getComputedStyle(this._top.el);
-    this._top.height = topSavedHeight;
+    this._top.height = topClientHeight;
     this._top.marginBottom = ScrollCollapse.getStyleNumber(topStyle, 'margin-bottom');
     this._top.marginTop = ScrollCollapse.getStyleNumber(topStyle, 'margin-top');
     this._top.opacity = ScrollCollapse.getStyleNumber(topStyle, 'opacity');
