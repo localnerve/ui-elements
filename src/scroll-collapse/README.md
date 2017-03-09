@@ -2,7 +2,7 @@
 
 > A small, no-dependency scroll behavior that vertically collapses (and expands) two regions in relation to a scroll progress.  
 
-> This is a WIP under development and can change at any time. An ongoing challenge is to get an implementation that has the least impact on layout (reflows), getting as much of the work as possible into the compositor - without making something that is brittle.
+> This is a WIP under development and can change at any time. An ongoing challenge is to get an implementation that has the least impact on layout (reflows), getting as much of the work as possible into the compositor - without making something that is brittle or crazy.
 
 ## Exports
 ### Top-level API
@@ -28,6 +28,7 @@ Passed to the `notify` function when the scroll collapse begins to reverse.
 | `scrollSelector` | String | Unique selector of the element that is the source of the `scroll` event. |
 | `topCollapseSelector` | String | Unique selector of the first (top) element to be collapsed. |
 | `bottomCollapseSelector` | String | Unique selector of the second (bottom) element to be collapsed. |
+| `props` | Array | The properties to animate for top and bottom collapse. Opacity also allowed. Defaults to `opacity`, `height`, `marginTop`, `marginBottom`, `paddingTop`, `paddingBottom`, `borderTopWidth`, `borderBottomWidth`. |
 | `[notify]` | Function | Callback called when collapse starts, ends, and when it starts to reverse. Receives SCConstants.START_COLLAPSE, SCConstants.END_COLLAPSE, or SCConstants.START_EXPAND to convey which state occurred. Optional. |
 | `[resizeWait]` | Number | Milliseconds to wait to update geometry information after window resize event. Optional, defaults to 350 milliseconds. |
 
