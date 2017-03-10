@@ -99,13 +99,9 @@ class ScrollCollapse {
    * @returns {Number} The sum of all the float values of the props.
    */
   static getStyleNumber (style, ...props) {
-    let total = 0;
-
-    props.forEach((prop) => {
-      total += ScrollCollapse.getNumber(style.getPropertyValue(prop) || '0');
-    });
-
-    return total;
+    return props.reduce((acc, prop) =>
+      acc + ScrollCollapse.getNumber(style.getPropertyValue(prop) || '0')
+    , 0);
   }
 
   /**
@@ -117,27 +113,6 @@ class ScrollCollapse {
   static toStyleHyphen (prop) {
     return prop.replace(/[A-Z]/g,
       (match, offset) => (offset ? '-' : '') + match.toLowerCase());
-  }
-
-  /**
-   * Calculate new property values from the difference of a property in q
-   * by cross-multiplying against current change of Y in domainY (ratio).
-   * Apply a property-specific gain if one is supplied.
-   *
-   * @param {Object} q - The container of saved property values.
-   * @param {Number} ratio - Y/domainY, the percentage changed.
-   * @param {Object} gains - A container of property-specific gains to apply.
-   * @param {Array} props - The properties in q to calculate against.
-   */
-  static calcValues (q, ratio, gains, props) {
-    const values = {};
-
-    props.forEach((prop) => {
-      const gain = gains[prop] || 1.0;
-      values[prop] = (q[prop] - (q[prop] * ratio)).toFixed(2) * gain;
-    });
-
-    return values;
   }
 
   /**
@@ -153,25 +128,39 @@ class ScrollCollapse {
    */
   static collapse (target, changeY, isUp, props) {
     let updated = false;
-    const acc = isUp ? 1.6 : (1 / 1.6); // 60% de/acceleration
-    const style = target.el.style;
+    const targetStyle = target.el.style;
 
-    if (style.height !== '0px' || isUp) {
-      const values =
-        ScrollCollapse.calcValues(target, changeY, {
-          opacity: acc
-        }, props);
-
-      if (props.includes('opacity')) {
-        style.opacity = values.opacity < 0.15 ? 0 : Math.min(values.opacity, 1.0);
-      }
+    if (targetStyle.height !== '0px' || isUp) {
+      const values = {};
+      const lbounds = {
+        opacity: 0.15
+      };
+      const units = {
+        opacity: ' '
+      };
+      const ubounds = {
+        opacity: 1.0
+      };
+      const easeFns = {
+        opacity: (val) => {
+          const upFactor = val * 0.5 < 0.15 ? 0 : 1.085;
+          return val * (isUp ? upFactor : 0.5);
+        }
+      };
 
       props.forEach((prop) => {
-        if (prop === 'opacity') return;
-        style[prop] = `${values[prop] < 1 ? 0 : values[prop]}px`;
+        const easeFn = easeFns[prop] || (a => a);
+        const lbound = lbounds[prop] || 1.0;
+        const val = easeFn(target[prop] - (target[prop] * changeY)).toFixed(2);
+        const ubound = ubounds[prop] || val;
+        const unit = units[prop] || 'px';
+
+        values[prop] = val;
+
+        targetStyle[prop] = `${val < lbound ? 0 : Math.min(val, ubound)}${unit}`;
       });
 
-      updated = values.height > 0;
+      updated = values.height > 0.5;
     }
 
     return updated;
