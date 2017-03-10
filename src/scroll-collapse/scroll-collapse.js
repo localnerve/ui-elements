@@ -7,7 +7,7 @@
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
 /* eslint no-underscore-dangle:0 */
-/* global window, document */
+/* global window, document, setTimeout, setInterval, clearInterval */
 
 /**
  * ScrollCollapse Constants
@@ -21,6 +21,9 @@ export class SCConstants {
   }
   static get START_EXPAND () {
     return 'start_expand';
+  }
+  static get END_EXPAND () {
+    return 'end_expand';
   }
 }
 
@@ -71,9 +74,11 @@ class ScrollCollapse {
     this._tickScroll = false;
     this._tickResize = false;
     this._collapseStart = false;
+    this._endExpandInterval = undefined;
 
     this._onScroll = this._onScroll.bind(this);
     this._onResize = this._onResize.bind(this);
+    this._endExpand = this._endExpand.bind(this);
 
     window.addEventListener('resize', this._onResize, {
       passive: true
@@ -294,12 +299,32 @@ class ScrollCollapse {
     if (isZero) {
       setTimeout(this._opts.notify, 0, SCConstants.START_COLLAPSE);
       this._collapseStart = true;
+      if (this._endExpandInterval) {
+        clearInterval(this._endExpandInterval);
+        delete this._endExpandInterval;
+      }
     } else if (!updated && this._collapseStart) {
       setTimeout(this._opts.notify, 0, SCConstants.END_COLLAPSE);
       this._collapseStart = false;
+      if (this._endExpandInterval) {
+        clearInterval(this._endExpandInterval);
+        delete this._endExpandInterval;
+      }
     } else if (!this._collapseStart && isUp && updated) {
       setTimeout(this._opts.notify, 0, SCConstants.START_EXPAND);
       this._collapseStart = true;
+      this._endExpandInterval = setInterval(this._endExpand, 200);
+    }
+  }
+
+  _endExpand () {
+    if (!this._collapseStart) {
+      clearInterval(this._endExpandInterval);
+      delete this._endExpandInterval;
+    } else if (this._scrollSource.scrollTop === 0) {
+      setTimeout(this._opts.notify, 0, SCConstants.END_EXPAND);
+      clearInterval(this._endExpandInterval);
+      delete this._endExpandInterval;
     }
   }
 

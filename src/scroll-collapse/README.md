@@ -2,7 +2,7 @@
 
 > A small, no-dependency scroll behavior that vertically collapses (and expands) two regions in relation to a scroll progress.  
 
-> This is a WIP under development and can change at any time. An ongoing challenge is to get an implementation that has the least impact on layout (reflows), getting as much of the work as possible into the compositor - without making something that is brittle or crazy.
+> An ongoing challenge for this implementation is to have the least impact on layout (best performance), while retaining native scroll functionality and implementation sanity. The current implementation is a balance.
 
 ## Exports
 ### Top-level API
@@ -22,6 +22,9 @@ Passed to the `notify` function when scroll collapse has completed.
 + ###### SCConstants.START_EXPAND
 Passed to the `notify` function when the scroll collapse begins to reverse.
 
++ ###### SCConstants.END_EXPAND
+Passed to the `notify` function when the scroll collapse reversal is complete.
+
 ##### Options
 | Option Name | Data Type | Description |
 | :--- | :--- | :--- |
@@ -29,7 +32,7 @@ Passed to the `notify` function when the scroll collapse begins to reverse.
 | `topCollapseSelector` | String | Unique selector of the first (top) element to be collapsed. |
 | `bottomCollapseSelector` | String | Unique selector of the second (bottom) element to be collapsed. |
 | `props` | Array | The properties to animate for top and bottom collapse. Opacity also allowed. Defaults to `opacity`, `height`, `marginTop`, `marginBottom`, `paddingTop`, `paddingBottom`, `borderTopWidth`, `borderBottomWidth`. |
-| `[notify]` | Function | Callback called when collapse starts, ends, and when it starts to reverse. Receives SCConstants.START_COLLAPSE, SCConstants.END_COLLAPSE, or SCConstants.START_EXPAND to convey which state occurred. Optional. |
+| `[notify]` | Function | Callback called when collapse starts, ends, and when it starts to reverse. Receives SCConstants.START_COLLAPSE, SCConstants.END_COLLAPSE, SCConstants.START_EXPAND, or SCConstants.END_EXPAND to convey which state occurred. Optional. |
 | `[resizeWait]` | Number | Milliseconds to wait to update geometry information after window resize event. Optional, defaults to 350 milliseconds. |
 
 ## How To Use

@@ -25,6 +25,9 @@ document.addEventListener('DOMContentLoaded', () => {
         case SCConstants.START_EXPAND:
           console.log('@@@ expand starting'); // eslint-disable-line
           break;
+        case SCConstants.END_EXPAND:
+          console.log('@@@ expand ended'); // eslint-disable-line
+          break;
         default:
           console.log('@@@ unknown event'); // eslint-disable-line
           break;
