@@ -45,6 +45,8 @@ class ScrollCollapse {
    * update. Disregards more resize events during this time. Defaults to 350.
    */
   constructor (options) {
+    const noop = () => {};
+
     this._opts = Object.assign({}, {
       resizeWait: 350,
       props: [
@@ -57,7 +59,7 @@ class ScrollCollapse {
         'borderTopWidth',
         'borderBottomWidth'
       ],
-      notify: () => {}
+      notify: noop
     }, options);
 
     this._scrollSource = document.querySelector(options.scrollSelector);
@@ -69,6 +71,8 @@ class ScrollCollapse {
       el: document.querySelector(options.bottomCollapseSelector)
     };
     this._props = this._opts.props;
+    this._notify = this._opts.notify === noop ? noop
+      : setTimeout.bind(null, this._opts.notify, 0);
 
     this._lastY = 0;
     this._tickScroll = false;
@@ -297,21 +301,21 @@ class ScrollCollapse {
     );
 
     if (isZero) {
-      setTimeout(this._opts.notify, 0, SCConstants.START_COLLAPSE);
+      this._notify(SCConstants.START_COLLAPSE);
       this._collapseStart = true;
       if (this._endExpandInterval) {
         clearInterval(this._endExpandInterval);
         delete this._endExpandInterval;
       }
     } else if (!updated && this._collapseStart) {
-      setTimeout(this._opts.notify, 0, SCConstants.END_COLLAPSE);
+      this._notify(SCConstants.END_COLLAPSE);
       this._collapseStart = false;
       if (this._endExpandInterval) {
         clearInterval(this._endExpandInterval);
         delete this._endExpandInterval;
       }
     } else if (!this._collapseStart && isUp && updated) {
-      setTimeout(this._opts.notify, 0, SCConstants.START_EXPAND);
+      this._notify(SCConstants.START_EXPAND);
       this._collapseStart = true;
       this._endExpandInterval = setInterval(this._endExpand, 200);
     }
@@ -322,7 +326,7 @@ class ScrollCollapse {
       clearInterval(this._endExpandInterval);
       delete this._endExpandInterval;
     } else if (this._scrollSource.scrollTop === 0) {
-      setTimeout(this._opts.notify, 0, SCConstants.END_EXPAND);
+      this._notify(SCConstants.END_EXPAND);
       clearInterval(this._endExpandInterval);
       delete this._endExpandInterval;
     }
