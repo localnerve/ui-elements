@@ -1,5 +1,4 @@
 .git
 node_modules
-dist
-bundle.js
+src/**/bundle.js
 tmp
