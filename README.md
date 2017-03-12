@@ -6,6 +6,10 @@
  * [horizontal-pager](/src/horizontal-pager)
  * [scroll-collapse](/src/scroll-collapse)
 
+## Demos
+https://localnerve.github.io/ui-elements  
+NOTE: Some of these may only exhibit behavior on small devices or touch screens.
+
 ## How To Run
 Requires NodeJS to run the demos.
   1. Clone repo
