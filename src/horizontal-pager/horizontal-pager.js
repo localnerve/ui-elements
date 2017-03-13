@@ -48,6 +48,8 @@ class HorizontalPager {
    * will complete very soon.
    */
   constructor (options) {
+    const noop = () => {};
+
     this.opts = Object.assign({}, {
       targetClass: '',
       startIndex: 0,
@@ -59,6 +61,11 @@ class HorizontalPager {
     this.onMove = this.onMove.bind(this);
     this.onEnd = this.onEnd.bind(this);
     this.update = this.update.bind(this);
+
+    this.notifyWillComplete = typeof this.opts.willComplete === 'function' ?
+      setTimeout.bind(null, this.opts.willComplete, 0) : noop;
+    this.notifyDone = typeof this.opts.done === 'function' ?
+      setTimeout.bind(null, this.opts.done, 0) : noop;
 
     this.targetIndex = this.opts.startIndex;
     this.dataId = 'data-hpid';
@@ -109,8 +116,7 @@ class HorizontalPager {
   setupTargets () {
     let style;
     let i;
-    const targetClass = this.opts.targetClass;
-    const startIndex = this.opts.startIndex;
+    const { targetClass, startIndex } = this.opts;
 
     this.targets = document.querySelectorAll(`.${targetClass}`);
 
@@ -196,8 +202,8 @@ class HorizontalPager {
         nextStyle.willChange = 'initial';
       }
 
-      if (!styleOnly && typeof this.opts.done === 'function') {
-        setTimeout(this.opts.done, 0, direction);
+      if (!styleOnly) {
+        this.notifyDone(direction);
       }
     }
 
@@ -330,9 +336,7 @@ class HorizontalPager {
         this.willCompleteOnce = true;
         const direction = movingLeft ? -1 : 1;
         this.targetIndex += direction;
-        if (typeof this.opts.willComplete === 'function') {
-          setTimeout(this.opts.willComplete, 0, direction);
-        }
+        this.notifyWillComplete(direction);
       }
     }
   }
@@ -436,9 +440,7 @@ class HorizontalPager {
         fullWidth = this.targetWidth * Math.abs(distance);
 
         this.targetIndex += distance;
-        if (typeof this.opts.willComplete === 'function') {
-          setTimeout(this.opts.willComplete, 0, distance);
-        }
+        this.notifyWillComplete(distance);
 
         if (Math.abs(distance) === 1) {
           this.rafs.push(requestAnimationFrame(this.update));
