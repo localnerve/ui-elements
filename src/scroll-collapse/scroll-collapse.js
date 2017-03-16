@@ -245,6 +245,7 @@ class ScrollCollapse {
 
     const scrollClientHeight = this._scrollSource.getBoundingClientRect().height;
     const overflowHeight = this._scrollSource.scrollHeight - scrollClientHeight;
+    const noOverflow = Math.abs(overflowHeight) < 1;
     const topHeight = this._props.reduce((acc, prop) => {
       if (prop === 'opacity') return acc;
       return acc + this._top[prop];
@@ -254,7 +255,7 @@ class ScrollCollapse {
       return acc + this._bot[prop];
     }, 0);
 
-    if (overflowHeight <= scrollClientHeight + topHeight + botHeight) {
+    if (!noOverflow && overflowHeight <= scrollClientHeight + topHeight + botHeight) {
       this._scrollSrcHeight = overflowHeight - topHeight - botHeight;
     } else {
       this._scrollSrcHeight = scrollClientHeight;
