@@ -5,6 +5,8 @@
 ## UI Elements
  * [horizontal-pager](/src/horizontal-pager)
  * [scroll-collapse](/src/scroll-collapse)
+ * [simple-scroll-intersection](/src/custom-sticky)
+ * [custom-sticky](/src/custom-sticky)
 
 ## Demos
 https://localnerve.github.io/ui-elements  

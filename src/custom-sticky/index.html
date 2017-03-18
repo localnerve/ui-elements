@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, width=device-width" name="viewport" />
+    <link rel="stylesheet" type="text/css" href="index.css" />
+    <script src="bundle.js"></script>
+  </head>
+  <body>
+
+    <svg style="position:absolute;width:0;height:0;" width="0" height="0" version="1.1">
+      <defs>
+        <symbol id="icon-logo" viewBox="0 0 248 256" preserveAspectRatio="xMaxYMid">
+          <title>logo</title>
+          <g transform="translate(-212.4911,-407.1801)">
+            <path style="fill:#ffffff;fill-opacity:0.87;" d="m212,664,65.2-69.4-60.8-20,150-83.8-54.6-14.4,148-68.8-52.2,46.4,32.3,20.8-116,89.7,58.5,9.39z"/>
+          </g>
+        </symbol>
+        <symbol id="icon-phone" viewBox="0 0 16 16">
+          <title>phone</title>
+          <path d="M11 10c-1 1-1 2-2 2s-2-1-3-2-2-2-2-3 1-1 2-2-2-4-3-4-3 3-3 3c0 2 2.055 6.055 4 8s6 4 8 4c0 0 3-2 3-3s-3-4-4-3z">
+          </path>
+        </symbol>
+        <symbol id="icon-cog" viewBox="0 0 16 16">
+          <title>cog</title>
+          <path d="M14.59 9.535c-0.839-1.454-0.335-3.317 1.127-4.164l-1.572-2.723c-0.449 0.263-0.972 0.414-1.529 0.414-1.68 0-3.042-1.371-3.042-3.062h-3.145c0.004 0.522-0.126 1.051-0.406 1.535-0.839 1.454-2.706 1.948-4.17 1.106l-1.572 2.723c0.453 0.257 0.845 0.634 1.123 1.117 0.838 1.452 0.336 3.311-1.12 4.16l1.572 2.723c0.448-0.261 0.967-0.41 1.522-0.41 1.675 0 3.033 1.362 3.042 3.046h3.145c-0.001-0.517 0.129-1.040 0.406-1.519 0.838-1.452 2.7-1.947 4.163-1.11l1.572-2.723c-0.45-0.257-0.839-0.633-1.116-1.113zM8 11.24c-1.789 0-3.24-1.45-3.24-3.24s1.45-3.24 3.24-3.24c1.789 0 3.24 1.45 3.24 3.24s-1.45 3.24-3.24 3.24z">
+          </path>
+        </symbol>
+        <symbol id="icon-mail2" viewBox="0 -2 16 19" preserveAspectRatio="none">
+          <title>mail</title>
+          <path d="M13.333 0h-10.666c-1.467 0-2.667 1.2-2.667 2.667v10.666c0 1.468 1.2 2.667 2.667 2.667h10.666c1.467 0 2.667-1.199 2.667-2.667v-10.666c0-1.467-1.2-2.667-2.667-2.667zM13.333 2c0.125 0 0.243 0.036 0.344 0.099l-5.678 4.694-5.677-4.694c0.101-0.063 0.219-0.099 0.344-0.099h10.666zM2.667 14c-0.030 0-0.060-0.002-0.089-0.006l3.525-4.89-0.457-0.457-3.646 3.646v-9.549l6 7.256 6-7.256v9.549l-3.646-3.646-0.457 0.457 3.525 4.89c-0.029 0.004-0.059 0.006-0.088 0.006h-10.666z">
+          </path>
+        </symbol>
+        <symbol id="icon-twitter" viewBox="0 0 16 16">
+          <title>twitter</title>
+          <path d="M16 3.538c-0.588 0.263-1.222 0.438-1.884 0.516 0.678-0.406 1.197-1.050 1.444-1.816-0.634 0.375-1.338 0.65-2.084 0.797-0.6-0.638-1.453-1.034-2.397-1.034-1.813 0-3.281 1.469-3.281 3.281 0 0.256 0.028 0.506 0.084 0.747-2.728-0.138-5.147-1.444-6.766-3.431-0.281 0.484-0.444 1.050-0.444 1.65 0 1.138 0.578 2.144 1.459 2.731-0.538-0.016-1.044-0.166-1.488-0.409 0 0.013 0 0.028 0 0.041 0 1.591 1.131 2.919 2.634 3.219-0.275 0.075-0.566 0.116-0.866 0.116-0.212 0-0.416-0.022-0.619-0.059 0.419 1.303 1.631 2.253 3.066 2.281-1.125 0.881-2.538 1.406-4.078 1.406-0.266 0-0.525-0.016-0.784-0.047 1.456 0.934 3.181 1.475 5.034 1.475 6.037 0 9.341-5.003 9.341-9.341 0-0.144-0.003-0.284-0.009-0.425 0.641-0.459 1.197-1.038 1.637-1.697z">
+          </path>
+        </symbol>
+        <symbol id="icon-github" viewBox="0 0 16.5 16">
+          <title>github</title>
+          <path d="M8 0.198c-4.418 0-8 3.582-8 8 0 3.535 2.292 6.533 5.471 7.591 0.4 0.074 0.547-0.174 0.547-0.385 0-0.191-0.008-0.821-0.011-1.489-2.226 0.484-2.695-0.944-2.695-0.944-0.364-0.925-0.888-1.171-0.888-1.171-0.726-0.497 0.055-0.486 0.055-0.486 0.803 0.056 1.226 0.824 1.226 0.824 0.714 1.223 1.872 0.869 2.328 0.665 0.072-0.517 0.279-0.87 0.508-1.070-1.777-0.202-3.645-0.888-3.645-3.954 0-0.873 0.313-1.587 0.824-2.147-0.083-0.202-0.357-1.015 0.077-2.117 0 0 0.672-0.215 2.201 0.82 0.638-0.177 1.322-0.266 2.002-0.269 0.68 0.003 1.365 0.092 2.004 0.269 1.527-1.035 2.198-0.82 2.198-0.82 0.435 1.102 0.162 1.916 0.079 2.117 0.513 0.56 0.823 1.274 0.823 2.147 0 3.073-1.872 3.749-3.653 3.947 0.287 0.248 0.543 0.735 0.543 1.481 0 1.070-0.009 1.932-0.009 2.195 0 0.213 0.144 0.462 0.55 0.384 3.177-1.059 5.466-4.057 5.466-7.59 0-4.418-3.582-8-8-8z">
+          </path>
+        </symbol>
+      </defs>
+    </svg>
+
+    <section class="application">
+      <header>
+        <div class="grid-row-spaced ribbon">
+          <a class="glyph icon-logo" href="#">
+            <svg class="icon">
+              <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-logo">
+              </use>
+            </svg>
+          </a>
+          <a class="glyph" href="#">
+            <svg class="icon icon-envelop">
+              <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-mail2">
+              </use>
+            </svg>
+          </a>
+          <a class="glyph" href="tel:+1-207-370-8005">
+            <svg class="icon icon-phone">
+              <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-phone">
+              </use>
+            </svg>
+          </a>
+          <a class="glyph" href="https://twitter.com/localnerve">
+            <svg class="icon icon-twitter">
+              <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-twitter">
+              </use>
+            </svg>
+          </a>
+          <a class="glyph" href="https://github.com/localnerve/react-pwa-reference">
+            <svg class="icon icon-github">
+              <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-github">
+              </use>
+            </svg>
+          </a>
+          <a class="glyph settings-link">
+            <svg class="icon icon-cog">
+              <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-cog">
+              </use>
+            </svg>
+          </a>
+        </div>
+      </header>
+
+      <nav class="navigation-container" role="navigation">
+        <ul class="grid-row-spaced navigation">
+          <li class="navigation-link selected">
+            <a href="#" class="active">Home</a>
+          </li>
+          <li class="navigation-link">
+            <a href="#">About</a>
+          </li>
+          <li class="navigation-link">
+            <a href="#">Contact</a>
+          </li>
+        </ul>
+      </nav>
+
+      <main role="main" class="main">
+        <div>
+          <div class="parallax logo-container" style="background-image: url('stars.jpg');" parallax="0.3"></div>
+          <div class="logo-container">
+            <a title="company-name" href="#" class="logo">
+              <div class="logo-text">
+                <h1>Company</h1>
+                <span class="tagline">A company tag line.</span>
+              </div>
+              <svg class="icon-logo">
+                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-logo">
+                </use>
+              </svg>
+            </a>
+          </div>
+
+          <div id="navigation-placeholder"></div>
+
+          <div class="main-content">
+            <h1>
+              This is the main area.
+            </h1>
+            <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Morbi tempus iaculis urna id volutpat lacus laoreet non. Quisque egestas diam in arcu. Vestibulum lorem sed risus ultricies tristique nulla. Nunc non blandit massa enim nec dui nunc. Elementum sagittis vitae et leo duis ut. Blandit volutpat maecenas volutpat blandit aliquam etiam erat velit. Lacus vel facilisis volutpat est velit egestas dui id ornare. Eget est lorem ipsum dolor sit amet consectetur adipiscing elit. Adipiscing bibendum est ultricies integer.
+            </p>
+            <p>
+            Nunc pulvinar sapien et ligula ullamcorper malesuada. Pretium quam vulputate dignissim suspendisse in est ante in. Ac turpis egestas maecenas pharetra convallis posuere morbi leo urna. Lacus luctus accumsan tortor posuere ac ut. Duis tristique sollicitudin nibh sit amet commodo nulla facilisi. Egestas quis ipsum suspendisse ultrices gravida dictum fusce. Nibh sed pulvinar proin gravida hendrerit lectus a. Lacus suspendisse faucibus interdum posuere lorem ipsum dolor. Tellus at urna condimentum mattis pellentesque id nibh tortor id. Ac odio tempor orci dapibus ultrices.
+            </p>
+            <p>
+            Adipiscing enim eu turpis egestas pretium. Ullamcorper malesuada proin libero nunc consequat interdum. Elementum facilisis leo vel fringilla est ullamcorper eget. Lacus viverra vitae congue eu consequat ac felis. Libero nunc consequat interdum varius sit amet mattis. Et leo duis ut diam quam nulla porttitor. Feugiat in fermentum posuere urna nec tincidunt praesent semper. Ultrices neque ornare aenean euismod elementum nisi. Lectus nulla at volutpat diam ut venenatis tellus. Id faucibus nisl tincidunt eget nullam non nisi. A arcu cursus vitae congue. Suspendisse faucibus interdum posuere lorem ipsum dolor sit. Dui sapien eget mi proin sed libero enim sed. A pellentesque sit amet porttitor eget dolor morbi non arcu.
+            </p>
+            <p>
+            Ultrices eros in cursus turpis massa tincidunt dui ut ornare. Adipiscing bibendum est ultricies integer. Tincidunt nunc pulvinar sapien et ligula ullamcorper. Arcu dui vivamus arcu felis bibendum ut tristique et. Pretium aenean pharetra magna ac placerat vestibulum lectus mauris ultrices. Nunc consequat interdum varius sit. Aliquet porttitor lacus luctus accumsan tortor posuere ac ut. Venenatis urna cursus eget nunc. Condimentum mattis pellentesque id nibh tortor. Mattis aliquam faucibus purus in massa tempor nec feugiat nisl. Morbi quis commodo odio aenean sed adipiscing. Sed sed risus pretium quam vulputate dignissim suspendisse in.
+            </p>
+            <p>
+            Vivamus at augue eget arcu dictum varius duis at. Magna eget est lorem ipsum dolor sit amet consectetur adipiscing. In egestas erat imperdiet sed euismod nisi porta lorem. Congue eu consequat ac felis donec et. Dolor magna eget est lorem ipsum dolor sit amet. Morbi leo urna molestie at. Adipiscing commodo elit at imperdiet dui. Tincidunt arcu non sodales neque sodales ut etiam. Platea dictumst quisque sagittis purus. Faucibus et molestie ac feugiat sed lectus. Eget gravida cum sociis natoque penatibus. Netus et malesuada fames ac turpis egestas integer eget. Augue ut lectus arcu bibendum at varius vel pharetra. Ut lectus arcu bibendum at varius vel pharetra vel turpis. Rutrum tellus pellentesque eu tincidunt tortor aliquam nulla facilisi cras.
+            </p>
+            <p>
+            Sem et tortor consequat id porta nibh. Amet mauris commodo quis imperdiet massa tincidunt nunc pulvinar. Eget sit amet tellus cras adipiscing. Ultrices vitae auctor eu augue ut lectus arcu bibendum at. Odio facilisis mauris sit amet massa. Gravida rutrum quisque non tellus orci ac auctor augue. Tincidunt augue interdum velit euismod in pellentesque massa. Nunc sed augue lacus viverra vitae congue eu consequat. Diam sit amet nisl suscipit adipiscing bibendum est ultricies. Et ultrices neque ornare aenean euismod elementum nisi quis eleifend. Tincidunt tortor aliquam nulla facilisi. Ipsum dolor sit amet consectetur adipiscing elit pellentesque habitant morbi. In hac habitasse platea dictumst vestibulum rhoncus est. Libero justo laoreet sit amet cursus sit amet dictum. Habitant morbi tristique senectus et. Augue neque gravida in fermentum et sollicitudin ac.
+            </p>
+            <p>
+            Etiam sit amet nisl purus in mollis nunc. Pretium vulputate sapien nec sagittis aliquam malesuada bibendum. Eget duis at tellus at urna condimentum mattis pellentesque. Interdum posuere lorem ipsum dolor sit amet consectetur adipiscing elit. Bibendum neque egestas congue quisque. Amet nisl suscipit adipiscing bibendum est ultricies. Turpis egestas sed tempus urna et pharetra. Enim facilisis gravida neque convallis a cras. Viverra nam libero justo laoreet sit amet cursus sit amet. Vel elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique. Maecenas pharetra convallis posuere morbi leo urna molestie at. Consequat mauris nunc congue nisi. Pellentesque sit amet porttitor eget dolor morbi non arcu risus. Ultrices in iaculis nunc sed augue lacus viverra. Quisque non tellus orci ac auctor augue mauris augue. Sapien pellentesque habitant morbi tristique senectus et netus et malesuada. Luctus accumsan tortor posuere ac ut consequat semper viverra nam. Pellentesque pulvinar pellentesque habitant morbi. Massa vitae tortor condimentum lacinia quis vel eros donec ac.
+            </p>
+            <p>
+            Vitae congue mauris rhoncus aenean vel. Dolor sed viverra ipsum nunc aliquet bibendum enim. Eu mi bibendum neque egestas congue quisque. Ultrices neque ornare aenean euismod elementum nisi quis eleifend quam. Convallis tellus id interdum velit laoreet id. Ac feugiat sed lectus vestibulum mattis. Viverra suspendisse potenti nullam ac tortor vitae purus. Nulla facilisi morbi tempus iaculis urna id volutpat lacus laoreet. Tellus in metus vulputate eu scelerisque felis imperdiet proin fermentum. Feugiat in ante metus dictum at tempor commodo ullamcorper a. At auctor urna nunc id cursus metus aliquam eleifend mi. Porttitor rhoncus dolor purus non. Integer feugiat scelerisque varius morbi. At quis risus sed vulputate odio. Lobortis scelerisque fermentum dui faucibus in ornare quam. Turpis nunc eget lorem dolor sed viverra ipsum nunc aliquet. In hac habitasse platea dictumst quisque. Proin sagittis nisl rhoncus mattis rhoncus urna neque viverra. Molestie ac feugiat sed lectus vestibulum mattis ullamcorper velit sed.
+            </p>
+            <p>
+            Lectus arcu bibendum at varius vel pharetra vel turpis nunc. Phasellus egestas tellus rutrum tellus. Viverra adipiscing at in tellus integer. Tempor orci dapibus ultrices in iaculis nunc sed. Sed tempus urna et pharetra pharetra massa massa ultricies. Id venenatis a condimentum vitae sapien pellentesque habitant morbi. Sed viverra ipsum nunc aliquet bibendum enim facilisis gravida neque. Enim diam vulputate ut pharetra sit amet aliquam id. Ultricies lacus sed turpis tincidunt id aliquet. Sem integer vitae justo eget magna. Purus faucibus ornare suspendisse sed nisi.
+            </p>
+            <p>
+            Vitae nunc sed velit dignissim sodales ut eu. Tincidunt id aliquet risus feugiat in ante metus. Ut consequat semper viverra nam libero justo. Et malesuada fames ac turpis egestas maecenas. Venenatis tellus in metus vulputate eu. Maecenas volutpat blandit aliquam etiam erat velit scelerisque in. Et ligula ullamcorper malesuada proin libero nunc consequat interdum varius. Tempor id eu nisl nunc mi ipsum. Eget lorem dolor sed viverra ipsum. Ornare arcu dui vivamus arcu felis bibendum ut tristique. Tortor condimentum lacinia quis vel eros. Auctor elit sed vulputate mi sit amet mauris commodo. Et netus et malesuada fames. Viverra suspendisse potenti nullam ac tortor vitae. In est ante in nibh mauris. Sit amet nulla facilisi morbi. In hac habitasse platea dictumst quisque sagittis purus. Gravida quis blandit turpis cursus in hac habitasse.
+            </p>
+            <p>
+            Sodales ut eu sem integer vitae justo eget magna. Nunc scelerisque viverra mauris in. Sit amet porttitor eget dolor morbi non arcu. Accumsan in nisl nisi scelerisque eu ultrices vitae auctor eu. Sodales ut etiam sit amet nisl purus in mollis nunc. Aliquet porttitor lacus luctus accumsan tortor posuere ac. Ullamcorper dignissim cras tincidunt lobortis. Platea dictumst vestibulum rhoncus est pellentesque elit. Vitae turpis massa sed elementum tempus egestas. Blandit libero volutpat sed cras ornare arcu dui. Cursus metus aliquam eleifend mi. Semper risus in hendrerit gravida rutrum quisque non.
+            </p>
+            <p>
+            Condimentum vitae sapien pellentesque habitant. Nulla aliquet enim tortor at auctor urna nunc id cursus. Quis vel eros donec ac odio tempor orci. Et ultrices neque ornare aenean euismod elementum nisi. Purus semper eget duis at tellus at urna. Justo eget magna fermentum iaculis eu non diam phasellus vestibulum. Elementum eu facilisis sed odio morbi quis. Amet consectetur adipiscing elit ut aliquam purus sit. Nullam eget felis eget nunc lobortis mattis aliquam faucibus purus. Fermentum iaculis eu non diam phasellus vestibulum lorem sed risus. Vel eros donec ac odio tempor orci. Arcu bibendum at varius vel pharetra vel turpis nunc eget. Faucibus ornare suspendisse sed nisi lacus sed. Eu consequat ac felis donec et odio. Fames ac turpis egestas sed tempus. Id ornare arcu odio ut sem nulla pharetra diam. Auctor augue mauris augue neque gravida in fermentum. Pellentesque habitant morbi tristique senectus et netus et.
+            </p>
+          </div>
+        </div>
+      </main>
+
+      <footer>
+        <p>
+          This is a footer
+        </p>
+      </footer>
+    </section>
+  </body>
+</html>

@@ -100,6 +100,7 @@ gulp.task('copy', () =>
   gulp.src([
     `${srcRoot}/**/*.html`,
     `${srcRoot}/**/*.css`,
+    `${srcRoot}/**/*.jpg`,
     `${srcRoot}/**/${jsBundle}`
   ])
     .pipe(gulp.dest('dist'))
