@@ -8,6 +8,33 @@
  */
 /* global window, document */
 
+export class SSIConst {
+  static get top () {
+    return 'top';
+  }
+  static get bottom () {
+    return 'bottom';
+  }
+  static get left () {
+    return 'left';
+  }
+  static get right () {
+    return 'right';
+  }
+  static optionRectFn (selectorOrFn) {
+    let rectFn;
+    if (typeof selectorOrFn === 'function') {
+      rectFn = selectorOrFn;
+    } else {
+      const el = document.querySelector(selectorOrFn);
+      if (el) {
+        rectFn = el.getBoundingClientRect.bind(el);
+      }
+    }
+    return rectFn;
+  }
+}
+
 class SimpleScrollIntersection {
   /**
    * Constructor for SimpleScrollIntersection
@@ -15,25 +42,17 @@ class SimpleScrollIntersection {
    *
    * @param {Object} options - SimpleScrollIntersection options.
    * @param {String} options.scrollSelector - Identifies the scroll event source.
-   * @param {String} options.stationarySelector - Identifies the stationary element
-   * to test intersection on.
    * @param {String} options.movingSelector - Identifies the moving element
    * to test against.
+   * @param {String|Function} options.stationary - String identifies the stationary element
+   * to test intersection on, or function that returns rect to test intersection against.
    * @param {Function} options.notify - Call when intersect or dis-intersect.
    * Receives object containing intersection bool and "from" booleans.
    */
   constructor (options) {
-    const noop = () => {};
-    const emptyRect = {
-      width: 0,
-      height: 0,
-      top: 0,
-      right: 0,
-      bottom: 0,
-      left: 0
-    };
+    const noop = () => null;
     const badEl = {
-      getBoundingClientRect: () => null
+      getBoundingClientRect: noop
     };
 
     this.opts = Object.assign({}, {
@@ -41,7 +60,7 @@ class SimpleScrollIntersection {
     }, options);
 
     this.notify = setTimeout.bind(null, this.opts.notify, 0);
-    if (this.notify === noop) {
+    if (this.opts.notify === noop) {
       console.warn('notify option must be supplied to get results'); // eslint-disable-line
     }
 
@@ -50,10 +69,11 @@ class SimpleScrollIntersection {
       console.warn(`failed to identify a scroll source with "${this.opts.scrollSelector}"`); // eslint-disable-line
     }
 
-    const stationary = document.querySelector(this.opts.stationarySelector) || badEl;
-    this.stationaryRect = stationary.getBoundingClientRect() || emptyRect;
-    if (this.stationaryRect === emptyRect) {
-      console.warn(`failed to compute stationary rect on "${this.opts.stationarySelector}"`); // eslint-disable-line
+    const stationaryRectFn = SSIConst.optionRectFn(this.opts.stationary);
+    if (!stationaryRectFn) {
+      console.warn(`failed to compute stationary rect on "${this.opts.stationary}"`); // eslint-disable-line
+    } else {
+      this.stationaryRect = stationaryRectFn();
     }
 
     this.moving = document.querySelector(this.opts.movingSelector) || badEl;
@@ -74,11 +94,11 @@ class SimpleScrollIntersection {
    * @returns {Object} intersection boolean and direction booleans.
    */
   computeIntersection () {
-    const from = { top: false, bottom: false, left: false, right: false };
+    const from = {};
     const rect1 = this.stationaryRect;
     const rect2 = this.moving.getBoundingClientRect();
 
-    if (!rect2) {
+    if (!rect2 || !rect1) {
       return { intersection: false, from };
     }
 
@@ -92,10 +112,10 @@ class SimpleScrollIntersection {
 
     const intersection = (width >= 0 && height >= 0);
 
-    from.top = rect2.bottom >= rect1.top && rect2.top < rect1.top;
-    from.bottom = rect2.top <= rect1.bottom && rect2.bottom > rect1.bottom;
-    from.left = rect2.right >= rect1.left && rect2.left < rect1.left;
-    from.right = rect2.left <= rect1.right && rect2.right > rect1.right;
+    from[SSIConst.top] = rect2.bottom >= rect1.top && rect2.top < rect1.top;
+    from[SSIConst.bottom] = rect2.top <= rect1.bottom && rect2.bottom > rect1.bottom;
+    from[SSIConst.left] = rect2.right >= rect1.left && rect2.left < rect1.left;
+    from[SSIConst.right] = rect2.left <= rect1.right && rect2.right > rect1.right;
 
     return { intersection, from };
   }

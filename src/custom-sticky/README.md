@@ -12,8 +12,8 @@ Creates an instance of scroll intersection interest between a moving element and
 | Option Name | Data Type | Description |
 | :--- | :--- | :--- |
 | `scrollSelector` | String | Unique selector of the element that is the source of the `scroll` event. |
-| `stationarySelector` | String | Unique selector of the non-moving element to test intersection with. |
 | `movingSelector` | String | Unique selector of the moving element that intersects with the stationary element. |
+| `stationary` | String or Function | Selector of the non-moving element to test intersection with or a function that returns an arbitrary rect to test intersection with. |
 | `notify` | String | Called on intersection or dis-intersection, receives an Object containing two props: `intersection` {Boolean} and `from` {Object}. `intersection` is true if intersecting, false otherwise. `from` contains Booleans indicating side of intersection or dis-intersection: `top`, `bottom`, `left`, and `right`|
 
 ### Instance API
@@ -35,10 +35,12 @@ Creates an instance of custom sticky behavior between a moving element and a sta
 | Option Name | Data Type | Description |
 | :--- | :--- | :--- |
 | `scrollSelector` | String | Unique selector of the element that is the source of the `scroll` event. |
-| `stationarySelector` | String | Unique selector of the non-moving element to test intersection with. |
 | `movingSelector` | String | Unique selector of the moving element that intersects with the stationary element. |
-| `traverse` | String or Function | Identifies the element to scroll over before sticking, or a function that returns the `height` of the area to traverse before sticking.|
+| `stationary` | String or Function | Selector of the non-moving element to test intersection with or a function that returns an arbitrary rect to test intersection with. |
+| `[traverseLength]` | Function | Gets the distance to travel before sticking. Defaults to the distance between stationary and moving element rects. |
+| `[direction]` | String | The direction the moving element should move. 'up', 'down', 'left', or 'right', defaults to 'up'. Strings are available as exported constants in `CSDirection`.
 | `[resizeWait]` | Number | Milliseconds to wait to update geometry information after window resize event. Optional, defaults to 350 milliseconds. |
+| `[transform]` | Function | Returns a custom transform given a scroll position. Defaults to the appropriate translation for the direction. |
 
 ### Instance API
 #### start ()
