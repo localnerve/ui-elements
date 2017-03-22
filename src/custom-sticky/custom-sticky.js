@@ -130,7 +130,9 @@ class CustomSticky {
       this.tickResize = true;
       setTimeout(() => {
         window.requestAnimationFrame(() => {
+          const y = this.scrollSource.scrollTop;
           this.updateResize();
+          this.updateScroll(y);
           this.tickResize = false;
         });
       }, this.opts.resizeWait);
@@ -144,7 +146,7 @@ class CustomSticky {
     if (!this.tickScroll) {
       this.tickScroll = true;
       window.requestAnimationFrame(() => {
-        this.updateScroll();
+        this.updateScroll(this.scrollSource.scrollTop);
         this.tickScroll = false;
       });
     }
@@ -161,9 +163,7 @@ class CustomSticky {
     window.getComputedStyle(this.movingElement).transform;
     /* eslint-enable no-unused-expressions */
     this.uBound = this.traverseLength();
-
     this.animate = true;
-    this.updateScroll();
   }
 
   /**
@@ -171,9 +171,7 @@ class CustomSticky {
    * Move the moving element until someone calls 'stick'.
    * Once stuck, looks to unstick it self when it re-crosses the stuck position.
    */
-  updateScroll () {
-    const y = this.scrollSource.scrollTop;
-
+  updateScroll (y) {
     if (this.animate) {
       this.saveY = y;
       this.movingElement.style.transform =
@@ -238,15 +236,51 @@ export function createCustomSticky (options = {}) {
       }
     }
   }));
+  let startedWithPeers = false;
 
   return {
-    start: () => {
-      ssi.start();
+    getUpdateResize: () => customSticky.updateResize.bind(customSticky),
+    getUpdateScroll: () => customSticky.updateScroll.bind(customSticky),
+    getSsiUpdateScroll: () => ssi.getUpdateScroll.bind(ssi),
+    /**
+     * @param {Array} [peers] - Collection of CustomSticky objects listening on
+     * the same scroll source that should be started with this CustomSticky and
+     * serviced in one RAF.
+     */
+    start: (peers) => {
+      startedWithPeers = Array.isArray(peers) && peers.length > 0;
+
+      if (startedWithPeers) {
+        const selfUpdateScroll = customSticky.updateScroll.bind(customSticky);
+        const selfSsiUpdateScroll = ssi.getUpdateScroll();
+        const peerUpdateScrolls = peers.map(peer => peer.getUpdateScroll());
+        const peerSsiUpdateScrolls = peers.map(peer => peer.getSsiUpdateScroll());
+
+        customSticky.updateScroll = (y) => {
+          selfSsiUpdateScroll();
+          peerSsiUpdateScrolls.forEach(update => update());
+          selfUpdateScroll(y);
+          peerUpdateScrolls.forEach(update => update(y));
+        };
+
+        const selfUpdateResize = customSticky.updateResize.bind(customSticky);
+        const peerUpdateResizes = peers.map(peer => peer.getUpdateResize());
+
+        customSticky.updateResize = () => {
+          selfUpdateResize();
+          peerUpdateResizes.forEach(update => update());
+        };
+      } else {
+        ssi.start();
+      }
+
       customSticky.start();
     },
     stop: () => {
       customSticky.stop();
-      ssi.stop();
+      if (!startedWithPeers) {
+        ssi.stop();
+      }
     }
   };
 }
