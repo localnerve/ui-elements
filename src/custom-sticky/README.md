@@ -2,6 +2,42 @@
 
 > WIP - Small, fast, no-dependency, scroll intersection and custom sticky implementations.
 
+## custom-sticky
+A custom `position: sticky` solution for times when it doesn't make sense or isn't supported. Uses simple-scroll-intersection.
+> For now, this implementation only supports scrolling with up/down movement and sticking a moving element to the bottom of a fixed element.
+
+### Top-level API
+#### *Instance* createCustomSticky (options)
+Creates an instance of custom sticky behavior between a moving element and a stationary element. Returns the instance API.
+
+##### Options
+| Option Name | Data Type | Description |
+| :--- | :--- | :--- |
+| `scrollSelector` | String | Unique selector of the element that is the source of the `scroll` event. |
+| `movingSelector` | String | Unique selector of the moving element that intersects with the stationary element. |
+| `stationary` | String or Function | Selector of the non-moving element to test intersection with or a function that returns an arbitrary rect to test intersection with. |
+| `[traverseLength]` | Function | Gets the distance to travel before sticking. Defaults to the distance between stationary and moving element rects. |
+| `[direction]` | String | The direction the moving element should move. 'up', 'down', 'left', or 'right', defaults to 'up'. Strings are available as exported constants in `CSDirection`.
+| `[resizeWait]` | Number | Milliseconds to wait to update geometry information after window resize event. Optional, defaults to 350 milliseconds. |
+| `[transform]` | Function | Returns a custom transform given a scroll position. Defaults to the appropriate translation for the direction. |
+
+### Instance API
+#### start ([peers])
+Starts custom sticky behavior, scroll event listening. `peers` is an optional array of CustomSticky instances that also listen to the same scroll source (specified by `scrollSelector`). When using multiple CustomSticky behaviors on a single scroll source, specifying this option will dramatically increase performance.
+See the [example](index.js) for usage of the `peers`.
+
+#### stop ()
+Stops custom sticky behavior, scroll event listening.
+
+#### getUpdateResize ()
+Returns the bound updateResize method for the instance. Useful for component composition.
+
+#### getUpdateScroll ()
+Returns the bound updateScroll method for the instance. Useful for component composition.
+
+#### getSsiUpdateScroll ()
+Returns the bound updateScroll method used for the intersection detection for the instance. Useful for component composition.
+
 ## simple-scroll-intersection
 A scroll intersection observer for a use case where IntersectionObserver doesn't work/make sense.
 ### Top-level API
@@ -23,28 +59,5 @@ Starts scroll event listening.
 #### stop ()
 Stops scroll event listening.
 
-## custom-sticky
-A custom `position: sticky` solution for times when it doesn't make sense or isn't supported. Uses simple-scroll-intersection.
-> For now, this implementation only supports scrolling with up/down movement and sticking a moving element to the bottom of a fixed element.
-
-### Top-level API
-#### *Instance* createCustomSticky (options)
-Creates an instance of custom sticky behavior between a moving element and a stationary element. Returns the instance API.
-
-##### Options
-| Option Name | Data Type | Description |
-| :--- | :--- | :--- |
-| `scrollSelector` | String | Unique selector of the element that is the source of the `scroll` event. |
-| `movingSelector` | String | Unique selector of the moving element that intersects with the stationary element. |
-| `stationary` | String or Function | Selector of the non-moving element to test intersection with or a function that returns an arbitrary rect to test intersection with. |
-| `[traverseLength]` | Function | Gets the distance to travel before sticking. Defaults to the distance between stationary and moving element rects. |
-| `[direction]` | String | The direction the moving element should move. 'up', 'down', 'left', or 'right', defaults to 'up'. Strings are available as exported constants in `CSDirection`.
-| `[resizeWait]` | Number | Milliseconds to wait to update geometry information after window resize event. Optional, defaults to 350 milliseconds. |
-| `[transform]` | Function | Returns a custom transform given a scroll position. Defaults to the appropriate translation for the direction. |
-
-### Instance API
-#### start ()
-Starts custom sticky behavior, scroll event listening.
-
-#### stop ()
-Stops custom sticky behavior, scroll event listening.
+#### getUpdateScroll ()
+Returns the instance bound updateScroll method. Useful for component composition.

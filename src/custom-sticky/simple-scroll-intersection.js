@@ -127,18 +127,25 @@ class SimpleScrollIntersection {
     if (!this.tickScroll) {
       this.tickScroll = true;
       window.requestAnimationFrame(() => {
-        const result = this.computeIntersection();
-
-        if (this.intersected && !result.intersection) {
-          this.intersected = false;
-          this.notify(result);
-        } else if (!this.intersected && result.intersection) {
-          this.intersected = true;
-          this.notify(result);
-        }
-
+        this.updateScroll();
         this.tickScroll = false;
       });
+    }
+  }
+
+  /**
+   * Does the work of the scroll event.
+   * Compute intersection and send notification.
+   */
+  updateScroll () {
+    const result = this.computeIntersection();
+
+    if (this.intersected && !result.intersection) {
+      this.intersected = false;
+      this.notify(result);
+    } else if (!this.intersected && result.intersection) {
+      this.intersected = true;
+      this.notify(result);
     }
   }
 
@@ -160,6 +167,7 @@ class SimpleScrollIntersection {
 export function createSimpleScrollIntersection (options) {
   const ssi = new SimpleScrollIntersection(options);
   return {
+    getUpdateScroll: () => ssi.updateScroll.bind(ssi),
     start: ssi.start.bind(ssi),
     stop: ssi.stop.bind(ssi)
   };

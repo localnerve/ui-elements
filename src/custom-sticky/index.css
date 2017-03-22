@@ -709,3 +709,9 @@ footer p {
   top: 50%;
   right: 0;
 }
+.cs-end {
+  background: thistle;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
