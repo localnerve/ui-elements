@@ -1,8 +1,8 @@
 # scroll-collapse
 
-> A small, no-dependency scroll behavior that vertically collapses (and expands) two regions in relation to a scroll progress.  
+> A small, no-dependency scroll behavior that vertically collapses (and expands) two regions on scroll.  
 
-> An ongoing challenge for this implementation is to have the least impact on layout (best performance), while retaining native scroll functionality and implementation sanity. The current implementation is a balance.
+> This implementation is not the best performer, especially on Safari browser. For best performance regarding this type of behavior, see how [CustomSticky](../custom-sticky) is used. This implementation favors least impact on an existing layout over performance.
 
 ## Exports
 ### Top-level API
