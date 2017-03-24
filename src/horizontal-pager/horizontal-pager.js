@@ -269,8 +269,12 @@ class HorizontalPager {
     this.resetAnimations(newTarget);
 
     this.target = newTarget;
-    this.nextSib = newTarget.nextElementSibling;
-    this.prevSib = newTarget.previousElementSibling;
+    this.nextSib =
+      newTarget.nextElementSibling.classList.contains(this.opts.targetClass) ?
+      newTarget.nextElementSibling : null;
+    this.prevSib =
+      newTarget.previousElementSibling.classList.contains(this.opts.targetClass) ?
+      newTarget.previousElementSibling : null;
 
     this.touching = true;
     this.willCompleteOnce = false;
