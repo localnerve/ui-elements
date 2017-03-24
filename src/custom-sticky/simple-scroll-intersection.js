@@ -38,14 +38,14 @@ export class SSIConst {
 class SimpleScrollIntersection {
   /**
    * Constructor for SimpleScrollIntersection
-   * Detects when a moving element intersects a stationary element on scroll.
+   * Detects when a moving element intersects a target element on scroll.
    *
    * @param {Object} options - SimpleScrollIntersection options.
    * @param {String} options.scrollSelector - Identifies the scroll event source.
    * @param {String} options.movingSelector - Identifies the moving element
    * to test against.
-   * @param {String|Function} options.stationary - String identifies the stationary element
-   * to test intersection on, or function that returns rect to test intersection against.
+   * @param {String|Function} options.target - String identifies the target element
+   * to test intersection on, or function that returns a Rect to test intersection against.
    * @param {Function} options.notify - Call when intersect or dis-intersect.
    * Receives object containing intersection bool and "from" booleans.
    */
@@ -69,11 +69,9 @@ class SimpleScrollIntersection {
       console.warn(`failed to identify a scroll source with "${this.opts.scrollSelector}"`); // eslint-disable-line
     }
 
-    const stationaryRectFn = SSIConst.optionRectFn(this.opts.stationary);
-    if (!stationaryRectFn) {
-      console.warn(`failed to compute stationary rect on "${this.opts.stationary}"`); // eslint-disable-line
-    } else {
-      this.stationaryRect = stationaryRectFn();
+    this.targetRectFn = SSIConst.optionRectFn(this.opts.target);
+    if (!this.targetRectFn) {
+      console.warn(`failed to compute target rect on "${this.opts.target}"`); // eslint-disable-line
     }
 
     this.moving = document.querySelector(this.opts.movingSelector) || badEl;
@@ -88,14 +86,14 @@ class SimpleScrollIntersection {
   }
 
   /**
-   * Computes intersection of moving vs stationary rects.
+   * Computes intersection of moving vs target Rects.
    * Moving rect is recalculated here.
    *
    * @returns {Object} intersection boolean and direction booleans.
    */
   computeIntersection () {
     const from = {};
-    const rect1 = this.stationaryRect;
+    const rect1 = this.targetRectFn();
     const rect2 = this.moving.getBoundingClientRect();
 
     if (!rect2 || !rect1) {

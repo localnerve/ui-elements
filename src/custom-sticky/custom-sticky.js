@@ -1,7 +1,7 @@
 /**
  * Custom Sticky behavior.
  *
- * Sticks a moving element driven by scroll to a stationary element.
+ * Moves an element driven by scroll to a target element, where it stops moving.
  *
  * Copyright (c) 2017 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
@@ -30,11 +30,11 @@ class CustomSticky {
    * @param {Object} options - CustomSticky options.
    * @param {String} options.scrollSelector - Identifies the scroll source.
    * @param {String} options.movingSelector - Identifies the moving element to stick.
-   * @param {String|Function} options.stationary - A selector that uniquely identifies
-   * the non-moving element to stick to, or a function that returns a Rect that represents
-   * the stationary move target.
+   * @param {String|Function} options.target - A selector that uniquely identifies
+   * the element to stick to, or a function that returns a Rect that represents
+   * the move target.
    * @param {Function} [options.traverseLength] - Retrieves the distance to
-   * traverse over before sticking. Defaults to directional distance between stationary
+   * traverse over before sticking. Defaults to directional distance between target
    * and moving element rects.
    * @param {String} [options.direction] - The direction the moving element should move.
    * 'up', 'down', 'left', or 'right', defaults to 'up'.
@@ -42,6 +42,8 @@ class CustomSticky {
    * update. Disregards more resize events during this time. Defaults to 350.
    * @param {Function} [options.transform] - Returns a custom transform given a scroll position.
    * Defaults to the appropriate translation for the direction.
+   * @param {Function} [options.notify] - Called when the moving element sticks or becomes unstuck.
+   * Callback receives boolean `true` for stuck, `false` otherwise.
    */
   constructor (options) {
     this.opts = Object.assign({}, {
@@ -54,10 +56,10 @@ class CustomSticky {
       console.warn(`failed to identify a scroll source with "${this.opts.scrollSelector}"`); // eslint-disable-line
     }
 
-    let stationaryRectFn = SSIConst.optionRectFn(this.opts.stationary);
-    if (!stationaryRectFn) {
-      stationaryRectFn = () => ({});
-      console.warn(`failed to identify stationaryElement with "${this.opts.stationary}"`); // eslint-disable-line
+    let targetRectFn = SSIConst.optionRectFn(this.opts.target);
+    if (!targetRectFn) {
+      targetRectFn = () => ({});
+      console.warn(`failed to identify targetElement with "${this.opts.target}"`); // eslint-disable-line
     }
 
     this.movingElement = document.querySelector(this.opts.movingSelector);
@@ -65,12 +67,17 @@ class CustomSticky {
       console.warn(`failed to identify moving element with "${this.opts.movingSelector}"`); // eslint-disable-line
     }
 
+    this.viewportHeight = window.innerHeight;
+
+    this.notify = this.opts.notify ?
+      setTimeout.bind(null, this.opts.notify, 0) : () => false;
+
     switch (this.opts.direction) {
       case CSDirection.right:
         this.intersectFrom = SSIConst.left;
         this.transform = boundY => `translateX(${boundY}px)`;
         this.traverseLength = () =>
-          Math.ceil(stationaryRectFn().left -
+          Math.ceil(targetRectFn().left -
             this.movingElement.getBoundingClientRect().right);
         break;
       case CSDirection.left:
@@ -78,13 +85,13 @@ class CustomSticky {
         this.transform = boundY => `translateX(${-boundY}px)`;
         this.traverseLength = () =>
           Math.ceil(this.movingElement.getBoundingClientRect().left -
-            stationaryRectFn().right);
+            targetRectFn().right);
         break;
       case CSDirection.down:
         this.intersectFrom = SSIConst.top;
         this.transform = boundY => `translateY(${boundY}px)`;
         this.traverseLength = () =>
-          Math.ceil(stationaryRectFn().top -
+          Math.ceil(targetRectFn().top -
             this.movingElement.getBoundingClientRect().bottom);
         break;
       default:
@@ -93,7 +100,7 @@ class CustomSticky {
         this.transform = boundY => `translateY(${-boundY}px)`;
         this.traverseLength = () =>
           Math.ceil(this.movingElement.getBoundingClientRect().top -
-            stationaryRectFn().bottom);
+            targetRectFn().bottom);
         break;
     }
 
@@ -130,9 +137,7 @@ class CustomSticky {
       this.tickResize = true;
       setTimeout(() => {
         window.requestAnimationFrame(() => {
-          const y = this.scrollSource.scrollTop;
-          this.updateResize();
-          this.updateScroll(y);
+          this.updateResize(this.scrollSource.scrollTop);
           this.tickResize = false;
         });
       }, this.opts.resizeWait);
@@ -154,16 +159,25 @@ class CustomSticky {
 
   /**
    * Does the work of the resize event.
-   * Update the upper bound.
-   * Stay stuck if stuck.
+   * Update the travel upper bound, saveY, and movingElement.
    */
-  updateResize () {
+  updateResize (y) {
     this.movingElement.style.transform = this.transform(0);
     /* eslint-disable no-unused-expressions */
+    /* This forces any incidental changes to take hold right now */
     window.getComputedStyle(this.movingElement).transform;
     /* eslint-enable no-unused-expressions */
     this.uBound = this.traverseLength();
-    this.animate = true;
+
+    /* Update saveY to preserve the intention of the behavior on smaller screens */
+    const newSaveY = this.saveY * (window.innerHeight / this.viewportHeight);
+    this.viewportHeight = window.innerHeight;
+    if (newSaveY < this.saveY) {
+      this.saveY = newSaveY;
+    }
+
+    this.movingElement.style.transform =
+      this.transform(Math.min(y, this.uBound));
   }
 
   /**
@@ -178,6 +192,9 @@ class CustomSticky {
         this.transform(Math.min(y, this.uBound));
     } else {
       this.animate = this.saveY >= y;
+      if (this.animate) {
+        this.notify(false);
+      }
     }
   }
 
@@ -186,6 +203,7 @@ class CustomSticky {
    */
   stick () {
     this.animate = false;
+    this.notify(true);
   }
 
   /**
@@ -215,23 +233,25 @@ class CustomSticky {
  * @param {Object} options - customSticky options.
  * @param {String} options.scrollSelector - Identifies the scroll source element.
  * @param {String} options.movingSelector - Identifies the moving element that sticks.
- * @param {String|Function} options.stationary - A selector that uniquely identifies
- * the non-moving element to stick to, or a function that returns a Rect that represents
- * the stationary move target.
+ * @param {String|Function} options.target - A selector that uniquely identifies
+ * the element to stick to, or a function that returns a Rect that represents
+ * the move target.
  * @param {Function} [options.traverseLength] - Gets the distance to travel before sticking.
- * Defaults to the distance between stationary and moving element rects.
+ * Defaults to the distance between target and moving element rects.
  * @param {String} [options.direction] - 'up', 'down', 'left', or 'right'.
  * The general direction the moving element should move. Defaults to 'up'.
  * @param {Number} [options.resizeWait] - Milliseconds to wait before recalculating on resize event.
  * (Throttles the resize event). Defaults to 350.
  * @param {Function} [options.transform] - Returns a custom transform given a scroll position.
  * Defaults to the appropriate translation for the direction.
+ * @param {Function} [options.onStick] - Called when the moving element sticks or becomes unstuck.
+ * Callback receives boolean `true` for stuck, `false` otherwise.
  */
 export function createCustomSticky (options = {}) {
   const customSticky = new CustomSticky(options);
   const ssi = createSimpleScrollIntersection(Object.assign(options, {
     notify: (result) => {
-      if (result.intersected && result.from[customSticky.intersectFrom]) {
+      if (result.intersection && result.from[customSticky.intersectFrom]) {
         customSticky.stick();
       }
     }
@@ -266,9 +286,9 @@ export function createCustomSticky (options = {}) {
         const selfUpdateResize = customSticky.updateResize.bind(customSticky);
         const peerUpdateResizes = peers.map(peer => peer.getUpdateResize());
 
-        customSticky.updateResize = () => {
-          selfUpdateResize();
-          peerUpdateResizes.forEach(update => update());
+        customSticky.updateResize = (y) => {
+          selfUpdateResize(y);
+          peerUpdateResizes.forEach(update => update(y));
         };
       } else {
         ssi.start();
