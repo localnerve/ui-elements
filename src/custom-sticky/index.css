@@ -463,6 +463,10 @@ a, a:visited {
   padding: 0.5rem 1rem;
 }
 
+.tint {
+  background-color: rgba(30, 30, 30, 0.7) !important;
+}
+
 .grid-row-spaced {
   display: flex;
   position: relative;
@@ -477,6 +481,11 @@ a, a:visited {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   -ms-overflow-style: -ms-autohiding-scrollbar;
+}
+
+header {
+  background-color: transparent;
+  transition: background-color 0.2s ease-out;
 }
 
 .ribbon {
@@ -578,16 +587,19 @@ a, a:visited {
 }
 
 .navigation-container {
-  /* ribbon height + logo height */
+  /* top = ribbon height + logo height */
   display: flex;
   position: absolute;
   z-index: 2;
   /* 41.2 => 42 */
   top: calc(42px + (4rem + 0.8rem));
   width: 100%;
+
+  background-color: transparent;
+  transition: background-color 0.2s ease-out;
 }
 @media only screen and (min-width: 41.75em) {
-  /* ribbon height + logo height */
+  /* top = ribbon height + logo height */
   .navigation-container {
     top: calc(69px + (4rem + 1.5rem));
   }
