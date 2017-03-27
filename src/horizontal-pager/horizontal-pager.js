@@ -248,6 +248,34 @@ class HorizontalPager {
   }
 
   /**
+   * Get the next sibling of the given target that has the targetClass.
+   * @private
+   *
+   * @param {Object} target - The HTMLElement to evaluate.
+   * @returns {Object} The nextElementSibling or null if none found.
+   */
+  getNextSibling (target) {
+    const targetClass = this.opts.targetClass;
+    const nextSib = target.nextElementSibling;
+    const nextOk = nextSib && nextSib.classList.contains(targetClass);
+    return nextOk ? nextSib : null;
+  }
+
+  /**
+   * Get the previous sibling of the given target that has the targetClass.
+   * @private
+   *
+   * @param {Object} target - The HTMLElement to evaluate.
+   * @returns {Object} The previousElementSibling or null if none found.
+   */
+  getPrevSibling (target) {
+    const targetClass = this.opts.targetClass;
+    const prevSib = target.previousElementSibling;
+    const prevOk = prevSib && prevSib.classList.contains(targetClass);
+    return prevOk ? prevSib : null;
+  }
+
+  /**
    * touchstart handler, passive.
    * Gets called once per touch (two fingers = two calls), but limits to first.
    * @private
@@ -269,12 +297,8 @@ class HorizontalPager {
     this.resetAnimations(newTarget);
 
     this.target = newTarget;
-    this.nextSib =
-      newTarget.nextElementSibling.classList.contains(this.opts.targetClass) ?
-      newTarget.nextElementSibling : null;
-    this.prevSib =
-      newTarget.previousElementSibling.classList.contains(this.opts.targetClass) ?
-      newTarget.previousElementSibling : null;
+    this.nextSib = this.getNextSibling(newTarget);
+    this.prevSib = this.getPrevSibling(newTarget);
 
     this.touching = true;
     this.willCompleteOnce = false;
@@ -430,8 +454,8 @@ class HorizontalPager {
       requestAnimationFrame(() => {
         this.target = this.targets[this.targetIndex];
         this.targetWidth = this.target.getBoundingClientRect().width;
-        this.prevSib = this.target.previousElementSibling;
-        this.nextSib = this.target.nextElementSibling;
+        this.prevSib = this.getPrevSibling(this.target);
+        this.nextSib = this.getNextSibling(this.target);
 
         this.currentX = this.currentX || 0;
         this.startX = this.currentX;
@@ -467,11 +491,11 @@ class HorizontalPager {
               if (moveNext) {
                 this.prevSib = this.target;
                 this.target = this.nextSib;
-                this.nextSib = this.target.nextElementSibling;
+                this.nextSib = this.getNextSibling(this.target);
               } else {
                 this.nextSib = this.target;
                 this.target = this.prevSib;
-                this.prevSib = this.target.previousElementSibling;
+                this.prevSib = this.getPrevSibling(this.target);
               }
             }
           })));
