@@ -38,6 +38,9 @@ Returns the bound updateScroll method for the instance. Useful for component com
 #### getSsiUpdateScroll ()
 Returns the bound updateScroll method used for the intersection detection for the instance. Useful for component composition.
 
+#### getLastY ()
+Returns the last y seen during animation or the upper bound.
+
 ## simple-scroll-intersection
 A scroll intersection observer for a use case where IntersectionObserver doesn't work/make sense.
 ### Top-level API
