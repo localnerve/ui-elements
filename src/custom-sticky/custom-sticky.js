@@ -39,7 +39,7 @@ class CustomSticky {
    * @param {String} [options.direction] - The direction the moving element should move.
    * 'up', 'down', 'left', or 'right', defaults to 'up'.
    * @param {Number} [options.resizeWait] - Millis to wait before handling a resize
-   * update. Disregards more resize events during this time. Defaults to 350.
+   * update. Disregards more resize events during this time. Defaults to 150.
    * @param {Function} [options.transform] - Returns a custom transform given a scroll position.
    * Defaults to the appropriate translation for the direction.
    * @param {Function} [options.notify] - Called when the moving element sticks or becomes unstuck.
@@ -47,7 +47,7 @@ class CustomSticky {
    */
   constructor (options) {
     this.opts = Object.assign({}, {
-      resizeWait: 350,
+      resizeWait: 150,
       direction: CSDirection.up
     }, options);
 
@@ -120,12 +120,17 @@ class CustomSticky {
 
     this.tickScroll = false;
     this.tickResize = false;
+    this.started = false;
 
     this.saveY = 0;
     this.animate = true;
 
     this.onScroll = this.onScroll.bind(this);
     this.onResize = this.onResize.bind(this);
+
+    window.addEventListener('resize', this.onResize, {
+      passive: true
+    });
   }
 
   /**
@@ -160,38 +165,54 @@ class CustomSticky {
   /**
    * Does the work of the resize event.
    * Update the travel upper bound, saveY, and movingElement.
+   *
+   * @param {Number} y - The current scrolTop y value.
    */
   updateResize (y) {
+    const previousTransform = this.movingElement.style.transform;
+
     this.movingElement.style.transform = this.transform(0);
-    /* eslint-disable no-unused-expressions */
     /* This forces any incidental changes to take hold right now */
+    /* eslint-disable no-unused-expressions */
     window.getComputedStyle(this.movingElement).transform;
     /* eslint-enable no-unused-expressions */
     this.uBound = this.traverseLength();
 
-    /* Update saveY to preserve the intention of the behavior on smaller screens */
-    const newSaveY = this.saveY * (window.innerHeight / this.viewportHeight);
-    this.viewportHeight = window.innerHeight;
-    if (newSaveY < this.saveY) {
-      this.saveY = newSaveY;
+    if (this.started) {
+      /* Update saveY to preserve the intention of the behavior on smaller screens */
+      const newSaveY = this.saveY * (window.innerHeight / this.viewportHeight);
+      this.viewportHeight = window.innerHeight;
+      if (newSaveY < this.saveY) {
+        this.saveY = newSaveY;
+      }
+      this.movingElement.style.transform = this.transform(Math.min(y, this.uBound));
+    } else {
+      this.movingElement.style.transform = previousTransform;
     }
-
-    this.movingElement.style.transform =
-      this.transform(Math.min(y, this.uBound));
   }
 
   /**
    * Does the work of the scroll event.
    * Move the moving element until someone calls 'stick'.
    * Once stuck, looks to unstick it self when it re-crosses the stuck position.
+   *
+   * @param {Number} y - The current scrolTop y value.
    */
   updateScroll (y) {
-    if (this.animate) {
+    if (this.animate || y === 0) {
+      const fastScrollUp = !this.animate && y === 0;
+
       this.saveY = y;
       this.movingElement.style.transform =
         this.transform(Math.min(y, this.uBound));
+
+      if (fastScrollUp) {
+        this.animate = true;
+        this.notify(false);
+      }
     } else {
       this.animate = this.saveY >= y;
+
       if (this.animate) {
         this.notify(false);
       }
@@ -208,22 +229,37 @@ class CustomSticky {
 
   /**
    * Start the custom sticky behavior.
+   *
+   * @param {Number} [startY] - A y value to start at. Will not scroll if current
+   * scroll position is already beyond startY.
    */
-  start () {
-    window.addEventListener('resize', this.onResize, {
-      passive: true
-    });
+  start (startY) {
     this.scrollSource.addEventListener('scroll', this.onScroll, {
       passive: true
     });
+
+    this.started = true;
+
+    const y = this.scrollSource.scrollTop;
+    const shouldScroll = startY !== 'undefined' && y < startY;
+    const shouldStick = shouldScroll && startY >= this.uBound;
+
+    this.saveY = y >= this.uBound ? this.uBound - 1 : y;
+    this.animate = y < this.uBound;
+    this.movingElement.style.transform = this.transform(Math.min(y, this.uBound));
+    this.notify(shouldStick || !this.animate);
+
+    if (shouldScroll) {
+      this.scrollSource.scrollTop = startY;
+    }
   }
 
   /**
    * Stop the custom sticky behavior.
    */
   stop () {
-    window.removeEventListener('resize', this.onResize);
     this.scrollSource.removeEventListener('scroll', this.onScroll);
+    this.started = false;
   }
 }
 
@@ -244,7 +280,7 @@ class CustomSticky {
  * (Throttles the resize event). Defaults to 350.
  * @param {Function} [options.transform] - Returns a custom transform given a scroll position.
  * Defaults to the appropriate translation for the direction.
- * @param {Function} [options.onStick] - Called when the moving element sticks or becomes unstuck.
+ * @param {Function} [options.notify] - Called when the moving element sticks or becomes unstuck.
  * Callback receives boolean `true` for stuck, `false` otherwise.
  */
 export function createCustomSticky (options = {}) {
@@ -262,12 +298,16 @@ export function createCustomSticky (options = {}) {
     getUpdateResize: () => customSticky.updateResize.bind(customSticky),
     getUpdateScroll: () => customSticky.updateScroll.bind(customSticky),
     getSsiUpdateScroll: () => ssi.getUpdateScroll.bind(ssi),
+    getLastY: () =>
+      (customSticky.animate ? customSticky.saveY : customSticky.uBound),
     /**
      * @param {Array} [peers] - Collection of CustomSticky objects listening on
      * the same scroll source that should be started with this CustomSticky and
      * serviced in one RAF.
+     *
+     * @param {Number} [startY] - A y value to start at.
      */
-    start: (peers) => {
+    start: (peers, startY) => {
       startedWithPeers = Array.isArray(peers) && peers.length > 0;
 
       if (startedWithPeers) {
@@ -294,7 +334,7 @@ export function createCustomSticky (options = {}) {
         ssi.start();
       }
 
-      customSticky.start();
+      customSticky.start(startY);
     },
     stop: () => {
       customSticky.stop();
