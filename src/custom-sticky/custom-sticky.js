@@ -316,7 +316,7 @@ export function createCustomSticky (options = {}) {
       const startedWithPeers = Array.isArray(peers) && peers.length > 0;
 
       if (startedWithPeers) {
-        const selfUpdateScroll = customSticky.updateScroll.bind(customSticky);
+        const selfUpdateScroll = CustomSticky.prototype.updateScroll.bind(customSticky);
         const peerUpdateScrolls = peers.map(peer => peer.getUpdateScroll());
 
         customSticky.updateScroll = (y, force) => {
@@ -324,7 +324,7 @@ export function createCustomSticky (options = {}) {
           peerUpdateScrolls.forEach(update => update(y, force));
         };
 
-        const selfUpdateResize = customSticky.updateResize.bind(customSticky);
+        const selfUpdateResize = CustomSticky.prototype.updateResize.bind(customSticky);
         const peerUpdateResizes = peers.map(peer => peer.getUpdateResize());
 
         customSticky.updateResize = (y) => {
