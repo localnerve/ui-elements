@@ -5,7 +5,7 @@
 ## UI Elements
  * [horizontal-pager](/src/horizontal-pager)
  * [scroll-collapse](/src/scroll-collapse)
- * [simple-scroll-intersection](/src/custom-sticky)
+ * [simple-scroll-intersection](/src/simple-scroll-intersection)
  * [custom-sticky](/src/custom-sticky)
 
 ## Demos
