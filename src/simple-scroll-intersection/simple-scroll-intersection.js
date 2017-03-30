@@ -21,18 +21,6 @@ export class SSIConst {
   static get right () {
     return 'right';
   }
-  static optionRectFn (selectorOrFn) {
-    let rectFn;
-    if (typeof selectorOrFn === 'function') {
-      rectFn = selectorOrFn;
-    } else {
-      const el = document.querySelector(selectorOrFn);
-      if (el) {
-        rectFn = el.getBoundingClientRect.bind(el);
-      }
-    }
-    return rectFn;
-  }
 }
 
 class SimpleScrollIntersection {
@@ -69,7 +57,7 @@ class SimpleScrollIntersection {
       console.warn(`failed to identify a scroll source with "${this.opts.scrollSelector}"`); // eslint-disable-line
     }
 
-    this.targetRectFn = SSIConst.optionRectFn(this.opts.target);
+    this.targetRectFn = SimpleScrollIntersection.optionRectFn(this.opts.target);
     if (!this.targetRectFn) {
       console.warn(`failed to compute target rect on "${this.opts.target}"`); // eslint-disable-line
     }
@@ -83,6 +71,19 @@ class SimpleScrollIntersection {
     this.intersected = this.computeIntersection().intersection;
 
     this.onScroll = this.onScroll.bind(this);
+  }
+
+  static optionRectFn (selectorOrFn) {
+    let rectFn;
+    if (typeof selectorOrFn === 'function') {
+      rectFn = selectorOrFn;
+    } else {
+      const el = document.querySelector(selectorOrFn);
+      if (el) {
+        rectFn = el.getBoundingClientRect.bind(el);
+      }
+    }
+    return rectFn;
   }
 
   /**

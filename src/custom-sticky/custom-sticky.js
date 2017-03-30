@@ -1,14 +1,13 @@
 /**
  * Custom Sticky behavior.
  *
- * Moves an element driven by scroll to a target element, where it stops moving.
+ * Moves an element driven by scroll to a target element, where it stops moving,
+ * or "sticks".
  *
  * Copyright (c) 2017 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
 /* global document, window */
-/* eslint-disable import/no-unresolved */
-import { createSimpleScrollIntersection, SSIConst } from './simple-scroll-intersection';
 
 export class CSDirection {
   static get up () {
@@ -56,7 +55,7 @@ class CustomSticky {
       console.warn(`failed to identify a scroll source with "${this.opts.scrollSelector}"`); // eslint-disable-line
     }
 
-    let targetRectFn = SSIConst.optionRectFn(this.opts.target);
+    let targetRectFn = CustomSticky.optionRectFn(this.opts.target);
     if (!targetRectFn) {
       targetRectFn = () => ({});
       console.warn(`failed to identify targetElement with "${this.opts.target}"`); // eslint-disable-line
@@ -74,21 +73,18 @@ class CustomSticky {
 
     switch (this.opts.direction) {
       case CSDirection.right:
-        this.intersectFrom = SSIConst.left;
         this.transform = boundY => `translateX(${boundY}px)`;
         this.traverseLength = () =>
           Math.ceil(targetRectFn().left -
             this.movingElement.getBoundingClientRect().right);
         break;
       case CSDirection.left:
-        this.intersectFrom = SSIConst.right;
         this.transform = boundY => `translateX(${-boundY}px)`;
         this.traverseLength = () =>
           Math.ceil(this.movingElement.getBoundingClientRect().left -
             targetRectFn().right);
         break;
       case CSDirection.down:
-        this.intersectFrom = SSIConst.top;
         this.transform = boundY => `translateY(${boundY}px)`;
         this.traverseLength = () =>
           Math.ceil(targetRectFn().top -
@@ -96,7 +92,6 @@ class CustomSticky {
         break;
       default:
       case CSDirection.up:
-        this.intersectFrom = SSIConst.bottom;
         this.transform = boundY => `translateY(${-boundY}px)`;
         this.traverseLength = () =>
           Math.ceil(this.movingElement.getBoundingClientRect().top -
@@ -108,10 +103,10 @@ class CustomSticky {
       this.traverseLength = this.opts.traverseLength;
     }
 
+    this.uBoundAccurate = false;
     this.uBound = this.traverseLength();
-
-    if (Number.isNaN(this.uBound)) {
-      console.warn('traverseLength must return a number'); // eslint-disable-line
+    if (Number.isNaN(this.uBound) || this.uBound <= 0) {
+      console.warn('traverseLength must return a positive number'); // eslint-disable-line
     }
 
     if (typeof this.opts.transform === 'function') {
@@ -131,6 +126,26 @@ class CustomSticky {
     window.addEventListener('resize', this.onResize, {
       passive: true
     });
+  }
+
+  /**
+   * Convert selector or function to function that returns Rect.
+   *
+   * @param {String|Function} selectorOrFn - A selector or function that returns
+   * a Rect.
+   * @returns {Function} A function that returns a Rect.
+   */
+  static optionRectFn (selectorOrFn) {
+    let rectFn;
+    if (typeof selectorOrFn === 'function') {
+      rectFn = selectorOrFn;
+    } else {
+      const el = document.querySelector(selectorOrFn);
+      if (el) {
+        rectFn = el.getBoundingClientRect.bind(el);
+      }
+    }
+    return rectFn;
   }
 
   /**
@@ -171,29 +186,37 @@ class CustomSticky {
   updateResize (y) {
     const previousTransform = this.movingElement.style.transform;
 
+    // Always update uBound to the new value
     this.movingElement.style.transform = this.transform(0);
-    /* This forces any incidental changes to take hold right now */
     /* eslint-disable no-unused-expressions */
+    // Force any incidental changes to take hold right now
     window.getComputedStyle(this.movingElement).transform;
     /* eslint-enable no-unused-expressions */
     this.uBound = this.traverseLength();
 
     if (this.started) {
-      /* Update saveY to preserve the intention of the behavior on smaller screens */
+      // Update saveY to preserve the intention of the behavior on smaller screens
       const newSaveY = this.saveY * (window.innerHeight / this.viewportHeight);
       this.viewportHeight = window.innerHeight;
       if (newSaveY < this.saveY) {
         this.saveY = newSaveY;
       }
-      this.movingElement.style.transform = this.transform(Math.min(y, this.uBound));
+      const saveAnimate = this.animate;
+
+      // Reset this and any peers to the new locations
+      this.animate = true;
+      this.updateScroll(0);
+      this.updateScroll(y);
+      this.animate = saveAnimate;
     } else {
+      // DON'T do anything else to CustomSticky instances that are not started
       this.movingElement.style.transform = previousTransform;
     }
   }
 
   /**
    * Does the work of the scroll event.
-   * Move the moving element until someone calls 'stick'.
+   * Moves the element until it reaches the upper bound.
    * Once stuck, looks to unstick it self when it re-crosses the stuck position.
    *
    * @param {Number} y - The current scrolTop y value.
@@ -202,11 +225,22 @@ class CustomSticky {
     if (this.animate || y === 0) {
       const fastScrollUp = !this.animate && y === 0;
 
+      if (!this.uBoundAccurate) {
+        this.uBoundAccurate = true;
+        // Empirical testing reveals this is more accurate sometimes.
+        this.uBound = this.traverseLength();
+      }
+
+      const shouldStick = this.uBound <= y;
+
       this.saveY = y;
       this.movingElement.style.transform =
         this.transform(Math.min(y, this.uBound));
 
-      if (fastScrollUp) {
+      if (shouldStick) {
+        this.animate = false;
+        this.notify(true);
+      } else if (fastScrollUp) {
         this.animate = true;
         this.notify(false);
       }
@@ -217,14 +251,6 @@ class CustomSticky {
         this.notify(false);
       }
     }
-  }
-
-  /**
-   * Stops the animation, emulating sticky behavior.
-   */
-  stick () {
-    this.animate = false;
-    this.notify(true);
   }
 
   /**
@@ -285,19 +311,10 @@ class CustomSticky {
  */
 export function createCustomSticky (options = {}) {
   const customSticky = new CustomSticky(options);
-  const ssi = createSimpleScrollIntersection(Object.assign(options, {
-    notify: (result) => {
-      if (result.intersection && result.from[customSticky.intersectFrom]) {
-        customSticky.stick();
-      }
-    }
-  }));
-  let startedWithPeers = false;
 
   return {
     getUpdateResize: () => customSticky.updateResize.bind(customSticky),
     getUpdateScroll: () => customSticky.updateScroll.bind(customSticky),
-    getSsiUpdateScroll: () => ssi.getUpdateScroll.bind(ssi),
     getLastY: () =>
       (customSticky.animate ? customSticky.saveY : customSticky.uBound),
     /**
@@ -308,17 +325,13 @@ export function createCustomSticky (options = {}) {
      * @param {Number} [startY] - A y value to start at.
      */
     start: (peers, startY) => {
-      startedWithPeers = Array.isArray(peers) && peers.length > 0;
+      const startedWithPeers = Array.isArray(peers) && peers.length > 0;
 
       if (startedWithPeers) {
         const selfUpdateScroll = customSticky.updateScroll.bind(customSticky);
-        const selfSsiUpdateScroll = ssi.getUpdateScroll();
         const peerUpdateScrolls = peers.map(peer => peer.getUpdateScroll());
-        const peerSsiUpdateScrolls = peers.map(peer => peer.getSsiUpdateScroll());
 
         customSticky.updateScroll = (y) => {
-          selfSsiUpdateScroll();
-          peerSsiUpdateScrolls.forEach(update => update());
           selfUpdateScroll(y);
           peerUpdateScrolls.forEach(update => update(y));
         };
@@ -330,18 +343,11 @@ export function createCustomSticky (options = {}) {
           selfUpdateResize(y);
           peerUpdateResizes.forEach(update => update(y));
         };
-      } else {
-        ssi.start();
       }
 
       customSticky.start(startY);
     },
-    stop: () => {
-      customSticky.stop();
-      if (!startedWithPeers) {
-        ssi.stop();
-      }
-    }
+    stop: customSticky.stop.bind(customSticky)
   };
 }
 
