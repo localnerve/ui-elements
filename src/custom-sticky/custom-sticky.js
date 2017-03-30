@@ -194,7 +194,7 @@ class CustomSticky {
 
     if (this.started) {
       // Reset this and any peers to the new locations
-      this.updateScroll(y, true);
+      this.updateScroll(this.animate ? y : this.uBound, true);
     } else {
       // DON'T do anything else to CustomSticky instances that are not started
       this.movingElement.style.transform = previousTransform;
