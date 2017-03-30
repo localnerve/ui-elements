@@ -66,8 +66,6 @@ class CustomSticky {
       console.warn(`failed to identify moving element with "${this.opts.movingSelector}"`); // eslint-disable-line
     }
 
-    this.viewportHeight = window.innerHeight;
-
     this.notify = this.opts.notify ?
       setTimeout.bind(null, this.opts.notify, 0) : () => false;
 
@@ -103,14 +101,14 @@ class CustomSticky {
       this.traverseLength = this.opts.traverseLength;
     }
 
+    if (typeof this.opts.transform === 'function') {
+      this.transform = this.opts.transform;
+    }
+
     this.uBoundAccurate = false;
     this.uBound = this.traverseLength();
     if (Number.isNaN(this.uBound) || this.uBound <= 0) {
       console.warn('traverseLength must return a positive number'); // eslint-disable-line
-    }
-
-    if (typeof this.opts.transform === 'function') {
-      this.transform = this.opts.transform;
     }
 
     this.tickScroll = false;
@@ -195,19 +193,8 @@ class CustomSticky {
     this.uBound = this.traverseLength();
 
     if (this.started) {
-      // Update saveY to preserve the intention of the behavior on smaller screens
-      const newSaveY = this.saveY * (window.innerHeight / this.viewportHeight);
-      this.viewportHeight = window.innerHeight;
-      if (newSaveY < this.saveY) {
-        this.saveY = newSaveY;
-      }
-      const saveAnimate = this.animate;
-
       // Reset this and any peers to the new locations
-      this.animate = true;
-      this.updateScroll(0);
-      this.updateScroll(y);
-      this.animate = saveAnimate;
+      this.updateScroll(y, true);
     } else {
       // DON'T do anything else to CustomSticky instances that are not started
       this.movingElement.style.transform = previousTransform;
@@ -220,22 +207,25 @@ class CustomSticky {
    * Once stuck, looks to unstick it self when it re-crosses the stuck position.
    *
    * @param {Number} y - The current scrolTop y value.
+   * @param {Boolean} [forceAnimate] - Force the animate path.
    */
-  updateScroll (y) {
-    if (this.animate || y === 0) {
-      const fastScrollUp = !this.animate && y === 0;
-
-      if (!this.uBoundAccurate) {
-        this.uBoundAccurate = true;
-        // Empirical testing reveals this is more accurate sometimes.
-        this.uBound = this.traverseLength();
+  updateScroll (y, forceAnimate) {
+    if (!this.uBoundAccurate && !forceAnimate) {
+      this.uBoundAccurate = true;
+      // Empirical testing reveals this is more accurate sometimes.
+      const uBound = this.traverseLength();
+      if (uBound > this.uBound) {
+        this.uBound = uBound;
       }
+    }
 
+    if (this.animate || y === 0 || forceAnimate) {
+      const fastScrollUp = !this.animate && y === 0 && !forceAnimate;
       const shouldStick = this.uBound <= y;
+      const boundedY = Math.min(y, this.uBound);
 
-      this.saveY = y;
-      this.movingElement.style.transform =
-        this.transform(Math.min(y, this.uBound));
+      this.saveY = boundedY;
+      this.movingElement.style.transform = this.transform(boundedY);
 
       if (shouldStick) {
         this.animate = false;
@@ -245,7 +235,7 @@ class CustomSticky {
         this.notify(false);
       }
     } else {
-      this.animate = this.saveY >= y;
+      this.animate = y < this.uBound;
 
       if (this.animate) {
         this.notify(false);
@@ -270,9 +260,8 @@ class CustomSticky {
     const shouldScroll = startY !== 'undefined' && y < startY;
     const shouldStick = shouldScroll && startY >= this.uBound;
 
-    this.saveY = y >= this.uBound ? this.uBound - 1 : y;
+    this.updateScroll(y, true);
     this.animate = y < this.uBound;
-    this.movingElement.style.transform = this.transform(Math.min(y, this.uBound));
     this.notify(shouldStick || !this.animate);
 
     if (shouldScroll) {
@@ -315,8 +304,7 @@ export function createCustomSticky (options = {}) {
   return {
     getUpdateResize: () => customSticky.updateResize.bind(customSticky),
     getUpdateScroll: () => customSticky.updateScroll.bind(customSticky),
-    getLastY: () =>
-      (customSticky.animate ? customSticky.saveY : customSticky.uBound),
+    getLastY: () => customSticky.saveY,
     /**
      * @param {Array} [peers] - Collection of CustomSticky objects listening on
      * the same scroll source that should be started with this CustomSticky and
@@ -331,9 +319,9 @@ export function createCustomSticky (options = {}) {
         const selfUpdateScroll = customSticky.updateScroll.bind(customSticky);
         const peerUpdateScrolls = peers.map(peer => peer.getUpdateScroll());
 
-        customSticky.updateScroll = (y) => {
-          selfUpdateScroll(y);
-          peerUpdateScrolls.forEach(update => update(y));
+        customSticky.updateScroll = (y, force) => {
+          selfUpdateScroll(y, force);
+          peerUpdateScrolls.forEach(update => update(y, force));
         };
 
         const selfUpdateResize = customSticky.updateResize.bind(customSticky);
