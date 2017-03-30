@@ -38,7 +38,7 @@ html, body {
   background: tomato;
 }
 .top-x::before {
-  content: 'top';
+  content: 'from top';
   font-size: 2em;
 }
 .right {
@@ -48,7 +48,7 @@ html, body {
   background: aliceblue;
 }
 .right-x::before {
-  content: 'right';
+  content: 'from right';
   font-size: 2em;
 }
 .bottom {
@@ -58,7 +58,7 @@ html, body {
   background: olive;
 }
 .bottom-x::before {
-  content: 'bottom';
+  content: 'from bottom';
   font-size: 2em;
 }
 .left {
@@ -68,7 +68,7 @@ html, body {
   background: moccasin;
 }
 .left-x::before {
-  content: 'left';
+  content: 'from left';
   font-size: 2em;
 }
 .intersected {
