@@ -1,0 +1,14 @@
+{
+  "name": "custom-sticky",
+  "version": "0.1.0",
+  "description": "A custom scroll animation behavior for stickies, scenes, or both",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Alex Grant (@localnerve)",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "intersection-observer": "latest"
+  }
+}

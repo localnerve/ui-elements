@@ -16,6 +16,7 @@ Creates an instance of custom sticky behavior for an element. Returns the instan
 | `movingSelector` | String | Unique selector of the moving element that intersects with the `target` Rect. |
 | `target` | String or Function | Selector of the element to move to, or a function that returns an arbitrary Rect to move to. This option is actually not required if you supply the `traverseLength` option. |
 | `[traverseLength]` | Function | Gets the distance to travel before sticking. Defaults to the distance between target and moving element Rects. If not supplied, must supply `target`. Somewhat performance sensitive. |
+| `[animationLength]` | Function | Gets the vertical distance to animate over. The animation will try to complete within the vertical distance specified. Defaults to window.innerHeight (entire viewport height). |
 | `[direction]` | String | The direction the moving element should move. 'up', 'down', 'left', or 'right', defaults to 'up'. Strings are available as exported constants in `CSDirection`.
 | `[resizeWait]` | Number | Milliseconds to wait to update geometry information after window resize event. Optional, defaults to 150 milliseconds. |
 | `[transform]` | Function | Returns a custom transform given a scroll position. Defaults to the appropriate linear translation for the direction. Very performance sensitive. |
