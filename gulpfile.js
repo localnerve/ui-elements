@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const spawn = require('child_process').spawn;
 const q = require('q');
 const gulp = require('gulp');
 const webpack = require('webpack');
@@ -94,6 +95,36 @@ function createBundle (env) {
     });
 }
 
+/**
+ * Run `npm install` for any src directory that needs it.
+ *
+ * @returns {Promise} That resolves if all npm installs succeed, rejects otherwise.
+ */
+function runPackageInstalls () {
+  return getSourceDirs()
+    .then((dirs) => {
+      const pkgDirs =
+        dirs.filter(dir => fs.existsSync(path.join(dir, 'package.json')));
+
+      return Promise.all(
+        pkgDirs.map((pkgDir) => {
+          const cp = spawn('npm', ['install'], {
+            cwd: pkgDir
+          });
+          return new Promise((resolve, reject) => {
+            cp.on('close', (code) => {
+              if (code !== 0) {
+                return reject();
+              }
+              return resolve();
+            });
+            cp.on('error', reject);
+          });
+        })
+      );
+    });
+}
+
 // Define the build tasks:
 
 gulp.task('copy', () =>
@@ -107,3 +138,4 @@ gulp.task('copy', () =>
 );
 gulp.task('webpack', () => createBundle('production'));
 gulp.task('webpack-dev', () => createBundle('development'));
+gulp.task('installs', runPackageInstalls);

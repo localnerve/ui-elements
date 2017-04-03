@@ -1,12 +1,13 @@
 {
   "name": "ui-elements",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A repo of ui elements",
   "main": "index.js",
   "scripts": {
     "build": "rimraf dist && gulp webpack && gulp copy",
     "build:dev": "rimraf dist && gulp webpack-dev && gulp copy",
     "lint": "eslint .",
+    "installs": "gulp installs",
     "copy": "gulp copy",
     "dev": "npm run build:dev && node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
