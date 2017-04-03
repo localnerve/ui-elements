@@ -9,7 +9,6 @@ import { createCustomSticky, CSDirection } from './custom-sticky';
 window.addEventListener('DOMContentLoaded', () => {
   const mainSelector = '.main';
   const mainElement = document.querySelector(mainSelector);
-  const logoContainer = document.querySelector('.logo-container');
   const navContainer = document.querySelector('.navigation-container');
 
   initializeParallax(mainElement);
@@ -61,11 +60,7 @@ window.addEventListener('DOMContentLoaded', () => {
     scrollSelector: mainSelector,
     movingSelector: '.navigation-container',
     target: 'header',
-    traverseLength: () => {
-      const logoHeight = logoContainer.getBoundingClientRect().height;
-      const navHeight = navContainer.getBoundingClientRect().height;
-      return Math.ceil((logoHeight - navHeight) + 1);
-    },
+    animationLength: () => navContainer.getBoundingClientRect().top,
     notify: () => {
       document.querySelector('header').classList.toggle('tint');
     },

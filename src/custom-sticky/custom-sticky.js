@@ -8,6 +8,8 @@
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
 /* global document, window */
+/* eslint-disable import/no-unresolved */
+import { createIntersectionObserver } from './intersection-observer';
 
 export class CSDirection {
   static get up () {
@@ -35,6 +37,9 @@ class CustomSticky {
    * @param {Function} [options.traverseLength] - Retrieves the distance to
    * traverse over before sticking. Defaults to directional distance between target
    * and moving element rects.
+   * @param {Function} [options.animationLength] - Gets the vertical distance to animate over.
+   * The animation will try to complete within the vertical distance specified.
+   * Defaults to window.innerHeight.
    * @param {String} [options.direction] - The direction the moving element should move.
    * 'up', 'down', 'left', or 'right', defaults to 'up'.
    * @param {Number} [options.resizeWait] - Millis to wait before handling a resize
@@ -47,7 +52,8 @@ class CustomSticky {
   constructor (options) {
     this.opts = Object.assign({}, {
       resizeWait: 150,
-      direction: CSDirection.up
+      direction: CSDirection.up,
+      animationLength: () => window.innerHeight
     }, options);
 
     this.scrollSource = document.querySelector(this.opts.scrollSelector);
@@ -111,15 +117,26 @@ class CustomSticky {
       console.warn('traverseLength must return a positive number'); // eslint-disable-line
     }
 
+    this.animationLength = this.opts.animationLength();
+
     this.tickScroll = false;
     this.tickResize = false;
     this.started = false;
 
+    this.yBasis = undefined;
     this.saveY = 0;
     this.animate = true;
 
     this.onScroll = this.onScroll.bind(this);
     this.onResize = this.onResize.bind(this);
+    let resolver;
+    this.yBasisPromise = new Promise((resolve) => {
+      resolver = resolve;
+    });
+    this.onIntersection = this.onIntersection.bind(this, resolver);
+
+    const observer = createIntersectionObserver(this.onIntersection);
+    observer.observe(this.movingElement);
 
     window.addEventListener('resize', this.onResize, {
       passive: true
@@ -176,6 +193,20 @@ class CustomSticky {
   }
 
   /**
+   * Intersection observer callback handler.
+   */
+  onIntersection (resolver, entries) {
+    if (typeof this.yBasis === 'undefined') {
+      const match = entries
+        .filter(e => e.target.isEqualNode(this.movingElement)).length === 1;
+      if (match) {
+        this.yBasis = this.scrollSource.scrollTop;
+        resolver();
+      }
+    }
+  }
+
+  /**
    * Does the work of the resize event.
    * Update the travel upper bound, saveY, and movingElement.
    *
@@ -183,60 +214,95 @@ class CustomSticky {
    */
   updateResize (y) {
     const previousTransform = this.movingElement.style.transform;
-
-    // Always update uBound to the new value
     this.movingElement.style.transform = this.transform(0);
     /* eslint-disable no-unused-expressions */
     // Force any incidental changes to take hold right now
     window.getComputedStyle(this.movingElement).transform;
     /* eslint-enable no-unused-expressions */
+
     this.uBound = this.traverseLength();
+    this.animationLength = this.opts.animationLength();
 
     if (this.started) {
-      // Reset this and any peers to the new locations
-      this.updateScroll(this.animate ? y : this.uBound, true);
+      const progress = this.calculateProgress(y);
+      const wouldAnimate = progress < this.uBound && y >= this.yBasis;
+      if (wouldAnimate && !this.animate) {
+        this.animate = true;
+        this.scrollSource.scrollTop = y + this.uBound;
+      } else {
+        this.updateScroll(y, true);
+        // Set in case stop/start using getLastY
+        this.saveY = Math.min(y,
+          // equation is calculateProgress but solve for y
+          (this.animationLength *
+            (Math.min(progress, this.uBound) / this.uBound)) + this.yBasis
+        );
+      }
     } else {
-      // DON'T do anything else to CustomSticky instances that are not started
       this.movingElement.style.transform = previousTransform;
     }
   }
 
   /**
+   * Some browsers (safari) seem incapable of dimensions until scroll.
+   * Updates scroll upper bound if required.
+   * Works maximum of once.
+   *
+   * @param {Boolean} ignore - Noop if true.
+   */
+  browserBugUpdateUbound (ignore) {
+    if (ignore || this.uBoundAccurate) {
+      return;
+    }
+
+    this.uBoundAccurate = true;
+    const uBound = this.traverseLength();
+    if (uBound > this.uBound) {
+      this.uBound = uBound;
+    }
+  }
+
+  /**
+   * Given scroll y, calculate the progress to uBound.
+   *
+   * @param {Number} y - A scroll y value.
+   */
+  calculateProgress (y) {
+    return this.uBound *
+      ((Math.max(y, this.yBasis) - this.yBasis) / this.animationLength);
+  }
+
+  /**
    * Does the work of the scroll event.
-   * Moves the element until it reaches the upper bound.
+   * Updates the element progress until it reaches the upper bound.
    * Once stuck, looks to unstick it self when it re-crosses the stuck position.
    *
    * @param {Number} y - The current scrolTop y value.
-   * @param {Boolean} [forceAnimate] - Force the animate path.
+   * @param {Boolean} [forceAnimate] - true to force movement.
    */
   updateScroll (y, forceAnimate) {
-    if (!this.uBoundAccurate && !forceAnimate) {
-      this.uBoundAccurate = true;
-      // Empirical testing reveals this is more accurate sometimes.
-      const uBound = this.traverseLength();
-      if (uBound > this.uBound) {
-        this.uBound = uBound;
-      }
-    }
+    this.browserBugUpdateUbound(forceAnimate);
 
-    if (this.animate || y === 0 || forceAnimate) {
-      const fastScrollUp = !this.animate && y === 0 && !forceAnimate;
-      const shouldStick = this.uBound <= y;
-      const boundedY = Math.min(y, this.uBound);
+    const progress = this.calculateProgress(y);
+    const top = y === 0;
 
-      this.saveY = boundedY;
-      this.movingElement.style.transform = this.transform(boundedY);
+    if (this.animate || top || forceAnimate) {
+      const shouldStick = this.uBound <= progress;
+      const fastTop = !this.animate && top && !forceAnimate;
+      const transform = Math.min(progress, this.uBound);
+
+      this.saveY = forceAnimate ? this.saveY : y;
+      this.movingElement.style.transform = this.transform(transform);
 
       if (shouldStick) {
         this.animate = false;
         this.notify(true);
-      } else if (fastScrollUp) {
+      } else if (fastTop) {
         this.animate = true;
         this.notify(false);
       }
     } else {
-      this.animate = y < this.uBound;
-
+      this.animate = progress < this.uBound && y >= this.yBasis;
       if (this.animate) {
         this.notify(false);
       }
@@ -250,23 +316,22 @@ class CustomSticky {
    * scroll position is already beyond startY.
    */
   start (startY) {
-    this.scrollSource.addEventListener('scroll', this.onScroll, {
-      passive: true
+    this.yBasisPromise.then(() => {
+      this.scrollSource.addEventListener('scroll', this.onScroll, {
+        passive: true
+      });
+
+      this.started = true;
+
+      const y = this.scrollSource.scrollTop;
+      const shouldScroll = typeof startY !== 'undefined' && y < startY;
+
+      if (shouldScroll) {
+        this.scrollSource.scrollTop = startY;
+      } else {
+        this.updateScroll(y, true);
+      }
     });
-
-    this.started = true;
-
-    const y = this.scrollSource.scrollTop;
-    const shouldScroll = startY !== 'undefined' && y < startY;
-    const shouldStick = shouldScroll && startY >= this.uBound;
-
-    this.updateScroll(y, true);
-    this.animate = y < this.uBound;
-    this.notify(shouldStick || !this.animate);
-
-    if (shouldScroll) {
-      this.scrollSource.scrollTop = startY;
-    }
   }
 
   /**
@@ -289,6 +354,9 @@ class CustomSticky {
  * the move target.
  * @param {Function} [options.traverseLength] - Gets the distance to travel before sticking.
  * Defaults to the distance between target and moving element rects.
+ * @param {Function} [options.animationLength] - Gets the vertical distance to animate over.
+ * The animation will try to complete within the vertical distance specified.
+ * Defaults to window.innerHeight.
  * @param {String} [options.direction] - 'up', 'down', 'left', or 'right'.
  * The general direction the moving element should move. Defaults to 'up'.
  * @param {Number} [options.resizeWait] - Milliseconds to wait before recalculating on resize event.
