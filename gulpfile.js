@@ -132,7 +132,8 @@ gulp.task('copy', () =>
     `${srcRoot}/**/*.html`,
     `${srcRoot}/**/*.css`,
     `${srcRoot}/**/*.jpg`,
-    `${srcRoot}/**/${jsBundle}`
+    `${srcRoot}/**/${jsBundle}`,
+    `${srcRoot}/**/node_modules/**`,
   ])
     .pipe(gulp.dest('dist'))
 );
