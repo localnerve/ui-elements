@@ -281,6 +281,10 @@ class CustomSticky {
    * @param {Boolean} [forceAnimate] - true to force movement.
    */
   updateScroll (y, forceAnimate) {
+    if (typeof this.yBasis === 'undefined') {
+      return;
+    }
+
     this.browserBugUpdateUbound(forceAnimate);
 
     const progress = this.calculateProgress(y);
