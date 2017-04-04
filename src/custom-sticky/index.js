@@ -10,6 +10,9 @@ window.addEventListener('DOMContentLoaded', () => {
   const mainSelector = '.main';
   const mainElement = document.querySelector(mainSelector);
   const navContainer = document.querySelector('.navigation-container');
+  const blockAnimationLength =
+    (document.querySelector('.cs-ctr').getBoundingClientRect().bottom -
+    document.querySelector('.cs-ttb').getBoundingClientRect().bottom) * 1.2;
 
   initializeParallax(mainElement);
 
@@ -18,6 +21,7 @@ window.addEventListener('DOMContentLoaded', () => {
       scrollSelector: mainSelector,
       movingSelector: '.cs-ttb',
       target: '.cs-ctr',
+      animationLength: () => blockAnimationLength,
       direction: CSDirection.down,
       transform: y => `translateX(-50%) translateY(${y}px)`
     }),
@@ -25,12 +29,14 @@ window.addEventListener('DOMContentLoaded', () => {
       scrollSelector: mainSelector,
       movingSelector: '.cs-ltr',
       target: '.cs-ctr',
+      animationLength: () => blockAnimationLength,
       direction: CSDirection.right
     }),
     createCustomSticky({
       scrollSelector: mainSelector,
       movingSelector: '.cs-rtl',
       target: '.cs-ctr',
+      animationLength: () => blockAnimationLength,
       direction: CSDirection.left
     }),
     createCustomSticky({
