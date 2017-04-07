@@ -15,7 +15,7 @@
   10. When navigation certain to complete, calls optional `willComplete` callback.
   11. Optional `done` callback for notification after navigation complete.
   12. A css class identifies scroll level items (pages).
-  13. 8.5k min bundle, 2.5k gzip
+  13. 9k min bundle, 2.7k gzip.
 
 ## Missing Features
   1.  No continuous option (infinite, last-wraps-to-first and vice-versa).
@@ -44,16 +44,16 @@ Requires a global `document` to be available when called.
 Stops event listening and any pending animations. Requires a global `document` to be available when called. No arguments, no return.
 
 #### next ()
-Moves to the next target as identified by `targetClass`. If the current target is the end, nothing happens. No arguments, no return.
+Moves to the next target as identified by `targetClass`. If the current target is the end, nothing happens. No arguments. Returns a boolean indicating if the animation will occur in the next animation frame.
 
 #### prev ()
-Moves to the previous target as identified by `targetClass`. If the current target is the beginning, nothing happens. No arguments, no return.
+Moves to the previous target as identified by `targetClass`. If the current target is the beginning, nothing happens. No arguments. Returns a boolean indicating if the animation will occur in the next animation frame.
 
 #### moveRel (distance)
-Moves `distance` targets away from the current `targetClass`. If the specified distance would move out of bounds, nothing happens. A `distance` of -1 is a synonym for `prev`. No return.
+Moves `distance` targets away from the current `targetClass`. If the specified distance would move out of bounds, nothing happens. A `distance` of -1 is a synonym for `prev`. Returns a boolean indicating if the animation will occur in the next animation frame.
 
 #### moveAbs (index)
-Moves to the `targetClass` at the zero-based index. If an out of bounds or current index is specified, nothing happens. No return.
+Moves to the `targetClass` at the zero-based index. If an out of bounds or current index is specified, nothing happens. Returns a boolean indicating if the animation will occur in the next animation frame.
 
 #### targetCount ()
 Returns the number of `targetClass` items found by the horizontal-pager.
@@ -63,7 +63,7 @@ Returns the number of `targetClass` items found by the horizontal-pager.
 See `DOMContentLoaded`, `unload` event handlers in the [example](index.js).
 
 ### General Usage (frameworks, universal)
-Deliver the `horizontal-pager.js` script with your page. In a universal app, you won't want to render on the server, but you WILL want to deliver the `startIndex` to the client to initially render the proper `targetClass` page for the current route. On the client, give the `startIndex` and `targetClass` options to the top-level api function `createHorizontalPager` prior to the first client render.
+Deliver the `horizontal-pager.js` script with your page. In a universal app, you will want to deliver the `startIndex` to the client to initially render the proper `targetClass` page for the current route. On the client, give the `startIndex` and `targetClass` options to the top-level api function `createHorizontalPager` prior to the first client render.
 Client-side Usage:
   1.  Call the top-level api function `createHorizontalPager` (the default export), and give it the options. This starts listening to events, and returns an interface to the horizontal-pager instance.
     * Requires a global `document` to be available.
