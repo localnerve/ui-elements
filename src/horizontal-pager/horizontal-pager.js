@@ -16,7 +16,6 @@
  *      callback (optional).
  * 11.  Optional `done` callback for notification after navigation complete.
  * 12.  A css class identifies scroll level items (pages).
- * 13. 8.5k min bundle, 2.5k gzip
  *
  * Missing:
  *   1.  No continuous option (last-wraps-to-first or vice-versa).
@@ -80,6 +79,7 @@ class HorizontalPager {
     this.translateX = 0;
     this.targetX = 0;
     this.atEdge = false;
+    this.animating = false;
     this.willCompleteOnce = false;
     this.isVertical = undefined;
     this.targets = [];
@@ -100,11 +100,8 @@ class HorizontalPager {
     };
 
     document.addEventListener('touchstart', this.onStart, options);
-    document.addEventListener('mousedown', this.onStart, options);
     document.addEventListener('touchmove', this.onMove, options);
-    document.addEventListener('mousemove', this.onMove, options);
     document.addEventListener('touchend', this.onEnd, options);
-    document.addEventListener('mouseup', this.onEnd, options);
   }
 
   /**
@@ -276,6 +273,50 @@ class HorizontalPager {
   }
 
   /**
+   * Get PageX value, support multiple event interfaces.
+   *
+   * @param {Object} evt - A Touch Event
+   * @returns {Number} The page X value.
+   */
+  static getPageX (evt) {
+    let result = 0;
+    const hasPageX = typeof evt.pageX !== 'undefined';
+
+    if (hasPageX) {
+      result = evt.pageX;
+    } else {
+      const hasTouches = typeof evt.touches !== 'undefined';
+      if (hasTouches && evt.touches.length > 0) {
+        result = evt.touches[0].pageX;
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * Get PageY value, support multiple event interfaces.
+   *
+   * @param {Object} evt - A Touch Event
+   * @returns {Number} The page Y value.
+   */
+  static getPageY (evt) {
+    let result = 0;
+    const hasPageY = typeof evt.pageY !== 'undefined';
+
+    if (hasPageY) {
+      result = evt.pageY;
+    } else {
+      const hasTouches = typeof evt.touches !== 'undefined';
+      if (hasTouches && evt.touches.length > 0) {
+        result = evt.touches[0].pageY;
+      }
+    }
+
+    return result;
+  }
+
+  /**
    * touchstart handler, passive.
    * Gets called once per touch (two fingers = two calls), but limits to first.
    * @private
@@ -283,15 +324,15 @@ class HorizontalPager {
    * @param {Object} evt - The TouchEvent object.
    */
   onStart (evt) {
-    if (this.touching) {
+    if (this.touching || this.animating) {
       return;
     }
 
     const newTarget = this.targets[this.targetIndex];
 
     this.targetWidth = newTarget.getBoundingClientRect().width;
-    this.startX = evt.pageX || evt.touches[0].pageX;
-    this.startY = evt.pageY || evt.touches[0].pageY;
+    this.startX = HorizontalPager.getPageX(evt);
+    this.startY = HorizontalPager.getPageY(evt);
     this.currentX = this.startX;
 
     this.resetAnimations(newTarget);
@@ -328,12 +369,12 @@ class HorizontalPager {
    * @param {Object} evt - The TouchEvent object.
    */
   onMove (evt) {
-    this.currentX = evt.pageX || evt.touches[0].pageX;
+    this.currentX = HorizontalPager.getPageX(evt);
 
     if (typeof this.isVertical === 'undefined') {
       this.isVertical = (
         Math.abs(this.currentX - this.startX) <
-          Math.abs((evt.pageY || evt.touches[0].pageY) - this.startY)
+          Math.abs(HorizontalPager.getPageY(evt) - this.startY)
       );
     }
 
@@ -435,6 +476,7 @@ class HorizontalPager {
    * @param {Number} distance - The value determines the number of targets to
    * animate ahead (or behind) to. The sign determines the direction, positive
    * is next, negative is prev.
+   * @returns {Boolean} true if animation occurred, false otherwise.
    */
   animate (distance) {
     const moveNext = distance > 0;
@@ -442,8 +484,10 @@ class HorizontalPager {
       this.targetIndex + distance <= this.targets.length - 1;
     const edgeCheck = moveNext ?
       this.targetIndex < this.targets.length - 1 : this.targetIndex > 0;
+    const canAnimate = distance && rangeCheck && edgeCheck && !this.animating;
 
-    if (distance && rangeCheck && edgeCheck) {
+    if (canAnimate) {
+      this.animating = true;
       this.target = null;
       this.resetAnimations();
 
@@ -471,7 +515,14 @@ class HorizontalPager {
         this.notifyWillComplete(distance);
 
         if (Math.abs(distance) === 1) {
-          this.rafs.push(requestAnimationFrame(this.update));
+          this.rafs.push(requestAnimationFrame(this.update.bind(this,
+            (...doneFlags) => {
+              this.completeAnimations(...doneFlags);
+              if (doneFlags.includes(true)) {
+                this.animating = false;
+              }
+            }
+          )));
         } else {
           this.rafs.push(requestAnimationFrame(this.update.bind(this, () => {
             const widthCount = Math.trunc(
@@ -481,6 +532,7 @@ class HorizontalPager {
 
             if (diff < this.opts.doneThreshold) {
               this.completeAnimations(false, moveNext, !moveNext);
+              this.animating = false;
             } else if (widthCount - lastWidthCount > 0) {
               lastWidthCount = widthCount;
 
@@ -502,24 +554,29 @@ class HorizontalPager {
         }
       });
     }
+    return canAnimate;
   }
 
   /**
    * Move to the next targetClass (page).
    * If at the end, does nothing.
    * @public
+   *
+   * @returns {Boolean} true if animation occurred, false otherwise.
    */
   next () {
-    this.animate(1);
+    return this.animate(1);
   }
 
   /**
    * Move to the previous targetClass (page).
    * If at the beginning, does nothing.
    * @public
+   *
+   * @returns {Boolean} true if animation occurred, false otherwise.
    */
   prev () {
-    this.animate(-1);
+    return this.animate(-1);
   }
 
   /**
@@ -527,9 +584,10 @@ class HorizontalPager {
    * @public
    *
    * @param {Number} distance - The number of pages to move forward (+) or back (-)
+   * @returns {Boolean} true if animation occurred, false otherwise.
    */
   moveRel (distance) {
-    this.animate(distance);
+    return this.animate(distance);
   }
 
   /**
@@ -537,9 +595,10 @@ class HorizontalPager {
    * @public
    *
    * @param {Number} index - The zero-based index to move to.
+   * @returns {Boolean} true if animation occurred, false otherwise.
    */
   moveAbs (index) {
-    this.animate(index - this.targetIndex);
+    return this.animate(index - this.targetIndex);
   }
 
   /**
@@ -557,11 +616,8 @@ class HorizontalPager {
   destroy () {
     this.resetAnimations();
     document.removeEventListener('touchstart', this.onStart);
-    document.removeEventListener('mousedown', this.onStart);
     document.removeEventListener('touchmove', this.onMove);
-    document.removeEventListener('mousemove', this.onMove);
     document.removeEventListener('touchend', this.onEnd);
-    document.removeEventListener('mouseup', this.onEnd);
   }
 }
 
