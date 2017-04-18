@@ -1,5 +1,5 @@
 /**
- * Custom Sticky behavior.
+ * Custom Sticky behavior: A specialized, composable scroll animation.
  *
  * Moves an element driven by scroll to a target element, where it stops moving,
  * or "sticks".
@@ -123,18 +123,19 @@ class CustomSticky {
     this.tickResize = false;
     this.started = false;
 
+    this.yBasisOrigins = {
+      [window.innerHeight]: null
+    };
+
     this.yBasis = undefined;
     this.saveY = 0;
     this.animate = true;
 
     this.onScroll = this.onScroll.bind(this);
     this.onResize = this.onResize.bind(this);
-    let resolver;
-    this.yBasisPromise = new Promise((resolve) => {
-      resolver = resolve;
-    });
-    this.onIntersection = this.onIntersection.bind(this, resolver);
+    this.onIntersection = this.onIntersection.bind(this);
 
+    this.resetYBasisPromise();
     const observer = createIntersectionObserver(this.onIntersection);
     observer.observe(this.movingElement);
 
@@ -161,6 +162,15 @@ class CustomSticky {
       }
     }
     return rectFn;
+  }
+
+  /**
+   * Create a new yBasis promise and resolver.
+   */
+  resetYBasisPromise () {
+    this.yBasisPromise = new Promise((resolve) => {
+      this.yBasisResolver = resolve;
+    });
   }
 
   /**
@@ -195,14 +205,40 @@ class CustomSticky {
   /**
    * Intersection observer callback handler.
    */
-  onIntersection (resolver, entries) {
-    if (typeof this.yBasis === 'undefined') {
-      const match = entries
-        .filter(e => e.target.isEqualNode(this.movingElement)).length === 1;
-      if (match) {
-        this.yBasis = this.scrollSource.scrollTop;
-        resolver();
+  onIntersection (entries) {
+    const aoi = entries.filter(e => e.target.isEqualNode(this.movingElement));
+    const entry = aoi && aoi.length > 0 ? aoi[0] : null;
+
+    if (entry) {
+      const intersected =
+        entry.intersectionRect.width > 0 || entry.intersectionRect.height > 0;
+
+      const viewportHeight = window.innerHeight;
+      const scrollTop = this.scrollSource.scrollTop;
+      const mustInitOrigin = !this.yBasisOrigins[viewportHeight];
+
+      if (mustInitOrigin) {
+        this.yBasisOrigins[viewportHeight] = {
+          intersected,
+          basis: intersected ? scrollTop : 0
+        };
       }
+
+      if (intersected) {
+        const fromTop = entry.intersectionRect.top < (viewportHeight / 2);
+
+        if (!this.yBasisOrigins[viewportHeight].intersected && !fromTop) {
+          this.yBasisOrigins[viewportHeight].intersected = true;
+          this.yBasisOrigins[viewportHeight].basis = scrollTop;
+        }
+
+        this.yBasis =
+          fromTop ? this.yBasisOrigins[viewportHeight].basis : scrollTop;
+      } else {
+        this.yBasis = undefined;
+      }
+
+      this.yBasisResolver();
     }
   }
 
@@ -224,8 +260,14 @@ class CustomSticky {
     this.animationLength = this.opts.animationLength();
 
     if (this.started) {
+      const viewportHeight = window.innerHeight;
+      let yBasisEntry = 0;
+      if (this.yBasisOrigins[viewportHeight]) {
+        yBasisEntry = this.yBasisOrigins[viewportHeight].basis;
+      }
       const progress = this.calculateProgress(y);
-      const wouldAnimate = progress < this.uBound && y >= this.yBasis;
+      const wouldAnimate = progress < this.uBound && y >= yBasisEntry;
+
       if (wouldAnimate && !this.animate) {
         this.animate = true;
         this.scrollSource.scrollTop = y + this.uBound;
@@ -235,10 +277,10 @@ class CustomSticky {
         this.saveY = Math.min(y,
           // equation is calculateProgress but solve for y
           (this.animationLength *
-            (Math.min(progress, this.uBound) / this.uBound)) + this.yBasis
+            (Math.min(progress, this.uBound) / this.uBound)) + yBasisEntry
         );
       }
-    } else {
+    } else /* if (typeof this.yBasis !== 'undefined') */ {
       this.movingElement.style.transform = previousTransform;
     }
   }
@@ -344,6 +386,10 @@ class CustomSticky {
   stop () {
     this.scrollSource.removeEventListener('scroll', this.onScroll);
     this.started = false;
+    // This can't happen b/c in this app, the driving moving element is not
+    // hidden between start/stop to cause onIntersection to fire.
+    // TODO: determine option control for this.
+    // this.resetYBasisPromise();
   }
 }
 
