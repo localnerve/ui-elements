@@ -1,25 +1,25 @@
 # horizontal-pager
 
-> WIP - A small, fast, no-dependency, horizontal pager.
+> A small, fast, no-dependency, horizontal pager.
 
 ## Features
   1.  Horizontal touch navigates to next/prev pages.
   2.  Can navigate to a page by relative distance, or absolute index.
   3.  Initial render at any page.
   4.  Uses `requestAnimationFrame` aligned (decoupled) animations.
-  5.  Does not interfere with vertical/complex page interactions.
+  5.  Does not interfere with other vertical/complex page interactions.
   6.  Tracks finger when down, then ease-out.
-  7.  Edge resistance.
-  8.  Minimal DOM update approach.
-  9.  Passive event listeners.
-  10. When navigation certain to complete, calls optional `willComplete` callback.
-  11. Optional `done` callback for notification after navigation complete.
-  12. A css class identifies scroll level items (pages).
-  13. 9k min bundle, 2.7k gzip.
+  7.  Optional continuous scroll operation.
+  8.  Edge resistance (for when continuous is undesired).
+  9.  Minimal DOM update approach.
+  10. Passive event listeners.
+  11. When navigation certain to complete, calls optional `willComplete` callback.
+  12. Optional `done` callback for notification after navigation complete.
+  13. A css class identifies scroll level items (pages).
+  14. 9.4k min bundle, 2.8k gzip.
 
 ## Missing Features
-  1.  No continuous option (infinite, last-wraps-to-first and vice-versa).
-  2.  No touch velocity considerations.
+  1.  No touch velocity considerations.
 
 ## API
 ### Top-level API
@@ -33,10 +33,11 @@ Requires a global `document` to be available when called.
 | :--- | :--- | :--- |
 | `targetClass` | String | The class that identifies the scroll targets (pages in the horizontal-pager). Must be supplied. |
 | `[startIndex]` | Number | Which scroll target to show initially. Optional, defaults to 0, the first element returned from querySelectorAll on targetClass. |
+| `[continuous]` | Boolean | True allows scroll to wrap around the ends, defaults to false. |
 | `[scrollThreshold]` | Number | Less than 1, the percentage of width beyond which a touch will cause a complete scroll to the next page. Optional, defaults to 0.35 (35 percent). |
 | `[doneThreshold]` | Number | The translateX pixel value below which to stop animations. Defaults to 1 (Will not animate below 1px). |
 | `[done]` | Function | A function to call after a scroll has completed. |
-| `[willComplete]` | Function | A function to call when a scroll will complete very soon. For touch, called when scrollThreshold is surpassed and `touchend` is fired. Receives the distance moved as a single argument, -1 for previous, for example. |
+| `[willComplete]` | Function | A function to call when a scroll will complete shortly. For touch, called when scrollThreshold is surpassed and `touchend` is fired. Receives the distance moved as a single argument, -1 for previous, for example. |
 
 ### Instance API
 
@@ -50,7 +51,7 @@ Moves to the next target as identified by `targetClass`. If the current target i
 Moves to the previous target as identified by `targetClass`. If the current target is the beginning, nothing happens. No arguments. Returns a boolean indicating if the animation will occur in the next animation frame.
 
 #### moveRel (distance)
-Moves `distance` targets away from the current `targetClass`. If the specified distance would move out of bounds, nothing happens. A `distance` of -1 is a synonym for `prev`. Returns a boolean indicating if the animation will occur in the next animation frame.
+Moves `distance` targets away from the current `targetClass`. If the specified distance would move out of bounds, nothing happens. A `distance` of -1 is a synonym for `prev`. Returns a boolean indicating if the animation will occur in the next animation frame. If continuous mode, then absolute value of the distance cannot exceed the number of scroll targets.
 
 #### moveAbs (index)
 Moves to the `targetClass` at the zero-based index. If an out of bounds or current index is specified, nothing happens. Returns a boolean indicating if the animation will occur in the next animation frame.

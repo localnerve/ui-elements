@@ -9,17 +9,17 @@
  *  4.  Uses `requestAnimationFrame` aligned (decoupled) animations.
  *  5.  Does not interfere with vertical/complex page interactions.
  *  6.  Tracks finger when down, then ease-out.
- *  7.  Edge resistance.
- *  8.  Minimal DOM update approach.
- *  9.  Passive event listeners.
- * 10.  When finger up and navigation certain to complete, calls `willComplete`
+ *  7.  Optional continuous scroll.
+ *  8.  Edge resistance.
+ *  9.  Minimal DOM update approach.
+ *  10. Passive event listeners.
+ *  11. When finger up and navigation certain to complete, calls `willComplete`
  *      callback (optional).
- * 11.  Optional `done` callback for notification after navigation complete.
- * 12.  A css class identifies scroll level items (pages).
+ *  12. Optional `done` callback for notification after navigation complete.
+ *  13. A css class identifies scroll level items (pages).
  *
  * Missing:
- *   1.  No continuous option (last-wraps-to-first or vice-versa).
- *   2.  No touch velocity considerations.
+ *  1.  No touch velocity considerations.
  *
  * Copyright (c) 2017 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
@@ -45,6 +45,8 @@ class HorizontalPager {
    * completed.
    * @param {Function} [options.willComplete] - A function to call when a scroll
    * will complete very soon.
+   * @param {Boolean} [options.continuous] - True allows the ends to wrap around.
+   * Defaults to false.
    */
   constructor (options) {
     const noop = () => {};
@@ -53,7 +55,8 @@ class HorizontalPager {
       targetClass: '',
       startIndex: 0,
       doneThreshold: 1,
-      scrollThreshold: 0.35
+      scrollThreshold: 0.35,
+      continuous: false
     }, options);
 
     this.onStart = this.onStart.bind(this);
@@ -253,8 +256,14 @@ class HorizontalPager {
    */
   getNextSibling (target) {
     const targetClass = this.opts.targetClass;
-    const nextSib = target.nextElementSibling;
-    const nextOk = nextSib && nextSib.classList.contains(targetClass);
+    let nextSib = target.nextElementSibling;
+    let nextOk = nextSib && nextSib.classList.contains(targetClass);
+
+    if (!nextOk && this.opts.continuous) {
+      nextSib = this.targets[0];
+      nextOk = true;
+    }
+
     return nextOk ? nextSib : null;
   }
 
@@ -267,9 +276,29 @@ class HorizontalPager {
    */
   getPrevSibling (target) {
     const targetClass = this.opts.targetClass;
-    const prevSib = target.previousElementSibling;
-    const prevOk = prevSib && prevSib.classList.contains(targetClass);
+    let prevSib = target.previousElementSibling;
+    let prevOk = prevSib && prevSib.classList.contains(targetClass);
+
+    if (!prevOk && this.opts.continuous) {
+      prevSib = this.targets[this.targets.length - 1];
+      prevOk = true;
+    }
+
     return prevOk ? prevSib : null;
+  }
+
+  /**
+   * Given a distance (-1, +1), calculate the next target index.
+   * Works in continuous mode or not.
+   *
+   * @param {Number} distance - The distance to calc from the current index.
+   * @returns {Number} The next index to use.
+   */
+  calcTargetIndex (distance) {
+    const length = this.targets.length;
+    const nextIndex = this.targetIndex + distance;
+    const nextTargetIndex = (length + (nextIndex % length)) % length;
+    return nextTargetIndex;
   }
 
   /**
@@ -404,7 +433,7 @@ class HorizontalPager {
       if (!this.willCompleteOnce) {
         this.willCompleteOnce = true;
         const direction = movingLeft ? -1 : 1;
-        this.targetIndex += direction;
+        this.targetIndex = this.calcTargetIndex(direction);
         this.notifyWillComplete(direction);
       }
     }
@@ -425,13 +454,15 @@ class HorizontalPager {
     if (this.touching) {
       this.translateX = this.currentX - this.startX;
 
-      // Detect edge, add resistance and limit
-      this.atEdge = (!this.prevSib && this.translateX > 0) ||
-        (!this.nextSib && this.translateX < 0);
-      if (this.atEdge) {
-        this.translateX = this.translateX / (
-          (Math.abs(this.translateX) / this.targetWidth) + 1
-        );
+      if (!this.opts.continuous) {
+        // Detect edge, add resistance and limit
+        this.atEdge = (!this.prevSib && this.translateX > 0) ||
+          (!this.nextSib && this.translateX < 0);
+        if (this.atEdge) {
+          this.translateX = this.translateX / (
+            (Math.abs(this.translateX) / this.targetWidth) + 1
+          );
+        }
       }
     } else {
       this.translateX += (this.targetX - this.translateX) / 4;
@@ -480,10 +511,18 @@ class HorizontalPager {
    */
   animate (distance) {
     const moveNext = distance > 0;
-    const rangeCheck = this.targetIndex + distance >= 0 &&
-      this.targetIndex + distance <= this.targets.length - 1;
-    const edgeCheck = moveNext ?
-      this.targetIndex < this.targets.length - 1 : this.targetIndex > 0;
+    let edgeCheck = true;
+    let rangeCheck;
+
+    if (this.opts.continuous) {
+      rangeCheck = Math.abs(distance) <= this.targets.length;
+    } else {
+      rangeCheck = this.targetIndex + distance >= 0 &&
+        this.targetIndex + distance <= this.targets.length - 1;
+      edgeCheck = moveNext ?
+        this.targetIndex < this.targets.length - 1 : this.targetIndex > 0;
+    }
+
     const canAnimate = distance && rangeCheck && edgeCheck && !this.animating;
 
     if (canAnimate) {
@@ -511,7 +550,7 @@ class HorizontalPager {
         originalWidth = this.targetWidth;
         fullWidth = this.targetWidth * Math.abs(distance);
 
-        this.targetIndex += distance;
+        this.targetIndex = this.calcTargetIndex(distance);
         this.notifyWillComplete(distance);
 
         if (Math.abs(distance) === 1) {
