@@ -15,12 +15,15 @@ import createHorizontalPager from './horizontal-pager';
  */
 function updateBubble (distance) {
   const selectedBbl = document.querySelector('.bbl.selected');
+  const firstBbl = document.querySelector('.bbl:first-child');
+  const lastBbl = document.querySelector('.bbl:last-child');
   let sibling = selectedBbl;
   let dist = distance;
 
   while (distance > 0 ? dist-- : dist++) {
     sibling = distance > 0 ?
-      sibling.nextElementSibling : sibling.previousElementSibling;
+      sibling.nextElementSibling || firstBbl :
+      sibling.previousElementSibling || lastBbl;
   }
 
   selectedBbl.classList.remove('selected');
@@ -30,7 +33,8 @@ function updateBubble (distance) {
 document.addEventListener('DOMContentLoaded', () => {
   const horizontalPager = createHorizontalPager({
     targetClass: 'page-item',
-    willComplete: updateBubble
+    willComplete: updateBubble,
+    continuous: true
   });
   // Create a global to expose to the API.
   window.horizontalPager = horizontalPager;
