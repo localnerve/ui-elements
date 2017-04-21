@@ -8,19 +8,11 @@
       margin: 0;
       font-family: Roboto-Regular, HelveticaNeue, Arial, sans-serif
     }
-    .button-container {
-      text-align: center;
-      margin: 0.5em;
-    }
     button {
-      display: inline-block;
       background: #3774de;
-      color: #fff;
-      font-size: 1em;
-      border-radius: 0.5rem;
+      border-radius: 3px;
       border-width: 0;
-      min-width: 30%;
-      min-height: 3em;
+      min-width: 60%;
     }
     .header {
       background-color: #3774de;
@@ -80,6 +72,7 @@
     <div class="bbl-container">
       <span class="bbl selected"></span>
       <span class="bbl"></span>
+      <span class="bbl"></span>
     </div>
   </div>
   <div class="page-container">
@@ -89,15 +82,7 @@
           <div class="temporary-overlay" style="display: none;"></div>
           <div class="page-item-content">
             <h2>Hello World 1</h2>
-            <div class="button-container">
-              <button onclick="javascript: window.horizontalPager.moveAbs(1)">
-                Move second
-              </button>
-              <button onclick="javascript: alert('world 1');">Hello</button>
-              <button onclick="javascript: window.horizontalPager.moveRel(-1)">
-                Move back
-              </button>
-            </div>
+            <button onclick="javascript: alert('world 1');">Hello</button>
             <p>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas pharetra tellus tellus, nec condimentum dolor eleifend eu. Sed mi tellus, tincidunt at orci luctus, iaculis ultrices diam. Ut varius mattis lacus, at vestibulum nisl rhoncus eget. Nulla tincidunt enim a turpis interdum lobortis in nec libero. Donec mollis diam non viverra scelerisque. Quisque varius sem sed arcu bibendum, sit amet scelerisque est pharetra. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Cras vel elementum nisl, non dapibus felis. Aenean ultricies dictum leo, at venenatis urna gravida vitae.
             </p>
@@ -121,15 +106,31 @@
           <div class="temporary-overlay" style="display: none;"></div>
           <div class="page-item-content">
             <h2>Hello World 2</h2>
-            <div class="button-container">
-              <button onclick="javascript: window.horizontalPager.moveAbs(0)">
-                Move first
-              </button>
-              <button onclick="javascript: alert('world 2');">Hello</button>
-              <button onclick="javascript: window.horizontalPager.moveRel(1)">
-                Move forward
-              </button>
-            </div>
+            <button onclick="javascript: alert('world 2');">Hello</button>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas pharetra tellus tellus, nec condimentum dolor eleifend eu. Sed mi tellus, tincidunt at orci luctus, iaculis ultrices diam. Ut varius mattis lacus, at vestibulum nisl rhoncus eget. Nulla tincidunt enim a turpis interdum lobortis in nec libero. Donec mollis diam non viverra scelerisque. Quisque varius sem sed arcu bibendum, sit amet scelerisque est pharetra. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Cras vel elementum nisl, non dapibus felis. Aenean ultricies dictum leo, at venenatis urna gravida vitae.
+            </p>
+            <p>
+              Curabitur in dui ante. Suspendisse vitae augue ante. Nunc non quam interdum, fermentum urna eget, porttitor dolor. Mauris nec suscipit turpis. Donec tempor, leo et egestas malesuada, purus leo feugiat dolor, ut euismod sapien odio sit amet augue. Maecenas rutrum, ante eu commodo pellentesque, velit magna laoreet est, eget laoreet odio arcu nec nunc. Nunc et mi faucibus, sagittis est facilisis, fermentum tellus. Etiam porttitor tellus ac risus pellentesque interdum. Nunc faucibus urna ac nunc ornare posuere. Sed vestibulum est vitae vehicula euismod.
+            </p>
+            <p>
+              Vivamus nec imperdiet nisi. Nullam commodo faucibus mi, lobortis hendrerit ante bibendum eu. Pellentesque sit amet iaculis quam. Mauris semper semper purus, et placerat dolor facilisis sit amet. Nulla sed purus in enim porttitor molestie. Nam et odio vitae ipsum iaculis malesuada congue eu nibh. Duis ultricies varius magna a hendrerit. Aliquam fermentum dictum arcu, sit amet rutrum mauris aliquam non. Praesent vel lobortis nibh, sed sollicitudin enim. Praesent elit arcu, posuere vitae malesuada at, convallis sit amet nisi. Vestibulum at ultrices tortor, a molestie felis. Etiam nibh libero, euismod ac lectus quis, bibendum pellentesque urna. Praesent quis porttitor elit. Vestibulum quis nibh sit amet dolor pellentesque facilisis.
+            </p>
+            <p>
+              Sed non sapien lacinia, venenatis enim sit amet, elementum metus. Vestibulum eleifend consequat mi, quis condimentum nisl vehicula a. Ut at eleifend elit. Quisque non feugiat ligula. Pellentesque semper, leo vel hendrerit cursus, justo arcu posuere eros, a pulvinar augue sapien ut neque. Integer consectetur faucibus hendrerit. Mauris bibendum velit ac lacus gravida, non lobortis ante luctus. Duis eget orci tincidunt, fringilla diam vel, posuere orci. In tristique enim vel ipsum ultricies bibendum. Etiam dapibus laoreet maximus. Donec vitae dui lorem. Donec consequat libero et dapibus pharetra.
+            </p>
+            <p>
+              Morbi eget tristique lorem, non convallis augue. Nunc quis velit nec nibh pulvinar ultrices vitae at tortor. Nullam nibh nunc, vestibulum quis dui in, dapibus tincidunt odio. Proin enim leo, elementum eu urna in, gravida mattis nisl. Aliquam ullamcorper, enim nec vestibulum tempus, est eros fermentum mauris, at consectetur purus velit a libero. Mauris mattis libero ac ligula semper dapibus. Suspendisse potenti. Sed et urna non turpis ornare viverra. Curabitur neque elit, tincidunt efficitur nulla vitae, dictum malesuada ex. Suspendisse consectetur accumsan mattis. Donec scelerisque nisi vitae neque pretium, in vehicula arcu faucibus. Cras consectetur eu eros nec mollis. Maecenas euismod velit et diam consectetur elementum sit amet semper ipsum.
+            </p>
+          </div>
+        </div>
+      </li>
+      <li class="page-item">
+        <div class="page-item-container">
+          <div class="temporary-overlay" style="display: none;"></div>
+          <div class="page-item-content">
+            <h2>Hello World 3</h2>
+            <button onclick="javascript: alert('world 3');">Hello</button>
             <p>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas pharetra tellus tellus, nec condimentum dolor eleifend eu. Sed mi tellus, tincidunt at orci luctus, iaculis ultrices diam. Ut varius mattis lacus, at vestibulum nisl rhoncus eget. Nulla tincidunt enim a turpis interdum lobortis in nec libero. Donec mollis diam non viverra scelerisque. Quisque varius sem sed arcu bibendum, sit amet scelerisque est pharetra. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Cras vel elementum nisl, non dapibus felis. Aenean ultricies dictum leo, at venenatis urna gravida vitae.
             </p>

@@ -91,6 +91,9 @@ class HorizontalPager {
     if (this.setupTargets() > 1) {
       this.addEventListeners();
     }
+
+    // Special case flag, if continuous and two slides:
+    this.continuousTwo = this.targets.length === 2 && this.opts.continuous;
   }
 
   /**
@@ -467,6 +470,8 @@ class HorizontalPager {
     } else {
       this.translateX += (this.targetX - this.translateX) / 4;
     }
+    const skipNext = this.continuousTwo && this.translateX > 0;
+    const skipPrev = this.continuousTwo && this.translateX < 0;
     const nextX = (this.translateX + this.targetWidth).toFixed(6);
     const prevX = (this.translateX - this.targetWidth).toFixed(6);
 
@@ -481,12 +486,12 @@ class HorizontalPager {
     this.target.style.transform = `translateX(${
       (targetDone ? 0 : this.transX(nextDone || prevDone, this.translateX))
     }%)`;
-    if (this.nextSib) {
+    if (this.nextSib && !skipNext) {
       this.nextSib.style.transform = `translateX(${
         (nextDone ? 0 : this.transX(targetDone, nextX))
       }%)`;
     }
-    if (this.prevSib) {
+    if (this.prevSib && !skipPrev) {
       this.prevSib.style.transform = `translateX(${
         (prevDone ? 0 : this.transX(targetDone, prevX))
       }%)`;
