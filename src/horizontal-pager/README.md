@@ -3,20 +3,20 @@
 > A small, fast, no-dependency, horizontal pager.
 
 ## Features
-  1.  Horizontal touch navigates to next/prev pages.
-  2.  Can navigate to a page by relative distance, or absolute index.
+  1.  Horizontal touch or exposed methods move to next/prev pages.
+  2.  Interface allows animated moves by relative distance, or absolute index.
   3.  Initial render at any page.
   4.  Uses `requestAnimationFrame` aligned (decoupled) animations.
   5.  Does not interfere with other vertical/complex page interactions.
   6.  Tracks finger when down, then ease-out.
-  7.  Optional continuous scroll operation.
-  8.  Edge resistance (for when continuous is undesired).
+  7.  Optional continuous scroll (last wraps to first).
+  8.  Edge resistance (for when continuous is disabled).
   9.  Minimal DOM update approach.
   10. Passive event listeners.
   11. When navigation certain to complete, calls optional `willComplete` callback.
   12. Optional `done` callback for notification after navigation complete.
   13. A css class identifies scroll level items (pages).
-  14. 9.4k min bundle, 2.8k gzip.
+  14. ~9.4k min bundle, ~2.7k gzip.
 
 ## Missing Features
   1.  No touch velocity considerations.
@@ -58,6 +58,12 @@ Moves to the `targetClass` at the zero-based index. If an out of bounds or curre
 
 #### targetCount ()
 Returns the number of `targetClass` items found by the horizontal-pager.
+
+#### currTargetIndex ()
+Returns the index of the current target.
+
+#### prevTargetIndex ()
+Returns the index of the previous target.
 
 ## How To Use
 ### Vanilla JS
