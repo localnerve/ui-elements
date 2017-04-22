@@ -1,25 +1,6 @@
 /**
  * horizontal-pager
- *
  * A small, fast, no-dep, horizontal pager.
- * Features:
- *  1.  Horizontal touch navigates to next/prev pages.
- *  2.  Can navigate to a page by relative distance, or absolute index.
- *  3.  Initial render at any page.
- *  4.  Uses `requestAnimationFrame` aligned (decoupled) animations.
- *  5.  Does not interfere with vertical/complex page interactions.
- *  6.  Tracks finger when down, then ease-out.
- *  7.  Optional continuous scroll.
- *  8.  Edge resistance.
- *  9.  Minimal DOM update approach.
- *  10. Passive event listeners.
- *  11. When finger up and navigation certain to complete, calls `willComplete`
- *      callback (optional).
- *  12. Optional `done` callback for notification after navigation complete.
- *  13. A css class identifies scroll level items (pages).
- *
- * Missing:
- *  1.  No touch velocity considerations.
  *
  * Copyright (c) 2017 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
@@ -69,6 +50,7 @@ class HorizontalPager {
     this.notifyDone = typeof this.opts.done === 'function' ?
       setTimeout.bind(null, this.opts.done, 0) : noop;
 
+    this.lastTargetIndex = this.opts.startIndex;
     this.targetIndex = this.opts.startIndex;
     this.dataId = 'data-hpid';
     this.targetWidth = 0;
@@ -291,17 +273,18 @@ class HorizontalPager {
   }
 
   /**
-   * Given a distance (-1, +1), calculate the next target index.
+   * Given a distance (-1, +1), calculate and update the next target index.
    * Works in continuous mode or not.
    *
    * @param {Number} distance - The distance to calc from the current index.
    * @returns {Number} The next index to use.
    */
-  calcTargetIndex (distance) {
+  updateTargetIndex (distance) {
+    this.lastTargetIndex = this.targetIndex;
     const length = this.targets.length;
     const nextIndex = this.targetIndex + distance;
     const nextTargetIndex = (length + (nextIndex % length)) % length;
-    return nextTargetIndex;
+    this.targetIndex = nextTargetIndex;
   }
 
   /**
@@ -436,7 +419,7 @@ class HorizontalPager {
       if (!this.willCompleteOnce) {
         this.willCompleteOnce = true;
         const direction = movingLeft ? -1 : 1;
-        this.targetIndex = this.calcTargetIndex(direction);
+        this.updateTargetIndex(direction);
         this.notifyWillComplete(direction);
       }
     }
@@ -555,7 +538,7 @@ class HorizontalPager {
         originalWidth = this.targetWidth;
         fullWidth = this.targetWidth * Math.abs(distance);
 
-        this.targetIndex = this.calcTargetIndex(distance);
+        this.updateTargetIndex(distance);
         this.notifyWillComplete(distance);
 
         if (Math.abs(distance) === 1) {
@@ -608,7 +591,7 @@ class HorizontalPager {
    *
    * @returns {Boolean} true if animation occurred, false otherwise.
    */
-  next () {
+  moveNext () {
     return this.animate(1);
   }
 
@@ -619,7 +602,7 @@ class HorizontalPager {
    *
    * @returns {Boolean} true if animation occurred, false otherwise.
    */
-  prev () {
+  movePrev () {
     return this.animate(-1);
   }
 
@@ -646,10 +629,27 @@ class HorizontalPager {
   }
 
   /**
+   * @public
    * @returns {Number} The number of targetClass targets.
    */
-  targetCount () {
+  getTargetCount () {
     return this.targets.length;
+  }
+
+  /**
+   * @public
+   * @returns {Number} The current target index.
+   */
+  getTargetIndex () {
+    return this.targetIndex;
+  }
+
+  /**
+   * @public
+   * @returns {Number} The last (previous) target index.
+   */
+  getPrevTargetIndex () {
+    return this.lastTargetIndex;
   }
 
   /**
@@ -678,10 +678,12 @@ export default function createHorizontalPager (options) {
 
   return {
     destroy: horizontalPager.destroy.bind(horizontalPager),
-    next: horizontalPager.next.bind(horizontalPager),
-    prev: horizontalPager.prev.bind(horizontalPager),
+    next: horizontalPager.moveNext.bind(horizontalPager),
+    prev: horizontalPager.movePrev.bind(horizontalPager),
     moveRel: horizontalPager.moveRel.bind(horizontalPager),
     moveAbs: horizontalPager.moveAbs.bind(horizontalPager),
-    targetCount: horizontalPager.targetCount.bind(horizontalPager)
+    targetCount: horizontalPager.getTargetCount.bind(horizontalPager),
+    currTargetIndex: horizontalPager.getTargetIndex.bind(horizontalPager),
+    prevTargetIndex: horizontalPager.getPrevTargetIndex.bind(horizontalPager)
   };
 }
