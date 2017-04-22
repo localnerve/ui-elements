@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     willComplete: updateBubble,
     continuous: true
   });
-  // Create a global to expose to the API.
+  // Create a global to expose the API.
   window.horizontalPager = horizontalPager;
 }, {
   once: true
