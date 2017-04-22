@@ -134,6 +134,8 @@ gulp.task('copy', () =>
     `${srcRoot}/**/*.jpg`,
     `${srcRoot}/**/${jsBundle}`,
     `${srcRoot}/**/node_modules/**`,
+    `!${srcRoot}/horizontal-pager/node_modules`,
+    `!${srcRoot}/horizontal-pager/node_modules/**`
   ])
     .pipe(gulp.dest('dist'))
 );
