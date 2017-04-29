@@ -38,6 +38,10 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   // Create a global to expose the API.
   window.horizontalPager = horizontalPager;
+
+  if (window.parent) {
+    window.parent.postMessage('horizontalPager', window.location.origin);
+  }
 }, {
   once: true
 });
