@@ -10,6 +10,7 @@
     "installs": "gulp installs",
     "copy": "gulp copy",
     "dev": "npm run build:dev && node index.js",
+    "pretest": "node ./test/helpers/download-test-browsers.js",
     "test": "npm run build && npm run lint && mocha",
     "start": "npm run build && node index.js"
   },

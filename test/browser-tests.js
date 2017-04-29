@@ -10,6 +10,7 @@
 const path = require('path');
 const fs = require('fs');
 const seleniumAssistant = require('selenium-assistant');
+const minVersions = require('./helpers/min-versions');
 const createLocalServer = require('../src/utils/local-server');
 const { getSourceDirsSync } = require('../src/utils/dirs');
 const { startWebDriverMochaTests } = require('../src/utils/mocha');
@@ -29,12 +30,12 @@ const browserDirections = {
         deviceName: 'iPhone 6'
       }
     },
-    minVersion: 51
+    minVersion: minVersions.chrome
   },
   firefox: {
     capabilityOptionName: 'firefoxOptions',
     capabilities: null,
-    minVersion: 51
+    minVersion: minVersions.firefox
   }
 };
 
