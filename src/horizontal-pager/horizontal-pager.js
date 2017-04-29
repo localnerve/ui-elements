@@ -5,7 +5,7 @@
  * Copyright (c) 2017 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
-/* global document, setTimeout, requestAnimationFrame, cancelAnimationFrame */
+/* global Promise, document, setTimeout, requestAnimationFrame, cancelAnimationFrame */
 
 class HorizontalPager {
   /**
@@ -514,74 +514,86 @@ class HorizontalPager {
     const canAnimate = distance && rangeCheck && edgeCheck && !this.animating;
 
     if (canAnimate) {
-      this.animating = true;
-      this.target = null;
-      this.resetAnimations();
+      return new Promise((resolve) => {
+        this.animating = true;
+        this.target = null;
+        this.resetAnimations();
 
-      let fullWidth;
-      let originalWidth;
-      let lastWidthCount;
+        let fullWidth;
+        let originalWidth;
+        let lastWidthCount;
 
-      requestAnimationFrame(() => {
-        this.target = this.targets[this.targetIndex];
-        this.targetWidth = this.target.getBoundingClientRect().width;
-        this.prevSib = this.getPrevSibling(this.target);
-        this.nextSib = this.getNextSibling(this.target);
+        requestAnimationFrame(() => {
+          this.target = this.targets[this.targetIndex];
+          this.targetWidth = this.target.getBoundingClientRect().width;
+          this.prevSib = this.getPrevSibling(this.target);
+          this.nextSib = this.getNextSibling(this.target);
 
-        this.currentX = this.currentX || 0;
-        this.startX = this.currentX;
-        this.translateX = this.currentX - this.startX;
-        this.targetX = this.targetWidth * distance * -1;
-        this.touching = false;
+          this.currentX = this.currentX || 0;
+          this.startX = this.currentX;
+          this.translateX = this.currentX - this.startX;
+          this.targetX = this.targetWidth * distance * -1;
+          this.touching = false;
 
-        lastWidthCount = 0;
-        originalWidth = this.targetWidth;
-        fullWidth = this.targetWidth * Math.abs(distance);
+          lastWidthCount = 0;
+          originalWidth = this.targetWidth;
+          fullWidth = this.targetWidth * Math.abs(distance);
 
-        this.updateTargetIndex(distance);
-        this.notifyWillComplete(distance);
+          this.updateTargetIndex(distance);
+          this.notifyWillComplete(distance);
 
-        if (Math.abs(distance) === 1) {
-          this.rafs.push(requestAnimationFrame(this.update.bind(this,
-            (...doneFlags) => {
-              this.completeAnimations(...doneFlags);
-              if (doneFlags.includes(true)) {
+          if (Math.abs(distance) === 1) {
+            this.rafs.push(requestAnimationFrame(this.update.bind(this,
+              (...doneFlags) => {
+                this.completeAnimations(...doneFlags);
+                if (doneFlags.includes(true)) {
+                  this.animating = false;
+                  resolve({
+                    currTargetIndex: this.targetIndex,
+                    prevTargetIndex: this.lastTargetIndex,
+                    distance
+                  });
+                }
+              }
+            )));
+          } else {
+            this.rafs.push(requestAnimationFrame(this.update.bind(this, () => {
+              const widthCount = Math.trunc(
+                Math.abs(this.translateX) / originalWidth
+              );
+              const diff = fullWidth - Math.abs(this.translateX);
+
+              if (diff < this.opts.doneThreshold) {
+                this.completeAnimations(false, moveNext, !moveNext);
                 this.animating = false;
+                resolve({
+                  currTargetIndex: this.targetIndex,
+                  prevTargetIndex: this.lastTargetIndex,
+                  distance
+                });
+              } else if (widthCount - lastWidthCount > 0) {
+                lastWidthCount = widthCount;
+
+                this.completeAnimations(false, moveNext, !moveNext, true);
+
+                this.targetWidth += originalWidth;
+
+                if (moveNext) {
+                  this.prevSib = this.target;
+                  this.target = this.nextSib;
+                  this.nextSib = this.getNextSibling(this.target);
+                } else {
+                  this.nextSib = this.target;
+                  this.target = this.prevSib;
+                  this.prevSib = this.getPrevSibling(this.target);
+                }
               }
-            }
-          )));
-        } else {
-          this.rafs.push(requestAnimationFrame(this.update.bind(this, () => {
-            const widthCount = Math.trunc(
-              Math.abs(this.translateX) / originalWidth
-            );
-            const diff = fullWidth - Math.abs(this.translateX);
-
-            if (diff < this.opts.doneThreshold) {
-              this.completeAnimations(false, moveNext, !moveNext);
-              this.animating = false;
-            } else if (widthCount - lastWidthCount > 0) {
-              lastWidthCount = widthCount;
-
-              this.completeAnimations(false, moveNext, !moveNext, true);
-
-              this.targetWidth += originalWidth;
-
-              if (moveNext) {
-                this.prevSib = this.target;
-                this.target = this.nextSib;
-                this.nextSib = this.getNextSibling(this.target);
-              } else {
-                this.nextSib = this.target;
-                this.target = this.prevSib;
-                this.prevSib = this.getPrevSibling(this.target);
-              }
-            }
-          })));
-        }
+            })));
+          }
+        });
       });
     }
-    return canAnimate;
+    return Promise.resolve(false);
   }
 
   /**

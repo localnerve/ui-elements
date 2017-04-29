@@ -4,16 +4,12 @@
 /* global console, require */
 /* eslint-disable no-console, import/no-unresolved */
 
-const express = require('express');
+const path = require('path');
+const createLocalServer = require('./src/utils/local-server');
 
-const server = express();
-const rootDir = '.';
 const port = 3010;
+const localServer = createLocalServer();
 
-server.use(express.static(rootDir));
-server.listen(port, (err) => {
-  if (err) {
-    return console.error(err);
-  }
-  return console.log(`listening on port ${port}`);
-});
+localServer.start(path.join(__dirname, '.'), port)
+  .then(portNumber => console.log(`listening on port ${portNumber}`))
+  .catch(err => console.error(err));

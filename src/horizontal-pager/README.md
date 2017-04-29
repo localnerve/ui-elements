@@ -16,10 +16,13 @@
   11. When navigation certain to complete, calls optional `willComplete` callback.
   12. Optional `done` callback for notification after navigation complete.
   13. A css class identifies scroll level items (pages).
-  14. ~9.4k min bundle, ~2.7k gzip.
+  14. ~9.6k min bundle, ~2.8k gzip.
 
 ## Missing Features
   1.  No touch velocity considerations.
+
+## Presumptions
+Presumes the browser has Promise support for the move commands in the API. If the browser does not have Promise support, it is the developer (user) responsibility to ensure polyfills are supplied when necessary.
 
 ## API
 ### Top-level API
@@ -44,17 +47,17 @@ Requires a global `document` to be available when called.
 #### destroy ()
 Stops event listening and any pending animations. Requires a global `document` to be available when called. No arguments, no return.
 
-#### next ()
-Moves to the next target as identified by `targetClass`. If the current target is the end, nothing happens. No arguments. Returns a boolean indicating if the animation will occur in the next animation frame.
+#### *Promise* next ()
+Moves to the next target as identified by `targetClass`. If the current target is the end, nothing happens. No arguments. Returns a Promise that resolves after the move has completed. The resolver receives a [moveResult](#moveResult-object) object on success, or null if the animation could not be executed because one is already in progress.
 
-#### prev ()
-Moves to the previous target as identified by `targetClass`. If the current target is the beginning, nothing happens. No arguments. Returns a boolean indicating if the animation will occur in the next animation frame.
+#### *Promise* prev ()
+Moves to the previous target as identified by `targetClass`. If the current target is the beginning, nothing happens. No arguments. Returns a Promise that resolves after the move has completed. The resolver receives a [moveResult](#moveResult-object) object on success, or null if the animation could not be executed because one is already in progress.
 
-#### moveRel (distance)
-Moves `distance` targets away from the current `targetClass`. If the specified distance would move out of bounds, nothing happens. A `distance` of -1 is a synonym for `prev`. Returns a boolean indicating if the animation will occur in the next animation frame. If continuous mode, then absolute value of the distance cannot exceed the number of scroll targets.
+#### *Promise* moveRel (distance)
+Moves `distance` targets away from the current `targetClass`. If the specified distance would move out of bounds, nothing happens. A `distance` of -1 is a synonym for `prev`. If continuous mode, then absolute value of the distance cannot exceed the number of scroll targets. Returns a Promise that resolves after the move has completed. The resolver receives a [moveResult](#moveResult-object) object on success, or null if the animation could not be executed because one is already in progress or the argument is not acceptable.
 
-#### moveAbs (index)
-Moves to the `targetClass` at the zero-based index. If an out of bounds or current index is specified, nothing happens. Returns a boolean indicating if the animation will occur in the next animation frame.
+#### *Promise* moveAbs (index)
+Moves to the `targetClass` at the zero-based index. If an out of bounds or current index is specified, nothing happens. Returns a Promise that resolves after the move has completed. The resolver receives a [moveResult](#moveResult-object) object on success, or null if the animation could not be executed because one is already in progress or the argument is not acceptable.
 
 #### targetCount ()
 Returns the number of `targetClass` items found by the horizontal-pager.
@@ -64,6 +67,17 @@ Returns the index of the current target.
 
 #### prevTargetIndex ()
 Returns the index of the previous target.
+
+### moveResult Object
+The move animation commands, `next`, `prev`, `moveRel`, and `moveAbs` return a Promise that resolves to **null** on failure, or a `moveResult` object on success. The move result object contains the following properties:
+```javascript
+// moveResult
+{
+  currTargetIndex, // The new, current target index
+  prevTargetIndex, // The previous target index
+  distance         // The distance moved
+}
+```
 
 ## How To Use
 ### Vanilla JS

@@ -6,28 +6,9 @@ const spawn = require('child_process').spawn;
 const q = require('q');
 const gulp = require('gulp');
 const webpack = require('webpack');
+const { getSourceDirs, srcRoot } = require('./src/utils/dirs');
 
-const srcRoot = 'src';
-const ignoreDirs = [
-  'utils'
-];
 const jsBundle = 'bundle.js';
-
-/**
- * Searches `srcRoot` for top level directories, ignore `utils` directories.
- *
- * @returns {Promise} Resolves to an array of toplevel directories under srcRoot.
- */
-function getSourceDirs () {
-  return q.nfcall(fs.readdir, srcRoot)
-    .then(files =>
-      files.filter((file) => {
-        const isDir = fs.statSync(path.join(srcRoot, file)).isDirectory();
-        return isDir ? ignoreDirs.indexOf(file) === -1 : false;
-      })
-        .map(file => path.join(srcRoot, file))
-      );
-}
 
 /**
  * Returns an array of webpack config objects that assume these constraints:
@@ -62,7 +43,7 @@ function getWebpackConfig (env, dirs) {
   }
 
   return dirs.map(dir => ({
-    entry: `./${path.join(dir, 'index.js')}`,
+    entry: `${path.join(dir, 'index.js')}`,
     output: {
       path: path.resolve(dir),
       filename: `${jsBundle}`
@@ -135,7 +116,9 @@ gulp.task('copy', () =>
     `${srcRoot}/**/${jsBundle}`,
     `${srcRoot}/**/node_modules/**`,
     `!${srcRoot}/horizontal-pager/node_modules`,
-    `!${srcRoot}/horizontal-pager/node_modules/**`
+    `!${srcRoot}/horizontal-pager/node_modules/**`,
+    `!${srcRoot}/**/test`,
+    `!${srcRoot}/**/test/**`
   ])
     .pipe(gulp.dest('dist'))
 );

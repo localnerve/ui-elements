@@ -1,16 +1,16 @@
 {
   "name": "ui-elements",
-  "version": "1.1.1",
+  "version": "2.0.0",
   "description": "A repo of ui elements",
   "main": "index.js",
   "scripts": {
-    "build": "rimraf dist && gulp webpack && gulp copy",
+    "build": "rimraf dist && npm run installs && gulp webpack && gulp copy",
     "build:dev": "rimraf dist && gulp webpack-dev && gulp copy",
     "lint": "eslint .",
     "installs": "gulp installs",
     "copy": "gulp copy",
     "dev": "npm run build:dev && node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run build && npm run lint && mocha",
     "start": "npm run build && node index.js"
   },
   "keywords": [
@@ -21,7 +21,12 @@
   "author": "Alex Grant (@localnerve)",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "express": "^4.14.1"
+    "chai": "^3.5.0",
+    "chromedriver": "^2.26.1",
+    "express": "^4.14.1",
+    "geckodriver": "^1.6.0",
+    "q": "^1.4.1",
+    "selenium-assistant": "^5.0.5"
   },
   "devDependencies": {
     "babel-core": "^6.22.1",
@@ -31,11 +36,11 @@
     "eslint-config-airbnb-base": "^11.0.1",
     "eslint-plugin-import": "^2.2.0",
     "gulp": "^3.9.1",
-    "q": "^1.4.1",
+    "mocha": "^3.3.0",
     "rimraf": "^2.5.4",
     "webpack": "^2.2.1"
   },
   "engines": {
-    "node": ">= 6.x"
+    "node": ">= 6.5"
   }
 }

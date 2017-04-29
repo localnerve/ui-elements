@@ -1,5 +1,7 @@
 # LocalNerve UI Elements
 
+[![Build Status](https://travis-ci.org/localnerve/ui-elements.svg?branch=master)](https://travis-ci.org/localnerve/ui-elements)
+
 > A repo of various UI elements and experiments
 
 ## UI Elements
