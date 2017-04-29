@@ -4,7 +4,7 @@
   "description": "A repo of ui elements",
   "main": "index.js",
   "scripts": {
-    "build": "rimraf dist && gulp webpack && gulp copy",
+    "build": "rimraf dist && npm run installs && gulp webpack && gulp copy",
     "build:dev": "rimraf dist && gulp webpack-dev && gulp copy",
     "lint": "eslint .",
     "installs": "gulp installs",
