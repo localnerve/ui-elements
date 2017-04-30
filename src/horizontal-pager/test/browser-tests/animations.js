@@ -1,5 +1,5 @@
 /**
- * Horizontal-pager next an prev function tests.
+ * Horizontal-pager in-browser unit tests.
  *
  * Copyright (c) 2017 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
@@ -11,25 +11,66 @@ describe('Animation Tests', function () {
   const targetClass = 'page-item';
   const mainFrameId = '#demo-main';
   const twoFrameId = '#demo-two';
+  const txComplete = 'translateX(0';
 
+  /**
+   * Make sure the moveResult has required properties.
+   *
+   * @param {Object} result - A moveResult object as documented/expected.
+   */
+  function verifyMoveResult (result) {
+    if (!result) {
+      throw new Error('moveResult was unexpectedly null');
+    }
+    if (!('currTargetIndex' in result)) {
+      throw new Error('moveResult missing currTargetIndex property');
+    }
+    if (!('prevTargetIndex' in result)) {
+      throw new Error('moveResult missing prevTargetIndex property');
+    }
+    if (!('distance' in result)) {
+      throw new Error('moveResult missing distance property');
+    }
+  }
+
+  /**
+   * Verify the moveResult is as expected.
+   *
+   * @param {Object} doc - The contentDocument for the frame under test.
+   * @param {Number} expectedPrev - The number expected for prevTargetIndex.
+   * @param {Number} expectedCurr - The number expected for currTargetIndex.
+   * @param {Object} result - The moveResult object from horizontalPager.
+   */
   function verifyResult (doc, expectedPrev, expectedCurr, result) {
-    const txComplete = 'translateX(0';
+    verifyMoveResult(result);
+
     const pages = doc.querySelectorAll(`.${targetClass}`);
+
     const currTransform = pages[result.currTargetIndex].style.transform;
     const notCurrent = [...Array(pages.length).keys()];
     notCurrent.splice(result.currTargetIndex, 1);
 
+    // The current completed tranform should be a form of translateX(0)
     currTransform.should.contain(txComplete);
 
+    // All the others should not be that.
     notCurrent.forEach((pageIndex) => {
       const pageTransform = pages[pageIndex].style.transform;
       pageTransform.should.not.contain(txComplete);
     });
 
+    // Make sure the result indexes agree with the expected situation.
     expectedCurr.should.equal(result.currTargetIndex);
     expectedPrev.should.equal(result.prevTargetIndex);
   }
 
+  /**
+   * Get horizontalPager and bound verifyResult bound to a particular iframe
+   * hosted demo.
+   *
+   * @param {String} demoId - The id of the desired frame hosting a demo page.
+   * @returns {Promise} Resolves to object with `horizontalPager` and `verify`.
+   */
   function getDemoSubjects (demoId) {
     const demo = document.querySelector(demoId);
     const verify = verifyResult.bind(this, demo.contentDocument);
