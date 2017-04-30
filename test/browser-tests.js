@@ -9,6 +9,7 @@
 
 const path = require('path');
 const fs = require('fs');
+const util = require('util');
 const seleniumAssistant = require('selenium-assistant');
 const minVersions = require('./helpers/min-versions');
 const createLocalServer = require('../src/utils/local-server');
@@ -136,7 +137,7 @@ describe('Perform Browser Tests', function () {
       )
       .then((testResults) => {
         if (testResults.failed.length > 0) {
-          throw new Error('Failing Browser Test(s). See log for details.');
+          throw new Error(`${util.inspect(testResults.failed, { depth: null })}`);
         }
       });
     });
