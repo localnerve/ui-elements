@@ -14,6 +14,11 @@
       height: 0;
     }
 
+    #mocha {
+      /* firefox 54 will not fire raf if test results push demo frame out of view */
+      height: 1em;
+      width: 100vw;
+    }
     #demo-main, #demo-two {
       display: block;
       position: relative;
