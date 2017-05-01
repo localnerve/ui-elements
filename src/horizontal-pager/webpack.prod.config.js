@@ -11,8 +11,8 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'index.js',
-    library: "horizontalPager",
-    libraryTarget: "umd"
+    library: 'horizontalPager',
+    libraryTarget: 'umd'
   },
   module: {
     loaders: [{
