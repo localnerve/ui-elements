@@ -22,7 +22,14 @@
   1.  No touch velocity considerations.
 
 ## Presumptions
-Presumes the browser has Promise support for the move commands in the API. If the browser does not have Promise support, it is the developer (user) responsibility to ensure polyfills are supplied when necessary.
+This code presumes browser support for the following globals:
+* Promise
+* requestAnimationFrame
+* cancelAnimationFrame
+If a browser is missing support, it is the developer (user) responsibility to ensure these globals are polyfilled as necessary. Polyfills are not supplied with this library.
+
+## RAF considerations
+Since this uses requestAnimationFrame, you may benefit from knowing that RAF will be suspended by browsers under some conditions. There is an answer [here](http://stackoverflow.com/questions/15871942/how-do-browsers-pause-change-javascript-when-tab-or-window-is-not-active) that sheds some good light on this. Further, I discovered via this project's unit tests, that firefox 54 (linux) disables RAF when an element has been scrolled beyond viewport visibility.
 
 ## API
 ### Top-level API
