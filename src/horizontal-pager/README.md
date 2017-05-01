@@ -22,7 +22,15 @@
   1.  No touch velocity considerations.
 
 ## Presumptions
-Presumes the browser has Promise support for the move commands in the API. If the browser does not have Promise support, it is the developer (user) responsibility to ensure polyfills are supplied when necessary.
+This code presumes browser support for the following globals:
+* Promise
+* requestAnimationFrame
+* cancelAnimationFrame  
+
+If a browser is missing support, it is the developer (user) responsibility to ensure these globals are polyfilled as necessary. Polyfills are not supplied with this library.
+
+## RAF considerations
+Since this uses requestAnimationFrame, you may benefit from knowing that RAF will be suspended by browsers under some conditions. There is an answer [here](http://stackoverflow.com/questions/15871942/how-do-browsers-pause-change-javascript-when-tab-or-window-is-not-active) that sheds some good light on this. Further, I discovered via this project's unit tests, that firefox 54 (linux) disables RAF when a "page" (an element identified by `options.targetClass`) has been scrolled beyond viewport visibility.
 
 ## API
 ### Top-level API
@@ -44,20 +52,17 @@ Requires a global `document` to be available when called.
 
 ### Instance API
 
-#### destroy ()
-Stops event listening and any pending animations. Requires a global `document` to be available when called. No arguments, no return.
-
 #### *Promise* next ()
-Moves to the next target as identified by `targetClass`. If the current target is the end, nothing happens. No arguments. Returns a Promise that resolves after the move has completed. The resolver receives a [moveResult](#moveResult-object) object on success, or null if the animation could not be executed because one is already in progress.
+Moves to the next target as identified by `targetClass`. If the current target is the end, nothing happens. No arguments. Returns a Promise that resolves after the move has completed. The resolver receives a [moveResult](#moveresult-object) object on success, or null if the animation could not be executed because one is already in progress.
 
 #### *Promise* prev ()
-Moves to the previous target as identified by `targetClass`. If the current target is the beginning, nothing happens. No arguments. Returns a Promise that resolves after the move has completed. The resolver receives a [moveResult](#moveResult-object) object on success, or null if the animation could not be executed because one is already in progress.
+Moves to the previous target as identified by `targetClass`. If the current target is the beginning, nothing happens. No arguments. Returns a Promise that resolves after the move has completed. The resolver receives a [moveResult](#moveresult-object) object on success, or null if the animation could not be executed because one is already in progress.
 
 #### *Promise* moveRel (distance)
-Moves `distance` targets away from the current `targetClass`. If the specified distance would move out of bounds, nothing happens. A `distance` of -1 is a synonym for `prev`. If continuous mode, then absolute value of the distance cannot exceed the number of scroll targets. Returns a Promise that resolves after the move has completed. The resolver receives a [moveResult](#moveResult-object) object on success, or null if the animation could not be executed because one is already in progress or the argument is not acceptable.
+Moves `distance` targets away from the current `targetClass`. If the specified distance would move out of bounds, nothing happens. A `distance` of -1 is a synonym for `prev`. If continuous mode, then absolute value of the distance cannot exceed the number of scroll targets. Returns a Promise that resolves after the move has completed. The resolver receives a [moveResult](#moveresult-object) object on success, or null if the animation could not be executed because one is already in progress or the argument is not acceptable.
 
 #### *Promise* moveAbs (index)
-Moves to the `targetClass` at the zero-based index. If an out of bounds or current index is specified, nothing happens. Returns a Promise that resolves after the move has completed. The resolver receives a [moveResult](#moveResult-object) object on success, or null if the animation could not be executed because one is already in progress or the argument is not acceptable.
+Moves to the `targetClass` at the zero-based index. If an out of bounds or current index is specified, nothing happens. Returns a Promise that resolves after the move has completed. The resolver receives a [moveResult](#moveresult-object) object on success, or null if the animation could not be executed because one is already in progress or the argument is not acceptable.
 
 #### targetCount ()
 Returns the number of `targetClass` items found by the horizontal-pager.
@@ -67,6 +72,9 @@ Returns the index of the current target.
 
 #### prevTargetIndex ()
 Returns the index of the previous target.
+
+#### destroy ()
+Stops event listening and any pending animations. Requires a global `document` to be available when called. No arguments, no return.
 
 ### moveResult Object
 The move animation commands, `next`, `prev`, `moveRel`, and `moveAbs` return a Promise that resolves to **null** on failure, or a `moveResult` object on success. The move result object contains the following properties:

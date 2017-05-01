@@ -12,21 +12,25 @@
 
   const horizontalPagers = {};
 
-  window.addEventListener('message', (e) => {
-    if (e.data === 'horizontalPager') {
-      const mainFrame = document.querySelector(mainFrameId);
-      const twoFrame = document.querySelector(twoFrameId);
-      const mainHp = mainFrame.contentWindow.horizontalPager;
-      const twoHp = twoFrame.contentWindow.horizontalPager;
+  let mainFrame;
+  let twoFrame;
 
-      if (mainHp) {
-        horizontalPagers[mainFrameId] = mainHp;
-      }
-      if (twoHp) {
-        horizontalPagers[twoFrameId] = twoFrame.contentWindow.horizontalPager;
-      }
-    }
+  document.addEventListener('DOMContentLoaded', () => {
+    mainFrame = document.querySelector(mainFrameId);
+    twoFrame = document.querySelector(twoFrameId);
   });
+
+  function pollHorizontalPagers () {
+    const mainHp = mainFrame.contentWindow.horizontalPager;
+    const twoHp = twoFrame.contentWindow.horizontalPager;
+
+    if (mainHp && !horizontalPagers[mainFrameId]) {
+      horizontalPagers[mainFrameId] = mainHp;
+    }
+    if (twoHp && !horizontalPagers[twoFrameId]) {
+      horizontalPagers[twoFrameId] = twoHp;
+    }
+  }
 
   function getHorizontalPager (frameId) {
     return new Promise((resolve) => {
@@ -34,6 +38,7 @@
       let poll = 0;
 
       const pagerPoll = setInterval(() => {
+        pollHorizontalPagers();
         if (horizontalPagers[frameId]) {
           resolve(horizontalPagers[frameId]);
         }

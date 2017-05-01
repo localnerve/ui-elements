@@ -593,7 +593,7 @@ class HorizontalPager {
         });
       });
     }
-    return Promise.resolve(false);
+    return Promise.resolve(null);
   }
 
   /**
