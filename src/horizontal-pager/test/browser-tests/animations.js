@@ -79,8 +79,7 @@ describe('Animation Tests', function () {
       [twoFrameId]: window.__testUtils.getHorizontalPagerTwo
     };
 
-    return getMethods[demoId]()
-    .then(horizontalPager => ({
+    return getMethods[demoId]().then(horizontalPager => ({
       horizontalPager,
       verify
     }));
