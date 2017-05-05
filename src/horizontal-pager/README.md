@@ -1,4 +1,5 @@
 # horizontal-pager
+[![npm version](https://badge.fury.io/js/horizontal-pager.svg)](http://badge.fury.io/js/horizontal-pager)
 
 > A small, fast, no-dependency, horizontal pager.
 
@@ -95,8 +96,8 @@ See `DOMContentLoaded`, `unload` event handlers in the [example](index.js).
 Deliver the `horizontal-pager.js` script with your page. In a universal app, you will want to deliver the `startIndex` to the client to initially render the proper `targetClass` page for the current route. On the client, give the `startIndex` and `targetClass` options to the top-level api function `createHorizontalPager` prior to the first client render.
 Client-side Usage:
   1.  Call the top-level api function `createHorizontalPager` (the default export), and give it the options. This starts listening to events, and returns an interface to the horizontal-pager instance.
-    * Requires a global `document` to be available.
-      * In `React`, a good place to do this is in `componentDidMount`.
+  + Requires a global `document` to be available.
+    + In `React`, a good place to do this is in `componentDidMount`.
   2.  When you're done, call `destroy` on the horizontal-pager instance to stop animations and events.
-    * Requires a global `document` to be available.
-      * In `React`, a good place to do this is in `componentWillUnmount`.
+    + Requires a global `document` to be available.
+      + In `React`, a good place to do this is in `componentWillUnmount`.
