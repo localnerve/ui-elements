@@ -14,7 +14,7 @@ const seleniumAssistant = require('selenium-assistant');
 const minVersions = require('./helpers/min-versions');
 const createLocalServer = require('../src/utils/local-server');
 const { getSourceDirsSync } = require('../src/utils/dirs');
-const { startWebDriverMochaTests } = require('../src/utils/mocha');
+const { startWebDriverMochaTests } = require('./helpers/mocha');
 
 // Serve assets from project root.
 const serverPath = path.join(__dirname, '..');

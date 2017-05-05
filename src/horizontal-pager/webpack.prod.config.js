@@ -9,8 +9,10 @@ const webpack = require('webpack');
 module.exports = {
   entry: path.join(__dirname, 'horizontal-pager.js'),
   output: {
-    path: path.join(__dirname, 'dist'),
-    filename: 'index.js'
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'index.js',
+    library: 'horizontalPager',
+    libraryTarget: 'umd'
   },
   module: {
     loaders: [{

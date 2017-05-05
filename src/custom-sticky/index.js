@@ -66,6 +66,7 @@ window.addEventListener('DOMContentLoaded', () => {
     scrollSelector: mainSelector,
     movingSelector: '.navigation-container',
     target: 'header',
+    alwaysVisible: true,
     animationLength: () => navContainer.getBoundingClientRect().top,
     notify: () => {
       document.querySelector('header').classList.toggle('tint');

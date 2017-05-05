@@ -48,11 +48,14 @@ class CustomSticky {
    * Defaults to the appropriate translation for the direction.
    * @param {Function} [options.notify] - Called when the moving element sticks or becomes unstuck.
    * Callback receives boolean `true` for stuck, `false` otherwise.
+   * @param {Boolean} [options.alwaysVisible] - True indicates the movingSelector element is
+   * always visible and never goes out of the viewport. Defaults to false.
    */
   constructor (options) {
     this.opts = Object.assign({}, {
       resizeWait: 150,
       direction: CSDirection.up,
+      alwaysVisible: false,
       animationLength: () => window.innerHeight
     }, options);
 
@@ -135,7 +138,10 @@ class CustomSticky {
     this.onResize = this.onResize.bind(this);
     this.onIntersection = this.onIntersection.bind(this);
 
-    this.resetYBasisPromise();
+    this.yBasisPromise = new Promise((resolve) => {
+      this.yBasisResolver = resolve;
+    });
+
     const observer = createIntersectionObserver(this.onIntersection);
     observer.observe(this.movingElement);
 
@@ -166,11 +172,14 @@ class CustomSticky {
 
   /**
    * Create a new yBasis promise and resolver.
+   * Only if not alwaysVisible.
    */
   resetYBasisPromise () {
-    this.yBasisPromise = new Promise((resolve) => {
-      this.yBasisResolver = resolve;
-    });
+    if (!this.opts.alwaysVisible) {
+      this.yBasisPromise = new Promise((resolve) => {
+        this.yBasisResolver = resolve;
+      });
+    }
   }
 
   /**
@@ -386,10 +395,7 @@ class CustomSticky {
   stop () {
     this.scrollSource.removeEventListener('scroll', this.onScroll);
     this.started = false;
-    // This can't happen b/c in this app, the driving moving element is not
-    // hidden between start/stop to cause onIntersection to fire.
-    // TODO: determine option control for this.
-    // this.resetYBasisPromise();
+    this.resetYBasisPromise();
   }
 }
 
@@ -415,13 +421,21 @@ class CustomSticky {
  * Defaults to the appropriate translation for the direction.
  * @param {Function} [options.notify] - Called when the moving element sticks or becomes unstuck.
  * Callback receives boolean `true` for stuck, `false` otherwise.
+ * @param {Boolean} [options.alwaysVisible] - True indicates the movingSelector element is
+ * always visible and never goes out of the viewport. Defaults to false.
  */
 export function createCustomSticky (options = {}) {
   const customSticky = new CustomSticky(options);
+  let startedPeers;
 
   return {
-    getUpdateResize: () => customSticky.updateResize.bind(customSticky),
-    getUpdateScroll: () => customSticky.updateScroll.bind(customSticky),
+    _: {
+      getUpdateResize: () => customSticky.updateResize.bind(customSticky),
+      getUpdateScroll: () => (y, fa) => customSticky.yBasisPromise.then(() => {
+        customSticky.updateScroll(y, fa);
+      }),
+      reset: customSticky.resetYBasisPromise.bind(customSticky)
+    },
     getLastY: () => customSticky.saveY,
     /**
      * @param {Array} [peers] - Collection of CustomSticky objects listening on
@@ -435,7 +449,7 @@ export function createCustomSticky (options = {}) {
 
       if (startedWithPeers) {
         const selfUpdateScroll = CustomSticky.prototype.updateScroll.bind(customSticky);
-        const peerUpdateScrolls = peers.map(peer => peer.getUpdateScroll());
+        const peerUpdateScrolls = peers.map(peer => peer._.getUpdateScroll());
 
         customSticky.updateScroll = (y, force) => {
           selfUpdateScroll(y, force);
@@ -443,17 +457,27 @@ export function createCustomSticky (options = {}) {
         };
 
         const selfUpdateResize = CustomSticky.prototype.updateResize.bind(customSticky);
-        const peerUpdateResizes = peers.map(peer => peer.getUpdateResize());
+        const peerUpdateResizes = peers.map(peer => peer._.getUpdateResize());
 
         customSticky.updateResize = (y) => {
           selfUpdateResize(y);
           peerUpdateResizes.forEach(update => update(y));
         };
+
+        startedPeers = peers;
+      } else {
+        startedPeers = null;
       }
 
       customSticky.start(startY);
     },
-    stop: customSticky.stop.bind(customSticky)
+    stop: () => {
+      if (startedPeers) {
+        startedPeers.forEach(peer => peer._.reset());
+      }
+
+      customSticky.stop();
+    }
   };
 }
 
