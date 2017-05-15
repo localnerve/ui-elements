@@ -48,8 +48,8 @@ Requires a global `document` to be available when called.
 | `[continuous]` | Boolean | True allows scroll to wrap around the ends, defaults to false. |
 | `[scrollThreshold]` | Number | Less than 1, the percentage of width beyond which a touch will cause a complete scroll to the next page. Optional, defaults to 0.35 (35 percent). |
 | `[doneThreshold]` | Number | The translateX pixel value below which to stop animations. Defaults to 1 (Will not animate below 1px). |
-| `[done]` | Function | A function to call after a scroll has completed. |
-| `[willComplete]` | Function | A function to call when a scroll will complete shortly. For touch, called when scrollThreshold is surpassed and `touchend` is fired. Receives the distance moved as a single argument, -1 for previous, for example. |
+| `[done]` | Function | A function to call after a scroll has completed. The function will receive a [moveResult](#moveresult-object) object. |
+| `[willComplete]` | Function | A function to call when a scroll will complete shortly. For touch, called when scrollThreshold is surpassed and `touchend` is fired. The function will receive a [moveResult](#moveresult-object) object. |
 
 ### Instance API
 
@@ -84,7 +84,7 @@ The move animation commands, `next`, `prev`, `moveRel`, and `moveAbs` return a P
 {
   currTargetIndex, // The new, current target index
   prevTargetIndex, // The previous target index
-  distance         // The distance moved
+  distance         // The distance moved, eg: -1 for one back, 2 for two forward
 }
 ```
 

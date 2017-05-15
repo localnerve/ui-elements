@@ -11,9 +11,10 @@ import createHorizontalPager from './horizontal-pager';
 /**
  * HorizontalPager callback to update the page indicator bubbles.
  *
- * @param {Number} distance - +1 for forward (left), -1 for back (right)
+ * @param {Object} A moveResult object.
  */
-function updateBubble (distance) {
+function updateBubble (moveResult) {
+  const { distance } = moveResult;
   const selectedBbl = document.querySelector('.bbl.selected');
   const firstBbl = document.querySelector('.bbl:first-child');
   const lastBbl = document.querySelector('.bbl:last-child');
