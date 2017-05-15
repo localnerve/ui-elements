@@ -4,7 +4,7 @@
  * Copyright (c) 2017 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
-/* global Promise, describe, before, after, afterEach, it, require */
+/* global Promise, describe, before, after, it, require */
 /* eslint-disable import/no-unresolved, no-console, prefer-arrow-callback, func-names */
 
 const path = require('path');

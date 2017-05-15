@@ -4,7 +4,7 @@
  * Copyright (c) 2017 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
-/* global window, document */
+/* global document */
 /* eslint-disable import/no-unresolved */
 import { startScrollCollapse, SCConstants } from './scroll-collapse';
 
