@@ -168,11 +168,10 @@ class HorizontalPager {
    * @param {Boolean} targetDone - True if the scroll target is done, false otherwise.
    * @param {Boolean} nextDone - True if the next page is done, false otherwise.
    * @param {Boolean} prevDone - True if the prev page is done, false otherwise.
-   * @param {Boolean} styleOnly - True if only update styles.
+   * @param {Boolean} [styleOnly] - True if only update styles.
    */
   completeAnimations (targetDone, nextDone, prevDone, styleOnly) {
     if (nextDone || prevDone) {
-      const direction = nextDone ? 1 : -1;
       const nextStyle = this.nextSib ? this.nextSib.style : {};
       const prevStyle = this.prevSib ? this.prevSib.style : {};
 
@@ -188,7 +187,7 @@ class HorizontalPager {
       }
 
       if (!styleOnly) {
-        this.notifyDone(direction);
+        this.notifyDone(this.createMoveResult());
       }
     }
 
@@ -273,14 +272,32 @@ class HorizontalPager {
   }
 
   /**
+   * Create a moveResult object.
+   * Call after updateTargetIndex, use to deliver moveResult to callbacks.
+   * @private
+   *
+   * @returns {Object} A moveResult Object with
+   *   currTargetIndex, prevTargetIndex, and distance.
+   */
+  createMoveResult () {
+    return {
+      currTargetIndex: this.targetIndex,
+      prevTargetIndex: this.lastTargetIndex,
+      distance: this.targetDistance
+    };
+  }
+
+  /**
    * Given a distance (-1, +1), calculate and update the next target index.
    * Works in continuous mode or not.
+   * Updates this.lastTargetIndex, this.targetDistance, this.targetIndex.
+   * @private
    *
    * @param {Number} distance - The distance to calc from the current index.
-   * @returns {Number} The next index to use.
    */
   updateTargetIndex (distance) {
     this.lastTargetIndex = this.targetIndex;
+    this.targetDistance = distance;
     const length = this.targets.length;
     const nextIndex = this.targetIndex + distance;
     const nextTargetIndex = (length + (nextIndex % length)) % length;
@@ -420,7 +437,7 @@ class HorizontalPager {
         this.willCompleteOnce = true;
         const direction = movingLeft ? -1 : 1;
         this.updateTargetIndex(direction);
-        this.notifyWillComplete(direction);
+        this.notifyWillComplete(this.createMoveResult());
       }
     }
   }
@@ -540,7 +557,7 @@ class HorizontalPager {
           fullWidth = this.targetWidth * Math.abs(distance);
 
           this.updateTargetIndex(distance);
-          this.notifyWillComplete(distance);
+          this.notifyWillComplete(this.createMoveResult());
 
           if (Math.abs(distance) === 1) {
             this.rafs.push(requestAnimationFrame(this.update.bind(this,
@@ -548,11 +565,7 @@ class HorizontalPager {
                 this.completeAnimations(...doneFlags);
                 if (doneFlags.includes(true)) {
                   this.animating = false;
-                  resolve({
-                    currTargetIndex: this.targetIndex,
-                    prevTargetIndex: this.lastTargetIndex,
-                    distance
-                  });
+                  resolve(this.createMoveResult());
                 }
               }
             )));
@@ -566,11 +579,7 @@ class HorizontalPager {
               if (diff < this.opts.doneThreshold) {
                 this.completeAnimations(false, moveNext, !moveNext);
                 this.animating = false;
-                resolve({
-                  currTargetIndex: this.targetIndex,
-                  prevTargetIndex: this.lastTargetIndex,
-                  distance
-                });
+                resolve(this.createMoveResult());
               } else if (widthCount - lastWidthCount > 0) {
                 lastWidthCount = widthCount;
 
