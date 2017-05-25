@@ -223,6 +223,7 @@ class CustomSticky {
         entry.intersectionRect.width > 0 || entry.intersectionRect.height > 0;
 
       const viewportHeight = window.innerHeight;
+      const viewportWidth = window.innerWidth;
       const scrollTop = this.scrollSource.scrollTop;
       const mustInitOrigin = !this.yBasisOrigins[viewportHeight];
 
@@ -235,6 +236,9 @@ class CustomSticky {
 
       if (intersected) {
         const fromTop = entry.intersectionRect.top < (viewportHeight / 2);
+        const fromSide =
+          Math.abs(viewportWidth - entry.intersectionRect.right) < (viewportWidth / 10) ||
+          entry.intersectionRect.left < (viewportWidth / 10);
 
         if (!this.yBasisOrigins[viewportHeight].intersected && !fromTop) {
           this.yBasisOrigins[viewportHeight].intersected = true;
@@ -242,7 +246,7 @@ class CustomSticky {
         }
 
         this.yBasis =
-          fromTop ? this.yBasisOrigins[viewportHeight].basis : scrollTop;
+          fromTop || fromSide ? this.yBasisOrigins[viewportHeight].basis : scrollTop;
       } else {
         this.yBasis = undefined;
       }
