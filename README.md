@@ -7,12 +7,12 @@
 > A repo of various UI elements and experiments
 
 ## UI Elements
- * [horizontal-pager](/src/horizontal-pager)
- * [scroll-collapse](/src/scroll-collapse)
+ * [horizontal-pager](/src/horizontal-pager) [![npm version](https://badge.fury.io/js/horizontal-pager.svg)](http://badge.fury.io/js/horizontal-pager)
  * [simple-scroll-intersection](/src/simple-scroll-intersection)
  * [custom-sticky](/src/custom-sticky)
+ * [scroll-collapse](/src/scroll-collapse)
 
-## Demos
+## Live Demos
 https://localnerve.github.io/ui-elements  
 NOTE: Some of these may only exhibit behavior on small devices or touch screens.
 
