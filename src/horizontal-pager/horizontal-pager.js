@@ -7,6 +7,10 @@
  */
 /* global Promise, document, setTimeout, requestAnimationFrame, cancelAnimationFrame */
 
+/* eslint-disable import/no-unresolved */
+import { createPassiveEventHandlerOption } from '../utils/passiveEvent';
+/* eslint-enable import/no-unresolved */
+
 class HorizontalPager {
   /**
    * HorizontalPager constructor.
@@ -83,9 +87,7 @@ class HorizontalPager {
    * @private
    */
   addEventListeners () {
-    const options = {
-      passive: true
-    };
+    const options = createPassiveEventHandlerOption();
 
     document.addEventListener('touchstart', this.onStart, options);
     document.addEventListener('touchmove', this.onMove, options);

@@ -10,6 +10,7 @@
 /* global document, window */
 /* eslint-disable import/no-unresolved */
 import { createIntersectionObserver } from './intersection-observer';
+import { createPassiveEventHandlerOption } from '../utils/passiveEvent';
 
 export class CSDirection {
   static get up () {
@@ -145,9 +146,13 @@ class CustomSticky {
     const observer = createIntersectionObserver(this.onIntersection);
     observer.observe(this.movingElement);
 
-    window.addEventListener('resize', this.onResize, {
-      passive: true
-    });
+    this.passiveEventOption = createPassiveEventHandlerOption();
+
+    window.addEventListener(
+      'resize',
+      this.onResize,
+      this.passiveEventOption
+    );
   }
 
   /**
@@ -376,9 +381,11 @@ class CustomSticky {
    */
   start (startY) {
     this.yBasisPromise.then(() => {
-      this.scrollSource.addEventListener('scroll', this.onScroll, {
-        passive: true
-      });
+      this.scrollSource.addEventListener(
+        'scroll',
+        this.onScroll,
+        this.passiveEventOption
+      );
 
       this.started = true;
 

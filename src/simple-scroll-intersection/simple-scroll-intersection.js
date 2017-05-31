@@ -8,6 +8,10 @@
  */
 /* global window, document */
 
+/* eslint-disable import/no-unresolved */
+import { createPassiveEventHandlerOption } from '../utils/passiveEvent';
+/* eslint-enable import/no-unresolved */
+
 export class SSIConst {
   static get top () {
     return 'top';
@@ -71,6 +75,8 @@ class SimpleScrollIntersection {
     this.intersected = this.computeIntersection().intersection;
 
     this.onScroll = this.onScroll.bind(this);
+
+    this.passiveEventOption = createPassiveEventHandlerOption();
   }
 
   static optionRectFn (selectorOrFn) {
@@ -149,9 +155,11 @@ class SimpleScrollIntersection {
   }
 
   start () {
-    this.scrollSource.addEventListener('scroll', this.onScroll, {
-      passive: true
-    });
+    this.scrollSource.addEventListener(
+      'scroll',
+      this.onScroll,
+      this.passiveEventOption
+    );
   }
 
   stop () {

@@ -9,6 +9,9 @@
 /* eslint no-underscore-dangle:0 */
 /* global window, document, setTimeout, setInterval, clearInterval */
 
+/* eslint import/no-unresolved:0 */
+import { createPassiveEventHandlerOption } from '../utils/passiveEvent';
+
 /**
  * ScrollCollapse Constants
  */
@@ -84,9 +87,9 @@ class ScrollCollapse {
     this._onResize = this._onResize.bind(this);
     this._endExpand = this._endExpand.bind(this);
 
-    window.addEventListener('resize', this._onResize, {
-      passive: true
-    });
+    this._passiveEventOption = createPassiveEventHandlerOption();
+
+    window.addEventListener('resize', this._onResize, this._passiveEventOption);
   }
 
   /**
@@ -264,9 +267,11 @@ class ScrollCollapse {
     // If there is no meaningful scroll "travel" after resize, then stop the behavior.
     this._scrollSource.removeEventListener('scroll', this._onScroll);
     if (this._scrollSrcHeight > 0) {
-      this._scrollSource.addEventListener('scroll', this._onScroll, {
-        passive: true
-      });
+      this._scrollSource.addEventListener(
+        'scroll',
+        this._onScroll,
+        this._passiveEventOption
+      );
 
       this._scrollSource.style.willChange = 'scroll-position';
       this._top.el.style.willChange =
