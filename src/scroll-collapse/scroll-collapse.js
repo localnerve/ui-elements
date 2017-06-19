@@ -113,7 +113,7 @@ class ScrollCollapse {
   static getStyleNumber (style, ...props) {
     return props.reduce((acc, prop) =>
       acc + ScrollCollapse.getNumber(style.getPropertyValue(prop) || '0')
-    , 0);
+      , 0);
   }
 
   /**

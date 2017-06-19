@@ -7,12 +7,12 @@
 
 function checkExpectedPage (driver, pageId) {
   return driver.findElement({ id: pageId })
-  .then(element => element.isDisplayed())
-  .then((expected) => {
-    if (!expected) {
-      throw new Error(`${pageId} was not displayed as expected`);
-    }
-  });
+    .then(element => element.isDisplayed())
+    .then((expected) => {
+      if (!expected) {
+        throw new Error(`${pageId} was not displayed as expected`);
+      }
+    });
 }
 
 function swipeLeft (driver) {
@@ -26,31 +26,31 @@ function swipeLeft (driver) {
 function touchTests (driver) {
   console.log('Executing touch tests...'); // eslint-disable-line
   return swipeLeft(driver)
-  .then(checkExpectedPage.bind(null, driver, 'page-2'));
+    .then(checkExpectedPage.bind(null, driver, 'page-2'));
 }
 
 function startWebDriverFunctionalTests (driver, url) {
   return driver.get(url)
-  .then(checkExpectedPage.bind(null, driver, 'page-1'))
-  .then(() => driver.getCapabilities())
-  .then((capabilities) => {
-    const hasTouch = capabilities.get('hasTouchScreen');
-    if (hasTouch) {
-      return touchTests(driver);
-    }
-/*
-    TODO: fix setting capabilities
-    https://github.com/GoogleChrome/selenium-assistant/issues/90
+    .then(checkExpectedPage.bind(null, driver, 'page-1'))
+    .then(() => driver.getCapabilities())
+    .then((capabilities) => {
+      const hasTouch = capabilities.get('hasTouchScreen');
+      if (hasTouch) {
+        return touchTests(driver);
+      }
+      /*
+      TODO: fix setting capabilities
+      https://github.com/GoogleChrome/selenium-assistant/issues/90
 
-    capabilities.forEach((value, key) => {
-      console.log('@@@ caps', key, value); // eslint-disable-line
+      capabilities.forEach((value, key) => {
+        console.log('@@@ caps', key, value); // eslint-disable-line
+      });
+      */
+      return false;
+    })
+    .catch((err) => {
+      console.error(err); // eslint-disable-line
     });
-*/
-    return false;
-  })
-  .catch((err) => {
-    console.error(err); // eslint-disable-line
-  });
 }
 
 module.exports = {
