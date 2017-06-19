@@ -31,12 +31,14 @@ const browserDirections = {
         deviceName: 'iPhone 6'
       }
     },
-    minVersion: minVersions.chrome
+    minVersion: minVersions.chrome,
+    testUnstable: false
   },
   firefox: {
     capabilityOptionName: 'firefoxOptions',
     capabilities: null,
-    minVersion: minVersions.firefox
+    minVersion: minVersions.firefox,
+    testUnstable: true
   }
 };
 
@@ -192,11 +194,21 @@ describe('Perform Browser Tests', function () {
   automatedBrowsers.forEach((browserInfo) => {
     describe(`${browserInfo.getPrettyName()} tests`, () => {
       let browserOK = false;
-      const browserDirection = browserDirections[browserInfo.getId()];
+      const browserId = browserInfo.getId();
+      const browserDirection = browserDirections[browserId];
+
       if (browserDirection) {
+        const isUnstable = browserInfo.getReleaseName() === 'unstable';
+        let skip = false;
+
+        if (isUnstable) {
+          skip = !browserDirection.testUnstable;
+        }
+
         browserOK =
           browserInfo.getVersionNumber() >= browserDirection.minVersion &&
-          (functionalTests.length > 0 || unitTests.length > 0);
+          (functionalTests.length > 0 || unitTests.length > 0) &&
+          !skip;
       }
 
       if (browserOK) {
