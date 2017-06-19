@@ -1,6 +1,6 @@
 {
   "name": "ui-elements",
-  "version": "2.1.5",
+  "version": "2.1.6",
   "description": "A repo of ui elements",
   "main": "index.js",
   "scripts": {
@@ -22,7 +22,7 @@
   "author": "Alex Grant (@localnerve)",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "chromedriver": "2.29.2",
+    "chromedriver": "2.26.1",
     "express": "^4.14.1",
     "geckodriver": "^1.7.0",
     "q": "^1.4.1",
