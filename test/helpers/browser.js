@@ -47,26 +47,27 @@
 
       // pass, fail and end events allow up to capture results and
       // determine when to publish test results
-      runResults.on('pass', (test) => {
-        const parseableTest = getFriendlyTestResult(test);
-        rawTestData.push(parseableTest);
-        passedTests.push(parseableTest);
-      })
-      .on('fail', (test) => {
-        const parseableTest = getFriendlyTestResult(test);
-        rawTestData.push(parseableTest);
-        failedTests.push(parseableTest);
-      })
-      .on('end', () => {
-        resolve({
-          topLevelTitle,
-          testResults: {
-            raw: rawTestData,
-            passed: passedTests,
-            failed: failedTests
-          }
+      runResults
+        .on('pass', (test) => {
+          const parseableTest = getFriendlyTestResult(test);
+          rawTestData.push(parseableTest);
+          passedTests.push(parseableTest);
+        })
+        .on('fail', (test) => {
+          const parseableTest = getFriendlyTestResult(test);
+          rawTestData.push(parseableTest);
+          failedTests.push(parseableTest);
+        })
+        .on('end', () => {
+          resolve({
+            topLevelTitle,
+            testResults: {
+              raw: rawTestData,
+              passed: passedTests,
+              failed: failedTests
+            }
+          });
         });
-      });
 
       // No tests so end won't be called
       if (mocha.suite.suites.length === 0) {

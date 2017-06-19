@@ -31,12 +31,14 @@ const browserDirections = {
         deviceName: 'iPhone 6'
       }
     },
-    minVersion: minVersions.chrome
+    minVersion: minVersions.chrome,
+    testUnstable: false
   },
   firefox: {
     capabilityOptionName: 'firefoxOptions',
     capabilities: null,
-    minVersion: minVersions.firefox
+    minVersion: minVersions.firefox,
+    testUnstable: true
   }
 };
 
@@ -77,9 +79,9 @@ describe('Perform Browser Tests', function () {
       }
 
       return browserInfo.getSeleniumDriver()
-      .then((driver) => {
-        globalDriverReference = driver;
-      });
+        .then((driver) => {
+          globalDriverReference = driver;
+        });
     });
   };
 
@@ -95,9 +97,9 @@ describe('Perform Browser Tests', function () {
     }
 
     return seleniumAssistant.killWebDriver(globalDriverReference)
-    .then(() => {
-      globalDriverReference = null;
-    });
+      .then(() => {
+        globalDriverReference = null;
+      });
   });
 
   /**
@@ -111,14 +113,14 @@ describe('Perform Browser Tests', function () {
    */
   const queueFunctionalTest = (browserInfo, testInfo) => {
     it(`should pass functional tests for ${browserInfo.getPrettyName()} in ${testInfo.projectDir}`,
-    function () {
-      /* eslint-disable global-require, import/no-dynamic-require */
-      const tests = require(testInfo.testPath);
-      /* eslint-enable global-require, import/no-dynamic-require */
-      return tests.startWebDriverFunctionalTests(
-        globalDriverReference, testServerURL + testInfo.demoPath
-      );
-    });
+      function () {
+        /* eslint-disable global-require, import/no-dynamic-require */
+        const tests = require(testInfo.testPath);
+        /* eslint-enable global-require, import/no-dynamic-require */
+        return tests.startWebDriverFunctionalTests(
+          globalDriverReference, testServerURL + testInfo.demoPath
+        );
+      });
   };
 
   /**
@@ -129,18 +131,18 @@ describe('Perform Browser Tests', function () {
    */
   const queueUnitTest = (browserInfo, testInfo) => {
     it(`should pass unit tests for ${browserInfo.getPrettyName()} in ${testInfo.projectDir}`,
-    function () {
-      return startWebDriverMochaTests(
-        browserInfo.getPrettyName(),
-        globalDriverReference,
-        testServerURL + testInfo.testPath
-      )
-      .then((testResults) => {
-        if (testResults.failed.length > 0) {
-          throw new Error(`${util.inspect(testResults.failed, { depth: null })}`);
-        }
+      function () {
+        return startWebDriverMochaTests(
+          browserInfo.getPrettyName(),
+          globalDriverReference,
+          testServerURL + testInfo.testPath
+        )
+          .then((testResults) => {
+            if (testResults.failed.length > 0) {
+              throw new Error(`${util.inspect(testResults.failed, { depth: null })}`);
+            }
+          });
       });
-    });
   };
 
   /**
@@ -192,11 +194,21 @@ describe('Perform Browser Tests', function () {
   automatedBrowsers.forEach((browserInfo) => {
     describe(`${browserInfo.getPrettyName()} tests`, () => {
       let browserOK = false;
-      const browserDirection = browserDirections[browserInfo.getId()];
+      const browserId = browserInfo.getId();
+      const browserDirection = browserDirections[browserId];
+
       if (browserDirection) {
+        const isUnstable = browserInfo.getReleaseName() === 'unstable';
+        let skip = false;
+
+        if (isUnstable) {
+          skip = !browserDirection.testUnstable;
+        }
+
         browserOK =
           browserInfo.getVersionNumber() >= browserDirection.minVersion &&
-          (functionalTests.length > 0 || unitTests.length > 0);
+          (functionalTests.length > 0 || unitTests.length > 0) &&
+          !skip;
       }
 
       if (browserOK) {

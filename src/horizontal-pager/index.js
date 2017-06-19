@@ -44,6 +44,5 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 document.addEventListener('unload', () =>
-  window.horizontalPager && window.horizontalPager.destroy(), {
-    once: true
-  });
+  window.horizontalPager &&
+  window.horizontalPager.destroy(), { once: true });

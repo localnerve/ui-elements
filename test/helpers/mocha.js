@@ -28,13 +28,13 @@
  * @property {Array<MochaTestResult>} failed   Tests that have failed
  */
 
- /**
-  * @typedef {Object} MochaTestResult
-  * @property {String} parentTitle  Title of the parent test suite
-  * @property {String} title        Title of the test case
-  * @property {String} state        State of the test - 'passed' or 'failed'
-  * @property {String} errMessage   This is defined if the test threw an error
-  */
+/**
+ * @typedef {Object} MochaTestResult
+ * @property {String} parentTitle  Title of the parent test suite
+ * @property {String} title        Title of the test case
+ * @property {String} state        State of the test - 'passed' or 'failed'
+ * @property {String} errMessage   This is defined if the test threw an error
+ */
 
 /**
  * <p>This class is a helper that will run Mocha tests and offers consistent
@@ -88,26 +88,27 @@ class MochaUtils {
 
       // pass, fail and end events allow up to capture results and
       // determine when to publish test results
-      runResults.on('pass', (test) => {
-        const parseableTest = MochaUtils.getFriendlyTestResult(test);
-        rawTestData.push(parseableTest);
-        passedTests.push(parseableTest);
-      })
-      .on('fail', (test) => {
-        const parseableTest = MochaUtils.getFriendlyTestResult(test);
-        rawTestData.push(parseableTest);
-        failedTests.push(parseableTest);
-      })
-      .on('end', () => {
-        resolve({
-          topLevelTitle,
-          testResults: {
-            raw: rawTestData,
-            passed: passedTests,
-            failed: failedTests
-          }
+      runResults
+        .on('pass', (test) => {
+          const parseableTest = MochaUtils.getFriendlyTestResult(test);
+          rawTestData.push(parseableTest);
+          passedTests.push(parseableTest);
+        })
+        .on('fail', (test) => {
+          const parseableTest = MochaUtils.getFriendlyTestResult(test);
+          rawTestData.push(parseableTest);
+          failedTests.push(parseableTest);
+        })
+        .on('end', () => {
+          resolve({
+            topLevelTitle,
+            testResults: {
+              raw: rawTestData,
+              passed: passedTests,
+              failed: failedTests
+            }
+          });
         });
-      });
 
       // No tests so end won't be called
       if (mocha.suite.suites.length === 0) {
@@ -138,23 +139,23 @@ class MochaUtils {
   /* eslint-disable arrow-body-style, prefer-arrow-callback, func-names */
   static startWebDriverMochaTests (browserName, driver, url) {
     return driver.get(url)
-    .then(() => {
-      // We get webdriver to wait until window.testsuite.testResults is defined.
-      // This is set in the in browser mocha tests when the tests have finished
-      // successfully
-      return driver.wait(function () {
+      .then(() => {
+        // We get webdriver to wait until window.testsuite.testResults is defined.
+        // This is set in the in browser mocha tests when the tests have finished
+        // successfully
+        return driver.wait(function () {
+          return driver.executeScript(function () {
+            return (typeof window.testsuite !== 'undefined') &&
+              (typeof window.testsuite.testResults !== 'undefined');
+          });
+        });
+      })
+      .then(() => {
+        // This simply retrieves the test results from the inbrowser mocha tests
         return driver.executeScript(function () {
-          return (typeof window.testsuite !== 'undefined') &&
-            (typeof window.testsuite.testResults !== 'undefined');
+          return window.testsuite.testResults;
         });
       });
-    })
-    .then(() => {
-      // This simply retrieves the test results from the inbrowser mocha tests
-      return driver.executeScript(function () {
-        return window.testsuite.testResults;
-      });
-    });
   }
   /* eslint-enable arrow-body-style, prefer-arrow-callback, func-names */
 

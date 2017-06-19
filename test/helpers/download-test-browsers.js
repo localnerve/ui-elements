@@ -6,6 +6,9 @@ const minVersions = require('./min-versions');
 // For now, only do this if it has not previously been done, using the SA install dir
 // as the source of truth.
 const installDir = seleniumAssistant.getBrowserInstallDir();
+
+console.log('installDir', installDir); // eslint-disable-line
+
 if (!fs.existsSync(installDir)) {
   const promises = [
     seleniumAssistant.downloadLocalBrowser('chrome', 'stable', minVersions.chrome),
@@ -17,10 +20,10 @@ if (!fs.existsSync(installDir)) {
   ];
 
   Promise.all(promises)
-  .then(() => {
-    console.log('Browser download complete.');
-  })
-  .catch((err) => {
-    console.log('Failed to download browsers.', err);
-  });
+    .then(() => {
+      console.log('Browser download complete.');
+    })
+    .catch((err) => {
+      console.log('Failed to download browsers.', err);
+    });
 }
