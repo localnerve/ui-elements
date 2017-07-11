@@ -1,6 +1,6 @@
 {
   "name": "ui-elements",
-  "version": "2.1.7",
+  "version": "2.1.8",
   "description": "A repo of ui elements",
   "main": "index.js",
   "scripts": {
@@ -39,7 +39,7 @@
     "gulp": "^3.9.1",
     "mocha": "^3.4.1",
     "rimraf": "^2.5.4",
-    "webpack": "^2.2.1"
+    "webpack": "^3.1.0"
   },
   "engines": {
     "node": ">= 6.5"
