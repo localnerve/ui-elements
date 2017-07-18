@@ -26,7 +26,8 @@
 This code presumes browser support for the following globals:
 * Promise
 * requestAnimationFrame
-* cancelAnimationFrame  
+* cancelAnimationFrame
+* Object.assign  
 
 If a browser is missing support, it is the developer (user) responsibility to ensure these globals are polyfilled as necessary. Polyfills are not supplied with this library.
 
