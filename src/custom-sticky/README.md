@@ -5,6 +5,10 @@
 ## custom-sticky
 On every scroll event, moves an element to another element or an arbitrary distance, then stops (or "sticks"). All directions and transforms supported. Can be used in a group of CustomSticky instances for an animated scene. Also, can act as a custom `position: sticky` solution for times when it doesn't make sense or isn't supported.
 
+### Polyfills Required
+The following code may require polyfills, depending on your targeted browsers (polyfills are not supplied with this lib):  
+  + `Number.isNaN`  
+
 ### Top-level API
 #### *Instance* createCustomSticky (options)
 Creates an instance of custom sticky behavior for an element. Returns the instance API.
