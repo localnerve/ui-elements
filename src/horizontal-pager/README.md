@@ -3,6 +3,9 @@
 
 > A small, fast, no-dependency, horizontal pager.
 
+## Live example
+  https://localnerve.github.io/dist/horizontal-pager
+
 ## Features
   1.  Horizontal touch or exposed methods move to next/prev pages.
   2.  Interface allows animated moves by relative distance, or absolute index.
@@ -22,17 +25,21 @@
 ## Missing Features
   1.  No touch velocity considerations.
 
-## Presumptions
-This code presumes browser support for the following globals:
+## Old Browser Support
+To support older browsers, the following polyfills must be supplied by you (polyfills are not supplied with this lib):
 * Promise
-* requestAnimationFrame
-* cancelAnimationFrame
-* Object.assign  
+* requestAnimationFrame/cancelAnimationFrame
+* Object.assign
+* Math.trunc
+* Array.includes  
 
-If a browser is missing support, it is the developer (user) responsibility to ensure these globals are polyfilled as necessary. Polyfills are not supplied with this library.
+For example, here is the v2 [polyfill.io](https://polyfill.io/v2/docs/) tag required prior to loading/parsing this library:
+```
+<script src="https://ft-polyfill-service.herokuapp.com/v2/polyfill.min.js?features=Promise,requestAnimationFrame,Object.assign,Math.trunc,Array.prototype.includes"></script>
+```
 
 ## RAF considerations
-Since this uses requestAnimationFrame, you may benefit from knowing that RAF will be suspended by browsers under some conditions. There is an answer [here](http://stackoverflow.com/questions/15871942/how-do-browsers-pause-change-javascript-when-tab-or-window-is-not-active) that sheds some good light on this. Further, I discovered via this project's unit tests, that firefox 54 (linux) disables RAF when a "page" (an element identified by `options.targetClass`) has been scrolled beyond viewport visibility.
+Since this uses requestAnimationFrame, you may benefit from knowing that RAF will be suspended by browsers under some conditions. There is an answer [here](http://stackoverflow.com/questions/15871942/how-do-browsers-pause-change-javascript-when-tab-or-window-is-not-active) that sheds some good light on this. For example, I discovered via this project's unit tests, that firefox 54 (linux) disables RAF when a "page" (an element identified by `options.targetClass`) has been scrolled beyond viewport visibility.
 
 ## API
 ### Top-level API

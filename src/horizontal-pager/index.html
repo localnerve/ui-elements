@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta content="initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, width=device-width" name="viewport">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <style>
     body {
       margin: 0;
@@ -74,7 +75,8 @@
       background-color: #FFF;
     }
   </style>
-  <script src='bundle.js'></script>
+  <script defer src="https://ft-polyfill-service.herokuapp.com/v2/polyfill.min.js?features=Promise,requestAnimationFrame,Object.assign,Math.trunc,Array.prototype.includes"></script>
+  <script defer src='bundle.js'></script>
 </head>
 <body>
   <div class="header">
