@@ -1,6 +1,6 @@
 {
   "name": "ui-elements",
-  "version": "2.1.9",
+  "version": "2.1.10",
   "description": "A repo of ui elements",
   "main": "index.js",
   "scripts": {
