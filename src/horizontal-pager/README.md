@@ -4,7 +4,7 @@
 > A small, fast, no-dependency, horizontal pager.
 
 ## Live example
-  https://localnerve.github.io/dist/horizontal-pager
+  https://localnerve.github.io/ui-elements/dist/horizontal-pager/
 
 ## Features
   1.  Horizontal touch or exposed methods move to next/prev pages.
