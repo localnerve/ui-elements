@@ -51,13 +51,15 @@ Requires a global `document` to be available when called.
 ##### Options
 | Option Name | Data Type | Description |
 | :--- | :--- | :--- |
-| `targetClass` | String | The class that identifies the scroll targets (pages in the horizontal-pager). Must be supplied. |
+| `targetClass` | String | The class that identifies the scroll targets (pages in the horizontal-pager). Must be supplied. Scroll targets (pages) must be sibling elements. |
 | `[startIndex]` | Number | Which scroll target to show initially. Optional, defaults to 0, the first element returned from querySelectorAll on targetClass. |
-| `[continuous]` | Boolean | True allows scroll to wrap around the ends, defaults to false. |
+| `[continuous]` | Boolean | True allows scroll to wrap around the ends. Optional, defaults to false. |
+| `[willComplete]` | Function | A function to call when a scroll will complete shortly (called before completion). For touch, called when scrollThreshold is surpassed and `touchend` is fired. The function will receive a [moveResult](#moveresult-object) object. |
 | `[scrollThreshold]` | Number | Less than 1, the percentage of width beyond which a touch will cause a complete scroll to the next page. Optional, defaults to 0.35 (35 percent). |
-| `[doneThreshold]` | Number | The translateX pixel value below which to stop animations. Defaults to 1 (Will not animate below 1px). |
-| `[done]` | Function | A function to call after a scroll has completed. The function will receive a [moveResult](#moveresult-object) object. |
-| `[willComplete]` | Function | A function to call when a scroll will complete shortly. For touch, called when scrollThreshold is surpassed and `touchend` is fired. The function will receive a [moveResult](#moveresult-object) object. |
+| `[doneThreshold]` | Number | The translateX pixel value below which to stop animations. Optional, defaults to 1 (Will not animate below 1px). |
+| `[addParentStyles]` | Boolean | False disables the automatic adding of styles to the parent of the targetClass elements. Defaults to true. If disabled, you must supply the [parent styles](#parent-styles). |
+| `[done]` | Function | A function to call after a scroll has completed. Optional. Redundant if [Instance API](#instance-api) used. The function will receive a [moveResult](#moveresult-object) object. |
+
 
 ### Instance API
 
@@ -96,13 +98,25 @@ The move animation commands, `next`, `prev`, `moveRel`, and `moveAbs` return a P
 }
 ```
 
+## Parent Styles
+Here are the styles automatically added to the parent element of the `targetClass` scroll target siblings (the pages), unless the `addParentStyles` option is set to false:
+```css
+{
+  position: relative;
+  width: 100%;
+  overflow-x: hidden;
+}
+```
+If you disable `addParentStyles`, you must supply at least these styles to *a container element* of the pages identified by `targetClass` for horizontal-pager to work.
+
 ## How To Use
 ### Vanilla JS
 See `DOMContentLoaded`, `unload` event handlers in the [example](index.js).
+Example markup and styles are supplied in the [example](index.html).
 
 ### General Usage (frameworks, universal)
-Deliver the `horizontal-pager.js` script with your page. In a universal app, you will want to deliver the `startIndex` to the client to initially render the proper `targetClass` page for the current route. On the client, give the `startIndex` and `targetClass` options to the top-level api function `createHorizontalPager` prior to the first client render.
-Client-side Usage:
+Deliver the `horizontal-pager.js` script with your page. On the server, you will want to deliver the `startIndex` to the client to initially render the proper `targetClass` page for the current route. Also, you need to initially render the markup for the `targetClass` elements (the pages) and their common parent, but **not** the content of the pages (unless they need to be visible immediately). On the client, give the `startIndex` and `targetClass` options to the top-level api function `createHorizontalPager` prior to the first client render. Also, you should use the `willComplete` callback to get the page content if it is not already rendered on the client.  
+#### Client-side Usage:
   1.  Call the top-level api function `createHorizontalPager` (the default export), and give it the options. This starts listening to events, and returns an interface to the horizontal-pager instance.
   + Requires a global `document` to be available.
     + In `React`, a good place to do this is in `componentDidMount`.

@@ -32,6 +32,8 @@ class HorizontalPager {
    * will complete very soon.
    * @param {Boolean} [options.continuous] - True allows the ends to wrap around.
    * Defaults to false.
+   * @param {Boolean} [options.addParentStyles] - False disables the adding
+   * of styles to the parent of targetClass elements. Defaults to true.
    */
   constructor (options) {
     const noop = () => {};
@@ -41,7 +43,8 @@ class HorizontalPager {
       startIndex: 0,
       doneThreshold: 1,
       scrollThreshold: 0.35,
-      continuous: false
+      continuous: false,
+      addParentStyles: true
     }, options);
 
     this.onStart = this.onStart.bind(this);
@@ -103,11 +106,24 @@ class HorizontalPager {
   setupTargets () {
     let style;
     let i;
-    const { targetClass, startIndex } = this.opts;
+    let parent;
+    const parentStyle = {
+      position: 'relative',
+      width: '100%',
+      'overflow-x': 'hidden'
+    };
+    const parents = [];
+    const { targetClass, startIndex, addParentStyles } = this.opts;
 
     this.targets = document.querySelectorAll(`.${targetClass}`);
 
     for (i = 0; i < this.targets.length; i++) {
+      if (addParentStyles) {
+        parent = this.targets[i].parentElement;
+        if (!parents.includes(parent)) {
+          parents.push(parent);
+        }
+      }
       this.targets[i].setAttribute(this.dataId, i);
       style = this.targets[i].style;
 
@@ -117,6 +133,16 @@ class HorizontalPager {
       style.top = 0;
       style.left = 0;
       style.width = '100%';
+    }
+
+    if (parents.length === 1) {
+      Object.assign(parents[0].style, parentStyle);
+    } else if (parents.length > 1) {
+      /* eslint-disable no-console */
+      console.error(
+        `horizontal-pager: '.${targetClass}' elements MUST be siblings.`
+      );
+      /* eslint-enable no-console */
     }
 
     return this.targets.length;
