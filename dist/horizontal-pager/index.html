@@ -55,12 +55,17 @@
       width: 100%;
     }
     .page-container {
-      position: relative;
-      overflow: hidden;
-      width: 100%;
+      /*
+       * Replaced by option `addParentStyles`.
+       *
+        position: relative;
+        overflow-x: hidden;
+        width: 100%;
+      */
       margin-top: 16px;
     }
     .page-list {
+      list-style: none;
       margin: 0;
       padding: 0;
     }
@@ -93,7 +98,6 @@
     <ol class="page-list">
       <li class="page-item">
         <div class="page-item-container">
-          <div class="temporary-overlay" style="display: none;"></div>
           <div class="page-item-content">
             <h2 id="page-1">Hello World 1</h2>
             <div class="button-container">
@@ -140,7 +144,6 @@
       </li>
       <li class="page-item">
         <div class="page-item-container">
-          <div class="temporary-overlay" style="display: none;"></div>
           <div class="page-item-content">
             <h2 id="page-2">Hello World 2</h2>
             <div class="button-container">
@@ -187,7 +190,6 @@
       </li>
       <li class="page-item">
         <div class="page-item-container">
-          <div class="temporary-overlay" style="display: none;"></div>
           <div class="page-item-content">
             <h2 id="page-3">Hello World 3</h2>
             <div class="button-container">
@@ -234,7 +236,6 @@
       </li>
       <li class="page-item">
         <div class="page-item-container">
-          <div class="temporary-overlay" style="display: none;"></div>
           <div class="page-item-content">
             <h2 id="page-4">Hello World 4</h2>
             <div class="button-container">
@@ -281,7 +282,6 @@
       </li>
       <li class="page-item">
         <div class="page-item-container">
-          <div class="temporary-overlay" style="display: none;"></div>
           <div class="page-item-content">
             <h2 id="page-5">Hello World 5</h2>
             <div class="button-container">
@@ -328,7 +328,6 @@
       </li>
       <li class="page-item">
         <div class="page-item-container">
-          <div class="temporary-overlay" style="display: none;"></div>
           <div class="page-item-content">
             <h2 id="page-6">Hello World 6</h2>
             <div class="button-container">
