@@ -27,8 +27,9 @@ window.addEventListener('DOMContentLoaded', () => {
   const demo = document.querySelector(scrollSelector);
   const ssiUpdates = [];
 
-  const { top, right, bottom, left } =
-  ['.top', '.right', '.bottom', '.left'].reduce((prev, curr) => {
+  const {
+    top, right, bottom, left
+  } = ['.top', '.right', '.bottom', '.left'].reduce((prev, curr) => {
     const acc = prev;
     const el = document.querySelector(curr);
 

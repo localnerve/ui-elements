@@ -104,9 +104,6 @@ class HorizontalPager {
    * @returns {Number} The number of scroll targets found.
    */
   setupTargets () {
-    let style;
-    let i;
-    let parent;
     const parentStyle = {
       position: 'relative',
       width: '100%',
@@ -117,16 +114,17 @@ class HorizontalPager {
 
     this.targets = document.querySelectorAll(`.${targetClass}`);
 
-    for (i = 0; i < this.targets.length; i++) {
+    for (let i = 0; i < this.targets.length; i++) {
       if (addParentStyles) {
-        parent = this.targets[i].parentElement;
+        const parent = this.targets[i].parentElement;
         if (!parents.includes(parent)) {
           parents.push(parent);
         }
       }
-      this.targets[i].setAttribute(this.dataId, i);
-      style = this.targets[i].style;
 
+      this.targets[i].setAttribute(this.dataId, i);
+
+      const { style } = this.targets[i];
       style.position = (i === startIndex) ? 'static' : 'absolute';
       style.transform = `translate3d(${((i - startIndex) * 100)}%, 0px, 0px)`;
       style.display = 'block';
@@ -267,12 +265,14 @@ class HorizontalPager {
    * @returns {Object} The nextElementSibling or null if none found.
    */
   getNextSibling (target) {
-    const targetClass = this.opts.targetClass;
+    const { targetClass } = this.opts;
     let nextSib = target.nextElementSibling;
     let nextOk = nextSib && nextSib.classList.contains(targetClass);
 
     if (!nextOk && this.opts.continuous) {
+      /* eslint-disable prefer-destructuring */
       nextSib = this.targets[0];
+      /* eslint-enable prefer-destructuring */
       nextOk = true;
     }
 
@@ -287,7 +287,7 @@ class HorizontalPager {
    * @returns {Object} The previousElementSibling or null if none found.
    */
   getPrevSibling (target) {
-    const targetClass = this.opts.targetClass;
+    const { targetClass } = this.opts;
     let prevSib = target.previousElementSibling;
     let prevOk = prevSib && prevSib.classList.contains(targetClass);
 
@@ -326,7 +326,7 @@ class HorizontalPager {
   updateTargetIndex (distance) {
     this.lastTargetIndex = this.targetIndex;
     this.targetDistance = distance;
-    const length = this.targets.length;
+    const { length } = this.targets;
     const nextIndex = this.targetIndex + distance;
     const nextTargetIndex = (length + (nextIndex % length)) % length;
     this.targetIndex = nextTargetIndex;
@@ -595,8 +595,7 @@ class HorizontalPager {
                   this.animating = false;
                   resolve(this.createMoveResult());
                 }
-              }
-            )));
+              })));
           } else {
             this.rafs.push(requestAnimationFrame(this.update.bind(this, () => {
               const widthCount = Math.trunc(
