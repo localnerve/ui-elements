@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const spawn = require('child_process').spawn;
+const { spawn } = require('child_process');
 const q = require('q');
 const gulp = require('gulp');
 const webpack = require('webpack');
@@ -87,41 +87,41 @@ function runPackageInstalls () {
       const pkgDirs =
         dirs.filter(dir => fs.existsSync(path.join(dir, 'package.json')));
 
-      return Promise.all(
-        pkgDirs.map((pkgDir) => {
-          const cp = spawn('npm', ['install'], {
-            cwd: pkgDir
+      return Promise.all(pkgDirs.map((pkgDir) => {
+        const cp = spawn('npm', ['install'], {
+          cwd: pkgDir
+        });
+        return new Promise((resolve, reject) => {
+          cp.on('close', (code) => {
+            if (code !== 0) {
+              return reject();
+            }
+            return resolve();
           });
-          return new Promise((resolve, reject) => {
-            cp.on('close', (code) => {
-              if (code !== 0) {
-                return reject();
-              }
-              return resolve();
-            });
-            cp.on('error', reject);
-          });
-        })
-      );
+          cp.on('error', reject);
+        });
+      }));
     });
 }
 
 // Define the build tasks:
 
-gulp.task('copy', () =>
-  gulp.src([
-    `${srcRoot}/**/*.html`,
-    `${srcRoot}/**/*.css`,
-    `${srcRoot}/**/*.jpg`,
-    `${srcRoot}/**/${jsBundle}`,
-    `${srcRoot}/**/node_modules/**`,
-    `!${srcRoot}/horizontal-pager/node_modules`,
-    `!${srcRoot}/horizontal-pager/node_modules/**`,
-    `!${srcRoot}/**/test`,
-    `!${srcRoot}/**/test/**`
-  ])
-    .pipe(gulp.dest('dist'))
+gulp.task(
+  'copy', () =>
+    gulp.src([
+      `${srcRoot}/**/*.html`,
+      `${srcRoot}/**/*.css`,
+      `${srcRoot}/**/*.jpg`,
+      `${srcRoot}/**/${jsBundle}`,
+      `${srcRoot}/**/node_modules/**`,
+      `!${srcRoot}/horizontal-pager/node_modules`,
+      `!${srcRoot}/horizontal-pager/node_modules/**`,
+      `!${srcRoot}/**/test`,
+      `!${srcRoot}/**/test/**`,
+    ])
+      .pipe(gulp.dest('dist'))
 );
+
 gulp.task('webpack', () => createBundle('production'));
 gulp.task('webpack-dev', () => createBundle('development'));
 gulp.task('installs', runPackageInstalls);

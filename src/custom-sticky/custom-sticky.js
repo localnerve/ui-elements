@@ -229,7 +229,7 @@ class CustomSticky {
 
       const viewportHeight = window.innerHeight;
       const viewportWidth = window.innerWidth;
-      const scrollTop = this.scrollSource.scrollTop;
+      const scrollTop = this.scrollSource.scrollTop; // eslint-disable-line
       const mustInitOrigin = !this.yBasisOrigins[viewportHeight];
 
       if (mustInitOrigin) {
@@ -292,7 +292,8 @@ class CustomSticky {
       } else {
         this.updateScroll(y, true);
         // Set in case stop/start using getLastY
-        this.saveY = Math.min(y,
+        this.saveY = Math.min(
+          y,
           // equation is calculateProgress but solve for y
           (this.animationLength *
             (Math.min(progress, this.uBound) / this.uBound)) + yBasisEntry

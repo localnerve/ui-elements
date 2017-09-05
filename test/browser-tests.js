@@ -43,7 +43,9 @@ const browserDirections = {
 };
 
 // Init chai in this process.
+/* eslint-disable import/no-extraneous-dependencies */
 require('chai').should();
+/* eslint-enable import/no-extraneous-dependencies */
 
 // Sub paths to project tests by convention
 const pathDemo = 'index.html';
@@ -70,11 +72,12 @@ describe('Perform Browser Tests', function () {
   const beforeBrowser = function (browserInfo) {
     const browserId = browserInfo.getId();
     before(`before ${browserId}`, function () {
-      const capabilities = browserDirections[browserId].capabilities;
+      const { capabilities } = browserDirections[browserId];
       if (capabilities) {
         Object.keys(capabilities).forEach((key) => {
           browserInfo.addCapability(
-            browserDirections[browserId].capabilityOptionName, capabilities[key]);
+            browserDirections[browserId].capabilityOptionName, capabilities[key]
+          );
         });
       }
 

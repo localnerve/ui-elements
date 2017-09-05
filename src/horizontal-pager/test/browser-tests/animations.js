@@ -91,8 +91,10 @@ describe('Animation Tests', function () {
 
     before('main demo tests', function () {
       return getDemoSubjects(mainFrameId).then((subjects) => {
+        /* eslint-disable prefer-destructuring */
         horizontalPager = subjects.horizontalPager;
         verify = subjects.verify;
+        /* eslint-enable prefer-destructuring */
       });
     });
 
@@ -167,8 +169,10 @@ describe('Animation Tests', function () {
 
     before('two demo tests', function () {
       return getDemoSubjects(twoFrameId).then((subjects) => {
+        /* eslint-disable prefer-destructuring */
         horizontalPager = subjects.horizontalPager;
         verify = subjects.verify;
+        /* eslint-enable prefer-destructuring */
       });
     });
 

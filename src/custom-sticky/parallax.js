@@ -15,7 +15,7 @@
  *
  */
 /* global window, document, getComputedStyle */
-/* eslint-disable no-var, vars-on-top, block-scoped-var, no-console, no-continue, eqeqeq, no-redeclare, curly, import/prefer-default-export, quote-props, object-curly-spacing, indent, func-names, prefer-arrow-callback, no-shadow, max-len, no-unused-vars, no-use-before-define, no-mixed-operators, no-param-reassign, prefer-template */
+/* eslint-disable */
 export function initializeParallax(clip) {
   var parallax = clip.querySelectorAll('*[parallax]');
   var parallaxDetails = [];

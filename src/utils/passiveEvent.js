@@ -16,6 +16,7 @@ export function createPassiveEventHandlerOption () {
     const testOpts = {
       get passive () {
         passiveSupported = true;
+        return true;
       }
     };
     window.addEventListener('test', null, testOpts);
