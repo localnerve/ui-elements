@@ -8,9 +8,10 @@
 
 ## UI Elements
  * [horizontal-pager](/src/horizontal-pager) [![npm version](https://badge.fury.io/js/horizontal-pager.svg)](http://badge.fury.io/js/horizontal-pager)
- * [simple-scroll-intersection](/src/simple-scroll-intersection)
  * [custom-sticky](/src/custom-sticky)
+ * [image-rect-finder](/src/image-rect-finder)
  * [scroll-collapse](/src/scroll-collapse)
+ * [simple-scroll-intersection](/src/simple-scroll-intersection)
 
 ## Live Demos
 https://localnerve.github.io/ui-elements  
