@@ -113,6 +113,7 @@ gulp.task(
       `${srcRoot}/**/*.css`,
       `${srcRoot}/**/*.jpg`,
       `${srcRoot}/**/${jsBundle}`,
+      `${srcRoot}/**/*worker.js`,
       `${srcRoot}/**/node_modules/**`,
       `!${srcRoot}/horizontal-pager/node_modules`,
       `!${srcRoot}/horizontal-pager/node_modules/**`,
