@@ -24,7 +24,6 @@ window.addEventListener('DOMContentLoaded', () => {
   let scrollTick = false;
   const scrollSelector = 'body';
   const targetSelector = '.target';
-  const demo = document.querySelector(scrollSelector);
   const ssiUpdates = [];
 
   const {
@@ -45,7 +44,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }, {});
 
   function updateScroll () {
-    const y = demo.scrollTop;
+    const y = window.scrollY;
 
     top.style.transform = `translate3d(-50%, ${y * 1.5}px, 0)`;
     right.style.transform = `translate3d(${-(y * 1.5)}px, -50%, 0)`;
