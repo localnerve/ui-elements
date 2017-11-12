@@ -4,7 +4,7 @@
 
 [![Build Status](https://travis-ci.org/localnerve/ui-elements.svg?branch=master)](https://travis-ci.org/localnerve/ui-elements)
 
-> A repo of various UI elements and experiments
+> A repo of various UI elements, behaviors, and experiments
 
 ## UI Elements
  * [horizontal-pager](/src/horizontal-pager) [![npm version](https://badge.fury.io/js/horizontal-pager.svg)](http://badge.fury.io/js/horizontal-pager)
