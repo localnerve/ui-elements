@@ -124,6 +124,10 @@ class HorizontalPager {
 
       this.targets[i].setAttribute(this.dataId, i);
 
+      if (i !== startIndex) {
+        this.targets[i].setAttribute('aria-hidden', true);
+      }
+
       const { style } = this.targets[i];
       style.position = (i === startIndex) ? 'static' : 'absolute';
       style.transform = `translate3d(${((i - startIndex) * 100)}%, 0px, 0px)`;
@@ -203,13 +207,16 @@ class HorizontalPager {
 
       this.target.style.position = 'absolute';
       this.target.style.willChange = 'initial';
+      this.target.setAttribute('aria-hidden', true);
 
       if (nextDone) {
         nextStyle.position = 'static';
         prevStyle.willChange = 'initial';
+        this.nextSib.removeAttribute('aria-hidden');
       } else {
         prevStyle.position = 'static';
         nextStyle.willChange = 'initial';
+        this.prevSib.removeAttribute('aria-hidden');
       }
 
       if (!styleOnly) {
