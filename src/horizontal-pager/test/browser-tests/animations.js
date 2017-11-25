@@ -46,15 +46,22 @@ describe('Animation Tests', function () {
 
     const pages = doc.querySelectorAll(`.${targetClass}`);
 
-    const currTransform = pages[result.currTargetIndex].style.transform;
+    const currElement = pages[result.currTargetIndex];
+    const currTransform = currElement.style.transform;
     const notCurrent = [...Array(pages.length).keys()];
     notCurrent.splice(result.currTargetIndex, 1);
 
     // The current completed tranform should be a form of translateX(0)
     currTransform.should.contain(txComplete);
 
+    // The current element should not contain aria-hidden
+    const ariaHiddenExists = currElement.hasAttribute('aria-hidden');
+    ariaHiddenExists.should.equal(false);
+
     // All the others should not be that.
     notCurrent.forEach((pageIndex) => {
+      const ariaHidden = pages[pageIndex].getAttribute('aria-hidden');
+      ariaHidden.should.equal('true');
       const pageTransform = pages[pageIndex].style.transform;
       pageTransform.should.not.contain(txComplete);
     });
