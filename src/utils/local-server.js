@@ -1,7 +1,7 @@
 /**
  * Simple static local server for demo
  *
- * Copyright (c) 2017 Alex Grant (@localnerve), LocalNerve LLC
+ * Copyright (c) 2017-2018 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
 /* global Promise, require */

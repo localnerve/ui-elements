@@ -1,6 +1,6 @@
 {
   "name": "ui-elements",
-  "version": "2.3.4",
+  "version": "2.3.5",
   "description": "A repo of ui elements",
   "main": "index.js",
   "scripts": {
@@ -38,6 +38,7 @@
     "eslint-plugin-import": "^2.8.0",
     "gulp": "^3.9.1",
     "mocha": "^4.0.1",
+    "picklr": "latest",
     "rimraf": "^2.6.2",
     "webpack": "^3.9.1"
   },

@@ -2,6 +2,9 @@
  * Entry for simple-scroll-intersection demo.
  *
  * Moves four elements around on scroll, updates them on dis/intersection.
+ *
+ * Copyright (c) 2017-2018 Alex Grant (@localnerve), LocalNerve LLC
+ * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
 /* global window, document, requestAnimationFrame */
 /* eslint-disable import/no-unresolved */
