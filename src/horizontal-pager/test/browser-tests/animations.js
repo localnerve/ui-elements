@@ -79,17 +79,20 @@ describe('Animation Tests', function () {
    * @returns {Promise} Resolves to object with `horizontalPager` and `verify`.
    */
   function getDemoSubjects (demoId) {
-    const demo = document.querySelector(demoId);
-    const verify = verifyResult.bind(this, demo.contentDocument);
     const getMethods = {
       [mainFrameId]: window.__testUtils.getHorizontalPagerMain,
       [twoFrameId]: window.__testUtils.getHorizontalPagerTwo
     };
 
-    return getMethods[demoId]().then(horizontalPager => ({
-      horizontalPager,
-      verify
-    }));
+    return getMethods[demoId]().then((horizontalPager) => {
+      const demo = document.querySelector(demoId);
+      const verify = verifyResult.bind(this, demo.contentDocument);
+
+      return ({
+        horizontalPager,
+        verify
+      });
+    });
   }
 
   describe('main demo tests', function () {
