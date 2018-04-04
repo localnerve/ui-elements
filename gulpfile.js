@@ -12,6 +12,7 @@ const { spawn } = require('child_process');
 const q = require('q');
 const gulp = require('gulp');
 const webpack = require('webpack');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const { getSourceDirs, srcRoot } = require('./src/utils/dirs');
 
 const jsBundle = 'bundle.js';
@@ -36,32 +37,39 @@ function getWebpackConfig (env, dirs) {
   const plugins = [
     new webpack.DefinePlugin(definitions)
   ];
+  const optimization = {};
 
   if (prod) {
-    plugins.push(new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false
-      },
-      output: {
-        comments: false
-      }
-    }));
+    optimization.minimizer = [
+      new UglifyJsPlugin({
+        uglifyOptions: {
+          compress: {
+            warnings: false
+          },
+          output: {
+            comments: false
+          }
+        }
+      })
+    ];
   }
 
   return dirs.map(dir => ({
+    mode: prod ? 'production' : 'development',
     entry: `${path.join(dir, 'index.js')}`,
     output: {
       path: path.resolve(dir),
       filename: `${jsBundle}`
     },
     module: {
-      loaders: [{
+      rules: [{
         test: /\.js$/,
         exclude: /^\/node_modules/,
         loader: 'babel-loader'
       }]
     },
-    plugins
+    plugins,
+    optimization
   }));
 }
 
