@@ -10,6 +10,7 @@ const path = require('path');
 const webpack = require('webpack');
 
 module.exports = {
+  mode: 'production',
   entry: path.join(__dirname, 'horizontal-pager.js'),
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -18,7 +19,7 @@ module.exports = {
     libraryTarget: 'umd'
   },
   module: {
-    loaders: [{
+    rules: [{
       test: /\.js$/,
       loader: 'babel-loader'
     }]
@@ -27,14 +28,6 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('production')
-      }
-    }),
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false
-      },
-      output: {
-        comments: false
       }
     }),
     new webpack.BannerPlugin({
