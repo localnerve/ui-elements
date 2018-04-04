@@ -1,6 +1,6 @@
 {
   "name": "ui-elements",
-  "version": "2.3.6",
+  "version": "2.4.0",
   "description": "A repo of ui elements",
   "main": "index.js",
   "scripts": {
@@ -40,9 +40,10 @@
     "mocha": "^5.0.0",
     "picklr": "latest",
     "rimraf": "^2.6.2",
-    "webpack": "^3.9.1"
+    "webpack": "^4.4.0",
+    "uglifyjs-webpack-plugin": "^1.2.4"
   },
   "engines": {
-    "node": ">= 6.5"
+    "node": "8.x"
   }
 }
