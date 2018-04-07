@@ -131,7 +131,7 @@ class HorizontalPager {
       const { style } = this.targets[i];
       style.position = (i === startIndex) ? 'static' : 'absolute';
       style.transform = `translate3d(${((i - startIndex) * 100)}%, 0px, 0px)`;
-      style.display = 'block';
+      style.display = (i === startIndex) ? 'block' : 'none';
       style.top = 0;
       style.left = 0;
       style.width = '100%';
@@ -207,16 +207,25 @@ class HorizontalPager {
 
       this.target.style.position = 'absolute';
       this.target.style.willChange = 'initial';
+      this.target.style.display = 'none';
       this.target.setAttribute('aria-hidden', true);
 
       if (nextDone) {
         nextStyle.position = 'static';
-        prevStyle.willChange = 'initial';
+        nextStyle.display = 'block';
         this.nextSib.removeAttribute('aria-hidden');
+        if (this.target.length > 2) {
+          prevStyle.willChange = 'initial';
+          prevStyle.display = 'none';
+        }
       } else {
         prevStyle.position = 'static';
-        nextStyle.willChange = 'initial';
+        prevStyle.display = 'block';
         this.prevSib.removeAttribute('aria-hidden');
+        if (this.target.length > 2) {
+          nextStyle.willChange = 'initial';
+          nextStyle.display = 'none';
+        }
       }
 
       if (!styleOnly) {
@@ -417,9 +426,11 @@ class HorizontalPager {
     this.target.style.position = 'static';
 
     if (this.nextSib) {
+      this.nextSib.style.display = 'block';
       this.nextSib.style.willChange = 'transform';
     }
     if (this.prevSib) {
+      this.prevSib.style.display = 'block';
       this.prevSib.style.willChange = 'transform';
     }
 
@@ -473,6 +484,17 @@ class HorizontalPager {
         const direction = movingLeft ? -1 : 1;
         this.updateTargetIndex(direction);
         this.notifyWillComplete(this.createMoveResult());
+      }
+    } else {
+      if (this.prevSib) {
+        const prevStyle = this.prevSib.style;
+        prevStyle.display = 'none';
+        prevStyle.willChange = 'initial';
+      }
+      if (this.nextSib) {
+        const nextStyle = this.nextSib.style;
+        nextStyle.display = 'none';
+        nextStyle.willChange = 'initial';
       }
     }
   }
@@ -587,6 +609,13 @@ class HorizontalPager {
           this.targetX = this.targetWidth * distance * -1;
           this.touching = false;
 
+          if (this.prevSib) {
+            this.prevSib.style.display = 'block';
+          }
+          if (this.nextSib) {
+            this.nextSib.style.display = 'block';
+          }
+
           lastWidthCount = 0;
           originalWidth = this.targetWidth;
           fullWidth = this.targetWidth * Math.abs(distance);
@@ -625,10 +654,16 @@ class HorizontalPager {
                   this.prevSib = this.target;
                   this.target = this.nextSib;
                   this.nextSib = this.getNextSibling(this.target);
+                  if (this.nextSib) {
+                    this.nextSib.style.display = 'block';
+                  }
                 } else {
                   this.nextSib = this.target;
                   this.target = this.prevSib;
                   this.prevSib = this.getPrevSibling(this.target);
+                  if (this.prevSib) {
+                    this.prevSib.style.display = 'block';
+                  }
                 }
               }
             })));

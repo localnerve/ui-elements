@@ -20,7 +20,7 @@
   11. When navigation certain to complete, calls optional `willComplete` callback.
   12. Optional `done` callback for notification after navigation complete.
   13. A css class identifies scroll level items (pages).
-  14. ~10k min bundle, ~3k gzip.
+  14. ~11k min bundle, ~3k gzip.
 
 ## Missing Features
   1.  No touch velocity considerations.
