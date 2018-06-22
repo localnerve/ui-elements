@@ -145,8 +145,8 @@ class MochaUtils {
         // successfully
         return driver.wait(function () {
           return driver.executeScript(function () {
-            return (typeof window.testsuite !== 'undefined') &&
-              (typeof window.testsuite.testResults !== 'undefined');
+            return (typeof window.testsuite !== 'undefined')
+              && (typeof window.testsuite.testResults !== 'undefined');
           });
         });
       })
@@ -200,8 +200,7 @@ class MochaUtils {
           break;
       }
 
-      testResultString += `${testResult.parentTitle} > ` +
-        `${testResult.title}\n`;
+      testResultString += `${testResult.parentTitle} > ${testResult.title}\n`;
 
       if (testResult.state === 'failed') {
         const pad = '    ';
@@ -220,8 +219,9 @@ class MochaUtils {
 }
 
 if (typeof module === 'undefined' || typeof module.exports === 'undefined') {
-  throw new Error('To use MochaUtils in the browser please use the ' +
-    'browser/mocha-utils.js file');
+  throw new Error(
+    'To use MochaUtils in the browser please use the browser/mocha-utils.js file'
+  );
 }
 
 module.exports = {

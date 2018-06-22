@@ -61,8 +61,7 @@ function verticalTest (rowOffset, pOffset, data, i, options) {
   const v4 = getGrey(data, i + (rowOffset - (2 * pOffset)));
   const v5 = getGrey(data, i + ((2 * rowOffset) - (2 * pOffset)));
 
-  const verticalBlock =
-    (v0 + v1 + v2 + v3 + v4 + v5) / 6;
+  const verticalBlock = (v0 + v1 + v2 + v3 + v4 + v5) / 6;
   const verticalDiff = shade - verticalBlock;
   const result = verticalDiff >= diffMin || verticalDiff <= -diffMin;
 
@@ -91,8 +90,7 @@ function horizontalTest (rowOffset, pOffset, data, i, options) {
   const h4 = getGrey(data, i - ((2 * rowOffset) + pOffset));
   const h5 = getGrey(data, i - ((2 * rowOffset) + (2 * pOffset)));
 
-  const horizontalBlock =
-    (h0 + h1 + h2 + h3 + h4 + h5) / 6;
+  const horizontalBlock = (h0 + h1 + h2 + h3 + h4 + h5) / 6;
   const horizontalDiff = shade - horizontalBlock;
   const result = horizontalDiff >= diffMin || horizontalDiff <= -diffMin;
 
@@ -128,8 +126,7 @@ function cornerTest (tl, shade, bpp, width, data, i, thresholds) {
   const { targetBlockMax: blockMax, edgeDiffMin: diffMin } = thresholds;
 
   const mult = tl ? -1 : 1;
-  const tests = tl ? [verticalTest, horizontalTest] :
-    [horizontalTest, verticalTest];
+  const tests = tl ? [verticalTest, horizontalTest] : [horizontalTest, verticalTest];
   const pOffset = bpp * mult;
   const rowOffset = width * bpp * mult;
 
@@ -221,8 +218,9 @@ function findFirstRect (imageData, options) {
   // start two rows down, two pixels over.
   const start = (imageData.width * bytesPerPixel * 2) + (2 * bytesPerPixel);
   // end two rows up, two pixels less.
-  const end = (total * bytesPerPixel) -
-    (2 * imageData.width * bytesPerPixel) - (2 * bytesPerPixel);
+  const end = (total * bytesPerPixel)
+    - (2 * imageData.width * bytesPerPixel)
+    - (2 * bytesPerPixel);
 
   const tlPad = 2;
   const brPad = tlPad * 2;

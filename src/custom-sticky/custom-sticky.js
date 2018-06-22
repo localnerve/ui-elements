@@ -16,12 +16,15 @@ export class CSDirection {
   static get up () {
     return 'up';
   }
+
   static get down () {
     return 'down';
   }
+
   static get left () {
     return 'left';
   }
+
   static get right () {
     return 'right';
   }
@@ -76,34 +79,33 @@ class CustomSticky {
       console.warn(`failed to identify moving element with "${this.opts.movingSelector}"`); // eslint-disable-line
     }
 
-    this.notify = this.opts.notify ?
-      setTimeout.bind(null, this.opts.notify, 0) : () => false;
+    this.notify = this.opts.notify ? setTimeout.bind(null, this.opts.notify, 0) : () => false;
 
     switch (this.opts.direction) {
       case CSDirection.right:
         this.transform = boundY => `translateX(${boundY}px)`;
-        this.traverseLength = () =>
-          Math.ceil(targetRectFn().left -
-            this.movingElement.getBoundingClientRect().right);
+        this.traverseLength = () => Math.ceil(
+          targetRectFn().left - this.movingElement.getBoundingClientRect().right
+        );
         break;
       case CSDirection.left:
         this.transform = boundY => `translateX(${-boundY}px)`;
-        this.traverseLength = () =>
-          Math.ceil(this.movingElement.getBoundingClientRect().left -
-            targetRectFn().right);
+        this.traverseLength = () => Math.ceil(
+          this.movingElement.getBoundingClientRect().left - targetRectFn().right
+        );
         break;
       case CSDirection.down:
         this.transform = boundY => `translateY(${boundY}px)`;
-        this.traverseLength = () =>
-          Math.ceil(targetRectFn().top -
-            this.movingElement.getBoundingClientRect().bottom);
+        this.traverseLength = () => Math.ceil(
+          targetRectFn().top - this.movingElement.getBoundingClientRect().bottom
+        );
         break;
       default:
       case CSDirection.up:
         this.transform = boundY => `translateY(${-boundY}px)`;
-        this.traverseLength = () =>
-          Math.ceil(this.movingElement.getBoundingClientRect().top -
-            targetRectFn().bottom);
+        this.traverseLength = () => Math.ceil(
+          this.movingElement.getBoundingClientRect().top - targetRectFn().bottom
+        );
         break;
     }
 
@@ -224,8 +226,8 @@ class CustomSticky {
     const entry = aoi && aoi.length > 0 ? aoi[0] : null;
 
     if (entry) {
-      const intersected =
-        entry.intersectionRect.width > 0 || entry.intersectionRect.height > 0;
+      const intersected = entry.intersectionRect.width > 0
+        || entry.intersectionRect.height > 0;
 
       const viewportHeight = window.innerHeight;
       const viewportWidth = window.innerWidth;
@@ -241,17 +243,19 @@ class CustomSticky {
 
       if (intersected) {
         const fromTop = entry.intersectionRect.top < (viewportHeight / 2);
+        /* eslint-disable operator-linebreak */
         const fromSide =
-          Math.abs(viewportWidth - entry.intersectionRect.right) < (viewportWidth / 10) ||
-          entry.intersectionRect.left < (viewportWidth / 10);
+          Math.abs(viewportWidth - entry.intersectionRect.right) < (viewportWidth / 10)
+            || entry.intersectionRect.left < (viewportWidth / 10);
+        /* eslint-enable operator-linebreak */
 
         if (!this.yBasisOrigins[viewportHeight].intersected && !fromTop) {
           this.yBasisOrigins[viewportHeight].intersected = true;
           this.yBasisOrigins[viewportHeight].basis = scrollTop;
         }
 
-        this.yBasis =
-          fromTop || fromSide ? this.yBasisOrigins[viewportHeight].basis : scrollTop;
+        this.yBasis = fromTop
+          || fromSide ? this.yBasisOrigins[viewportHeight].basis : scrollTop;
       } else {
         this.yBasis = undefined;
       }
@@ -295,8 +299,7 @@ class CustomSticky {
         this.saveY = Math.min(
           y,
           // equation is calculateProgress but solve for y
-          (this.animationLength *
-            (Math.min(progress, this.uBound) / this.uBound)) + yBasisEntry
+          (this.animationLength * (Math.min(progress, this.uBound) / this.uBound)) + yBasisEntry
         );
       }
     } else /* if (typeof this.yBasis !== 'undefined') */ {
@@ -329,8 +332,7 @@ class CustomSticky {
    * @param {Number} y - A scroll y value.
    */
   calculateProgress (y) {
-    return this.uBound *
-      ((Math.max(y, this.yBasis) - this.yBasis) / this.animationLength);
+    return this.uBound * ((Math.max(y, this.yBasis) - this.yBasis) / this.animationLength);
   }
 
   /**

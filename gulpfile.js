@@ -98,8 +98,9 @@ function createBundle (env) {
 function runPackageInstalls () {
   return getSourceDirs()
     .then((dirs) => {
-      const pkgDirs =
-        dirs.filter(dir => fs.existsSync(path.join(dir, 'package.json')));
+      const pkgDirs = dirs.filter(
+        dir => fs.existsSync(path.join(dir, 'package.json'))
+      );
 
       return Promise.all(pkgDirs.map((pkgDir) => {
         const cp = spawn('npm', ['install'], {
@@ -121,20 +122,18 @@ function runPackageInstalls () {
 // Define the build tasks:
 
 gulp.task(
-  'copy', () =>
-    gulp.src([
-      `${srcRoot}/**/*.html`,
-      `${srcRoot}/**/*.css`,
-      `${srcRoot}/**/*.jpg`,
-      `${srcRoot}/**/${jsBundle}`,
-      `${srcRoot}/**/*worker.js`,
-      `${srcRoot}/**/node_modules/**`,
-      `!${srcRoot}/horizontal-pager/node_modules`,
-      `!${srcRoot}/horizontal-pager/node_modules/**`,
-      `!${srcRoot}/**/test`,
-      `!${srcRoot}/**/test/**`,
-    ])
-      .pipe(gulp.dest('dist'))
+  'copy', () => gulp.src([
+    `${srcRoot}/**/*.html`,
+    `${srcRoot}/**/*.css`,
+    `${srcRoot}/**/*.jpg`,
+    `${srcRoot}/**/${jsBundle}`,
+    `${srcRoot}/**/*worker.js`,
+    `${srcRoot}/**/node_modules/**`,
+    `!${srcRoot}/horizontal-pager/node_modules`,
+    `!${srcRoot}/horizontal-pager/node_modules/**`,
+    `!${srcRoot}/**/test`,
+    `!${srcRoot}/**/test/**`,
+  ]).pipe(gulp.dest('dist'))
 );
 
 gulp.task('webpack', () => createBundle('production'));

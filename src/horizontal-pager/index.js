@@ -22,9 +22,8 @@ function updateBubble (moveResult) {
   let dist = distance;
 
   while (distance > 0 ? dist-- : dist++) {
-    sibling = distance > 0 ?
-      sibling.nextElementSibling || firstBbl :
-      sibling.previousElementSibling || lastBbl;
+    sibling = distance > 0
+      ? sibling.nextElementSibling || firstBbl : sibling.previousElementSibling || lastBbl;
   }
 
   selectedBbl.classList.remove('selected');
@@ -43,6 +42,5 @@ document.addEventListener('DOMContentLoaded', () => {
   once: true
 });
 
-document.addEventListener('unload', () =>
-  window.horizontalPager &&
-  window.horizontalPager.destroy(), { once: true });
+document.addEventListener('unload', () => window.horizontalPager
+  && window.horizontalPager.destroy(), { once: true });

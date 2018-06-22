@@ -51,8 +51,6 @@
     });
   }
 
-  window.__testUtils.getHorizontalPagerMain =
-    getHorizontalPager.bind(null, mainFrameId);
-  window.__testUtils.getHorizontalPagerTwo =
-    getHorizontalPager.bind(null, twoFrameId);
+  window.__testUtils.getHorizontalPagerMain = getHorizontalPager.bind(null, mainFrameId);
+  window.__testUtils.getHorizontalPagerTwo = getHorizontalPager.bind(null, twoFrameId);
 }());

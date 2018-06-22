@@ -208,10 +208,9 @@ describe('Perform Browser Tests', function () {
           skip = !browserDirection.testUnstable;
         }
 
-        browserOK =
-          browserInfo.getVersionNumber() >= browserDirection.minVersion &&
-          (functionalTests.length > 0 || unitTests.length > 0) &&
-          !skip;
+        browserOK = browserInfo.getVersionNumber() >= browserDirection.minVersion
+          && (functionalTests.length > 0 || unitTests.length > 0)
+          && !skip;
       }
 
       if (browserOK) {
