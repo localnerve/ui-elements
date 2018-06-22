@@ -52,10 +52,10 @@ class HorizontalPager {
     this.onEnd = this.onEnd.bind(this);
     this.update = this.update.bind(this);
 
-    this.notifyWillComplete = typeof this.opts.willComplete === 'function' ?
-      setTimeout.bind(null, this.opts.willComplete, 0) : noop;
-    this.notifyDone = typeof this.opts.done === 'function' ?
-      setTimeout.bind(null, this.opts.done, 0) : noop;
+    this.notifyWillComplete = typeof this.opts.willComplete === 'function'
+      ? setTimeout.bind(null, this.opts.willComplete, 0) : noop;
+    this.notifyDone = typeof this.opts.done === 'function'
+      ? setTimeout.bind(null, this.opts.done, 0) : noop;
 
     this.lastTargetIndex = this.opts.startIndex;
     this.targetIndex = this.opts.startIndex;
@@ -174,15 +174,12 @@ class HorizontalPager {
           willChange: 'initial'
         };
 
-        const nextStyle =
-          (this.nextSib && this.nextSib.getAttribute(this.dataId) !== newId) ?
-            this.nextSib.style : {};
-        const prevStyle =
-          (this.prevSib && this.prevSib.getAttribute(this.dataId) !== newId) ?
-            this.prevSib.style : {};
-        const targetStyle =
-          (this.target && this.target.getAttribute(this.dataId) !== newId) ?
-            this.target.style : {};
+        const nextStyle = (this.nextSib && this.nextSib.getAttribute(this.dataId) !== newId)
+          ? this.nextSib.style : {};
+        const prevStyle = (this.prevSib && this.prevSib.getAttribute(this.dataId) !== newId)
+          ? this.prevSib.style : {};
+        const targetStyle = (this.target && this.target.getAttribute(this.dataId) !== newId)
+          ? this.target.style : {};
 
         Object.assign(nextStyle, resetStyle);
         Object.assign(prevStyle, resetStyle);
@@ -451,8 +448,8 @@ class HorizontalPager {
 
     if (typeof this.isVertical === 'undefined') {
       this.isVertical = (
-        Math.abs(this.currentX - this.startX) <
-          Math.abs(HorizontalPager.getPageY(evt) - this.startY)
+        Math.abs(this.currentX - this.startX)
+        < Math.abs(HorizontalPager.getPageY(evt) - this.startY)
       );
     }
 
@@ -516,8 +513,8 @@ class HorizontalPager {
 
       if (!this.opts.continuous) {
         // Detect edge, add resistance and limit
-        this.atEdge = (!this.prevSib && this.translateX > 0) ||
-          (!this.nextSib && this.translateX < 0);
+        this.atEdge = (!this.prevSib && this.translateX > 0)
+          || (!this.nextSib && this.translateX < 0);
         if (this.atEdge) {
           this.translateX = this.translateX / (
             (Math.abs(this.translateX) / this.targetWidth) + 1
@@ -579,10 +576,10 @@ class HorizontalPager {
     if (this.opts.continuous) {
       rangeCheck = Math.abs(distance) <= this.targets.length;
     } else {
-      rangeCheck = this.targetIndex + distance >= 0 &&
-        this.targetIndex + distance <= this.targets.length - 1;
-      edgeCheck = moveNext ?
-        this.targetIndex < this.targets.length - 1 : this.targetIndex > 0;
+      rangeCheck = this.targetIndex + distance >= 0
+        && this.targetIndex + distance <= this.targets.length - 1;
+      edgeCheck = moveNext
+        ? this.targetIndex < this.targets.length - 1 : this.targetIndex > 0;
     }
 
     const canAnimate = distance && rangeCheck && edgeCheck && !this.animating;
