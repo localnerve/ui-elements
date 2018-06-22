@@ -13,9 +13,11 @@ window.addEventListener('DOMContentLoaded', () => {
   const mainSelector = '.main';
   const mainElement = document.querySelector(mainSelector);
   const navContainer = document.querySelector('.navigation-container');
-  const blockAnimationLength =
-    (document.querySelector('.cs-ctr').getBoundingClientRect().bottom -
-    document.querySelector('.cs-ttb').getBoundingClientRect().bottom) * 1.2;
+  const csCtr = document.querySelector('.cs-ctr');
+  const csTtb = document.querySelector('.cs-ttb');
+  const blockAnimationLength = (
+    csCtr.getBoundingClientRect().bottom - csTtb.getBoundingClientRect().bottom
+  ) * 1.2;
 
   initializeParallax(mainElement);
 

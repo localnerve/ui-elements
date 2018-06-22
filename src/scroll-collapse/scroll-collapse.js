@@ -19,12 +19,15 @@ export class SCConstants {
   static get START_COLLAPSE () {
     return 'start_collapse';
   }
+
   static get END_COLLAPSE () {
     return 'end_collapse';
   }
+
   static get START_EXPAND () {
     return 'start_expand';
   }
+
   static get END_EXPAND () {
     return 'end_expand';
   }
@@ -111,9 +114,10 @@ class ScrollCollapse {
    * @returns {Number} The sum of all the float values of the props.
    */
   static getStyleNumber (style, ...props) {
-    return props.reduce((acc, prop) =>
-      acc + ScrollCollapse.getNumber(style.getPropertyValue(prop) || '0')
-      , 0);
+    return props.reduce(
+      (acc, prop) => acc + ScrollCollapse.getNumber(style.getPropertyValue(prop) || '0'),
+      0
+    );
   }
 
   /**
@@ -274,10 +278,12 @@ class ScrollCollapse {
       );
 
       this._scrollSource.style.willChange = 'scroll-position';
-      this._top.el.style.willChange =
-        this._props.map(prop => ScrollCollapse.toStyleHyphen(prop)).join(',');
-      this._bot.el.style.willChange =
-        this._props.map(prop => ScrollCollapse.toStyleHyphen(prop)).join(',');
+      this._top.el.style.willChange = this._props.map(
+        prop => ScrollCollapse.toStyleHyphen(prop)
+      ).join(',');
+      this._bot.el.style.willChange = this._props.map(
+        prop => ScrollCollapse.toStyleHyphen(prop)
+      ).join(',');
 
       if (this._lastY > 0) {
         // Restore the previous scroll
@@ -298,8 +304,7 @@ class ScrollCollapse {
    * @param {Boolean} isUp - True if scrolling up.
    */
   _updateScroll (isZero, isUp) {
-    const updated =
-    ScrollCollapse.collapse(
+    const updated = ScrollCollapse.collapse(
       this._top, this._lastY / this._scrollSrcHeight, isUp, this._props
     );
     ScrollCollapse.collapse(

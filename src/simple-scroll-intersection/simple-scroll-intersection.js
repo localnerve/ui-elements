@@ -16,12 +16,15 @@ export class SSIConst {
   static get top () {
     return 'top';
   }
+
   static get bottom () {
     return 'bottom';
   }
+
   static get left () {
     return 'left';
   }
+
   static get right () {
     return 'right';
   }
