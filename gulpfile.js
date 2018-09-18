@@ -12,7 +12,7 @@ const { spawn } = require('child_process');
 const q = require('q');
 const gulp = require('gulp');
 const webpack = require('webpack');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const { getSourceDirs, srcRoot } = require('./src/utils/dirs');
 
 const jsBundle = 'bundle.js';
@@ -41,8 +41,8 @@ function getWebpackConfig (env, dirs) {
 
   if (prod) {
     optimization.minimizer = [
-      new UglifyJsPlugin({
-        uglifyOptions: {
+      new TerserPlugin({
+        terserOptions: {
           compress: {
             warnings: false
           },
