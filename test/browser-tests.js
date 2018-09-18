@@ -32,13 +32,13 @@ const browserDirections = {
       }
     },
     minVersion: minVersions.chrome,
-    testUnstable: false
+    ignoreReleases: []
   },
   firefox: {
     capabilityOptionName: 'firefoxOptions',
     capabilities: null,
     minVersion: minVersions.firefox,
-    testUnstable: false
+    ignoreReleases: ['unstable', 'beta']
   }
 };
 
@@ -201,16 +201,12 @@ describe('Perform Browser Tests', function () {
       const browserDirection = browserDirections[browserId];
 
       if (browserDirection) {
-        const isUnstable = browserInfo.getReleaseName() === 'unstable';
-        let skip = false;
-
-        if (isUnstable) {
-          skip = !browserDirection.testUnstable;
-        }
+        const releaseName = browserInfo.getReleaseName();
+        const ignore = browserDirection.ignoreReleases.includes(releaseName);
 
         browserOK = browserInfo.getVersionNumber() >= browserDirection.minVersion
           && (functionalTests.length > 0 || unitTests.length > 0)
-          && !skip;
+          && !ignore;
       }
 
       if (browserOK) {
