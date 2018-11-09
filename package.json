@@ -1,6 +1,6 @@
 {
   "name": "ui-elements",
-  "version": "2.5.8",
+  "version": "2.5.9",
   "description": "A repo of ui elements",
   "main": "index.js",
   "repository": {
@@ -28,7 +28,7 @@
   "dependencies": {
     "chromedriver": "~2.43.0",
     "express": "^4.16.2",
-    "geckodriver": "~1.12.2",
+    "geckodriver": "~1.14.1",
     "q": "^1.5.1",
     "selenium-assistant": "^5.2.0"
   },
