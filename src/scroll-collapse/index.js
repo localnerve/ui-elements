@@ -1,7 +1,7 @@
 /**
  * Entry point to scroll-collapse example.
  *
- * Copyright (c) 2017-2018 Alex Grant (@localnerve), LocalNerve LLC
+ * Copyright (c) 2017-2019 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
 /* global document */
