@@ -4,7 +4,7 @@
  * Moves an element driven by scroll to a target element, where it stops moving,
  * or "sticks".
  *
- * Copyright (c) 2017-2018 Alex Grant (@localnerve), LocalNerve LLC
+ * Copyright (c) 2017-2019 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
 /* global document, window */
