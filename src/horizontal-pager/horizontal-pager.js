@@ -5,7 +5,7 @@
  * Copyright (c) 2017-2019 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
-/* global Promise, document, setTimeout, requestAnimationFrame, cancelAnimationFrame */
+/* global document, requestAnimationFrame, cancelAnimationFrame */
 
 /* eslint-disable import/no-unresolved */
 import { createPassiveEventHandlerOption } from '../utils/passiveEvent';
