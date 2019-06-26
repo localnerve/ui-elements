@@ -4,7 +4,7 @@
  * Copyright (c) 2017-2019 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
-/* global Promise, require */
+/* global */
 /* eslint-disable import/no-unresolved, no-underscore-dangle */
 const express = require('express');
 

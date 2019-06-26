@@ -7,7 +7,7 @@
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
 /* eslint no-underscore-dangle:0 */
-/* global window, document, setTimeout, setInterval, clearInterval */
+/* global window, document */
 
 /* eslint import/no-unresolved:0 */
 import { createPassiveEventHandlerOption } from '../utils/passiveEvent';

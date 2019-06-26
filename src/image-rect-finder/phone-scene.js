@@ -4,7 +4,7 @@
  * Copyright (c) 2017-2019 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
-/* global window, document, Promise, Image, Worker */
+/* global window, document, Image, Worker */
 /* eslint-disable import/no-unresolved */
 import findRect from './find-rect';
 /* eslint-enable import/no-unresolved */

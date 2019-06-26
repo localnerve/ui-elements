@@ -4,7 +4,7 @@
  * Copyright (c) 2017-2019 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
-/* global console, require */
+/* global */
 /* eslint-disable no-console, import/no-unresolved */
 
 const path = require('path');

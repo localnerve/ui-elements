@@ -16,7 +16,7 @@
  *
  * 4/2017, agrant modified
  */
-/* global Promise */
+/* global */
 
 /* eslint-env node, browser, worker, mocha */
 
