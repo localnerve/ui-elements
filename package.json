@@ -30,7 +30,7 @@
     "express": "^4.16.2",
     "geckodriver": "~1.16.0",
     "q": "^1.5.1",
-    "selenium-assistant": "^5.2.0"
+    "selenium-assistant": "^6.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.1.0",
