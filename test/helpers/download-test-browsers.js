@@ -17,10 +17,10 @@ if (!fs.existsSync(installDir)) {
   const promises = [
     seleniumAssistant.downloadLocalBrowser('chrome', 'stable', minVersions.chrome),
     seleniumAssistant.downloadLocalBrowser('chrome', 'beta', minVersions.chrome),
-    seleniumAssistant.downloadLocalBrowser('chrome', 'unstable', minVersions.chrome),
+    // seleniumAssistant.downloadLocalBrowser('chrome', 'unstable', minVersions.chrome),
     seleniumAssistant.downloadLocalBrowser('firefox', 'stable', minVersions.firefox),
     seleniumAssistant.downloadLocalBrowser('firefox', 'beta', minVersions.firefox),
-    seleniumAssistant.downloadLocalBrowser('firefox', 'unstable', minVersions.firefox)
+    // seleniumAssistant.downloadLocalBrowser('firefox', 'unstable', minVersions.firefox)
   ];
 
   Promise.all(promises)

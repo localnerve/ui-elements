@@ -38,7 +38,7 @@ const browserDirections = {
     capabilityOptionName: 'firefoxOptions',
     capabilities: null,
     minVersion: minVersions.firefox,
-    ignoreReleases: ['unstable', 'beta']
+    ignoreReleases: ['unstable']
   }
 };
 
