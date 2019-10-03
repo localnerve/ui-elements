@@ -1,6 +1,6 @@
 {
   "name": "ui-elements",
-  "version": "2.6.0",
+  "version": "2.6.1",
   "description": "A repo of ui elements",
   "main": "index.js",
   "repository": {
@@ -26,28 +26,28 @@
   "author": "Alex Grant (@localnerve)",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "chromedriver": "~76.0.0",
+    "chromedriver": "~77.0.0",
     "express": "^4.16.2",
-    "geckodriver": "~1.16.0",
+    "geckodriver": "~1.18.0",
     "q": "^1.5.1",
     "selenium-assistant": "^6.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.1.0",
-    "@babel/preset-env": "^7.1.0",
+    "@babel/core": "^7.6.2",
+    "@babel/preset-env": "^7.6.2",
     "babel-loader": "^8.0.2",
     "chai": "^4.1.2",
-    "eslint": "^6.0.1",
-    "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.18.0",
+    "eslint": "^6.5.1",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2",
     "gulp": "^4.0.2",
-    "mocha": "^6.0.1",
+    "mocha": "^6.2.1",
     "picklr": "latest",
-    "rimraf": "^2.6.2",
+    "rimraf": "^2.7.1",
     "webpack": "^4.39.1",
-    "terser-webpack-plugin": "^1.4.1"
+    "terser-webpack-plugin": "^2.1.2"
   },
   "engines": {
-    "node": "8.x"
+    "node": ">=8.9"
   }
 }

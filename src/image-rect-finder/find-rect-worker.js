@@ -5,7 +5,7 @@
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
 /* eslint-env worker */
-/* global addEventListener */
+/* global */
 
 /**
  * Get average color value from r, g, b at data[i].

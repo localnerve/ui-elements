@@ -633,9 +633,14 @@ a, [ui-sref], [zf-open], [zf-close], [zf-toggle] {
 .page-content {
   display: flex;
   padding: 1em;
+  /* allow vertical scrolling */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
 }
 
 .text-container {
+  margin-left: 1em;
   overflow-y: auto;
 }
 .text-container p:first-child {
