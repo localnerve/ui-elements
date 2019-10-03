@@ -1,6 +1,6 @@
 {
   "name": "ui-elements",
-  "version": "2.6.1",
+  "version": "2.6.2",
   "description": "A repo of ui elements",
   "main": "index.js",
   "repository": {
@@ -43,7 +43,7 @@
     "gulp": "^4.0.2",
     "mocha": "^6.2.1",
     "picklr": "latest",
-    "rimraf": "^2.7.1",
+    "rimraf": "^3.0.0",
     "webpack": "^4.39.1",
     "terser-webpack-plugin": "^2.1.2"
   },
