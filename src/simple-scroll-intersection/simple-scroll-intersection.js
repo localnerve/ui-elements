@@ -50,9 +50,10 @@ class SimpleScrollIntersection {
       getBoundingClientRect: noop
     };
 
-    this.opts = Object.assign({}, {
+    this.opts = {
       notify: noop,
-    }, options);
+      ...options
+    };
 
     this.notify = setTimeout.bind(null, this.opts.notify, 0);
     if (this.opts.notify === noop) {

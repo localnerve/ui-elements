@@ -53,7 +53,7 @@ class ScrollCollapse {
   constructor (options) {
     const noop = () => {};
 
-    this._opts = Object.assign({}, {
+    this._opts = {
       resizeWait: 350,
       props: [
         'opacity',
@@ -65,8 +65,9 @@ class ScrollCollapse {
         'borderTopWidth',
         'borderBottomWidth'
       ],
-      notify: noop
-    }, options);
+      notify: noop,
+      ...options
+    };
 
     this._scrollSource = document.querySelector(options.scrollSelector);
     this._top = {

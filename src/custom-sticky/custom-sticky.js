@@ -56,12 +56,13 @@ class CustomSticky {
    * always visible and never goes out of the viewport. Defaults to false.
    */
   constructor (options) {
-    this.opts = Object.assign({}, {
+    this.opts = {
       resizeWait: 150,
       direction: CSDirection.up,
       alwaysVisible: false,
-      animationLength: () => window.innerHeight
-    }, options);
+      animationLength: () => window.innerHeight,
+      ...options
+    };
 
     this.scrollSource = document.querySelector(this.opts.scrollSelector);
     if (!this.scrollSource) {

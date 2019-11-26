@@ -38,14 +38,15 @@ class HorizontalPager {
   constructor (options) {
     const noop = () => {};
 
-    this.opts = Object.assign({}, {
+    this.opts = {
       targetClass: '',
       startIndex: 0,
       doneThreshold: 1,
       scrollThreshold: 0.35,
       continuous: false,
-      addParentStyles: true
-    }, options);
+      addParentStyles: true,
+      ...options
+    };
 
     this.onStart = this.onStart.bind(this);
     this.onMove = this.onMove.bind(this);
@@ -516,9 +517,7 @@ class HorizontalPager {
         this.atEdge = (!this.prevSib && this.translateX > 0)
           || (!this.nextSib && this.translateX < 0);
         if (this.atEdge) {
-          this.translateX = this.translateX / (
-            (Math.abs(this.translateX) / this.targetWidth) + 1
-          );
+          this.translateX /= (Math.abs(this.translateX) / this.targetWidth) + 1;
         }
       }
     } else {
