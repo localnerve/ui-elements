@@ -1,6 +1,6 @@
 {
   "name": "horizontal-pager",
-  "version": "4.0.5",
+  "version": "4.0.6",
   "description": "A small, fast, no-dep, horizontal scroll behavior",
   "main": "dist/index.js",
   "scripts": {
@@ -28,5 +28,5 @@
   "bugs": {
     "url": "https://github.com/localnerve/ui-elements/issues"
   },
-  "homepage": "https://github.com/localnerve/ui-elements/src/horizontal-pager#readme"
+  "homepage": "https://github.com/localnerve/ui-elements/tree/master/src/horizontal-pager#readme"
 }
