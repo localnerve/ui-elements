@@ -1,6 +1,6 @@
 {
   "name": "ui-elements",
-  "version": "2.6.4",
+  "version": "2.6.5",
   "description": "A repo of ui elements",
   "main": "index.js",
   "repository": {
@@ -39,7 +39,7 @@
     "chai": "^4.1.2",
     "eslint": "^6.7.1",
     "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-import": "^2.19.1",
     "gulp": "^4.0.2",
     "mocha": "^6.2.1",
     "picklr": "latest",
