@@ -1,6 +1,6 @@
 {
   "name": "ui-elements",
-  "version": "2.6.11",
+  "version": "3.0.0",
   "description": "A repo of ui elements",
   "main": "index.js",
   "repository": {
@@ -48,6 +48,6 @@
     "terser-webpack-plugin": "^2.3.2"
   },
   "engines": {
-    "node": ">=8.9"
+    "node": ">=10"
   }
 }
