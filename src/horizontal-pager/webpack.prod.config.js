@@ -2,7 +2,7 @@
  * webpack config to build the public module.
  * Devdeps in outer repo.
  *
- * Copyright (c) 2017-2019 Alex Grant (@localnerve), LocalNerve LLC
+ * Copyright (c) 2017-2020 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
 /* eslint-disable import/no-extraneous-dependencies */
