@@ -1,6 +1,6 @@
 {
   "name": "ui-elements",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "A repo of ui elements",
   "main": "index.js",
   "repository": {
@@ -26,8 +26,8 @@
   "author": "Alex Grant (@localnerve)",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "chromedriver": "~79.0.0",
-    "express": "^4.16.2",
+    "chromedriver": "~79.0.2",
+    "express": "^4.17.1",
     "geckodriver": "^1.19.1",
     "q": "^1.5.1",
     "selenium-assistant": "^6.0.0"
@@ -41,11 +41,11 @@
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.19.1",
     "gulp": "^4.0.2",
-    "mocha": "^6.2.1",
+    "mocha": "^7.0.1",
     "picklr": "latest",
     "rimraf": "^3.0.0",
     "webpack": "^4.41.5",
-    "terser-webpack-plugin": "^2.3.2"
+    "terser-webpack-plugin": "^2.3.3"
   },
   "engines": {
     "node": ">=10"
