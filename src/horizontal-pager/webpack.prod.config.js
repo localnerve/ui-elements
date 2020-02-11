@@ -31,7 +31,7 @@ module.exports = {
       }
     }),
     new webpack.BannerPlugin({
-      banner: 'horizontal-pager, Copyright (c) 2017-2019 Alex Grant (@localnerve), LocalNerve LLC, BSD-3-Clause',
+      banner: 'horizontal-pager, Copyright (c) 2017-2020 Alex Grant (@localnerve), LocalNerve LLC, BSD-3-Clause',
       entryOnly: true
     })
   ]

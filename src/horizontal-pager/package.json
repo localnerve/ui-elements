@@ -1,6 +1,6 @@
 {
   "name": "horizontal-pager",
-  "version": "4.0.6",
+  "version": "4.0.7",
   "description": "A small, fast, no-dep, horizontal scroll behavior",
   "main": "dist/index.js",
   "scripts": {
@@ -8,7 +8,7 @@
     "prepublish": "npm run build"
   },
   "devDependencies": {
-    "webpack": "^4.41.2",
+    "webpack": "^4.41.6",
     "webpack-cli": "^3.3.10"
   },
   "repository": {
