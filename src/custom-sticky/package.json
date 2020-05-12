@@ -9,6 +9,6 @@
   "author": "Alex Grant (@localnerve)",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "intersection-observer": "latest"
+    "intersection-observer": "0.10.0"
   }
 }
