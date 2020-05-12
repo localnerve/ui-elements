@@ -1,6 +1,6 @@
 # LocalNerve UI Elements
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/localnerve/ui-elements.svg)](https://greenkeeper.io/)
+
 
 [![Build Status](https://travis-ci.org/localnerve/ui-elements.svg?branch=master)](https://travis-ci.org/localnerve/ui-elements)
 
