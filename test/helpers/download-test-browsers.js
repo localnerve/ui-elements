@@ -5,7 +5,6 @@
 /* eslint-disable import/no-unresolved, no-console */
 const fs = require('fs');
 const seleniumAssistant = require('selenium-assistant');
-const minVersions = require('./min-versions');
 
 // For now, only do this if it has not previously been done, using the SA install dir
 // as the source of truth.
@@ -15,12 +14,12 @@ console.log('installDir', installDir); // eslint-disable-line
 
 if (!fs.existsSync(installDir)) {
   const promises = [
-    seleniumAssistant.downloadLocalBrowser('chrome', 'stable', minVersions.chrome),
-    seleniumAssistant.downloadLocalBrowser('chrome', 'beta', minVersions.chrome),
-    // seleniumAssistant.downloadLocalBrowser('chrome', 'unstable', minVersions.chrome),
-    seleniumAssistant.downloadLocalBrowser('firefox', 'stable', minVersions.firefox),
-    seleniumAssistant.downloadLocalBrowser('firefox', 'beta', minVersions.firefox),
-    // seleniumAssistant.downloadLocalBrowser('firefox', 'unstable', minVersions.firefox)
+    seleniumAssistant.downloadLocalBrowser('chrome', 'stable', 240),
+    // seleniumAssistant.downloadLocalBrowser('chrome', 'beta', 240),
+    // seleniumAssistant.downloadLocalBrowser('chrome', 'unstable', 240),
+    seleniumAssistant.downloadLocalBrowser('firefox', 'stable', 240),
+    seleniumAssistant.downloadLocalBrowser('firefox', 'beta', 240),
+    // seleniumAssistant.downloadLocalBrowser('firefox', 'unstable', 240)
   ];
 
   Promise.all(promises)

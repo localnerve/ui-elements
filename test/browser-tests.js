@@ -32,7 +32,7 @@ const browserDirections = {
       }
     },
     minVersion: minVersions.chrome,
-    ignoreReleases: ['unstable']
+    ignoreReleases: ['unstable', 'beta']
   },
   firefox: {
     capabilityOptionName: 'firefoxOptions',

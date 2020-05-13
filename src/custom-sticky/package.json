@@ -1,6 +1,6 @@
 {
   "name": "custom-sticky",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A custom scroll animation behavior for stickies, scenes, or both",
   "main": "index.js",
   "scripts": {
@@ -9,6 +9,6 @@
   "author": "Alex Grant (@localnerve)",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "intersection-observer": "latest"
+    "intersection-observer": "^0.10.0"
   }
 }
