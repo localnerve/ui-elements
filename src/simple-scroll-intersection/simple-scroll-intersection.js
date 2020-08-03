@@ -118,7 +118,6 @@ class SimpleScrollIntersection {
     const width = right - left;
     const height = bottom - top;
 
-
     const intersection = (width >= 0 && height >= 0);
 
     from[SSIConst.top] = rect2.bottom >= rect1.top && rect2.top < rect1.top;
