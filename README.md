@@ -1,8 +1,6 @@
 # LocalNerve UI Elements
 
-
-
-[![Build Status](https://travis-ci.org/localnerve/ui-elements.svg?branch=master)](https://travis-ci.org/localnerve/ui-elements)
+![Verify](https://github.com/localnerve/ui-elements/workflows/Verify/badge.svg)
 
 > A repo of various UI elements, behaviors, and experiments
 
