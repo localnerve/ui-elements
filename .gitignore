@@ -3,5 +3,5 @@
 src/**/node_modules
 src/**/bundle.js
 tmp
-dist
+src/horizontal-pager/dist
 npm-debug.log
