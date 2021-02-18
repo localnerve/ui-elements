@@ -1,6 +1,6 @@
 {
   "name": "ui-elements",
-  "version": "3.2.1",
+  "version": "3.2.2",
   "description": "A repo of ui elements",
   "main": "index.js",
   "repository": {
@@ -33,8 +33,8 @@
     "selenium-assistant": "^6.1.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.16",
-    "@babel/preset-env": "^7.12.16",
+    "@babel/core": "^7.12.17",
+    "@babel/preset-env": "^7.12.17",
     "babel-loader": "^8.2.2",
     "chai": "^4.3.0",
     "eslint": "^7.20.0",
@@ -42,10 +42,10 @@
     "eslint-plugin-import": "^2.22.1",
     "gulp": "^4.0.2",
     "mocha": "^8.3.0",
-    "picklr": "latest",
+    "picklr": "^0.5.0",
     "rimraf": "^3.0.2",
     "terser-webpack-plugin": "^5.1.1",
-    "webpack": "^5.22.0"
+    "webpack": "^5.23.0"
   },
   "engines": {
     "node": ">=12"
