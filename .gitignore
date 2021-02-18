@@ -4,5 +4,4 @@ src/**/node_modules
 src/**/bundle.js
 tmp
 dist
-!/dist
 npm-debug.log
