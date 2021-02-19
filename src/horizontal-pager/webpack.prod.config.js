@@ -8,10 +8,14 @@
 /* eslint-disable import/no-extraneous-dependencies */
 const path = require('path');
 const webpack = require('webpack');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
   mode: 'production',
   entry: path.join(__dirname, 'horizontal-pager.js'),
+  optimization: {
+    minimizer: [new TerserPlugin({ extractComments: false })],
+  },
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'index.js',
