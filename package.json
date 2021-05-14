@@ -1,6 +1,6 @@
 {
   "name": "ui-elements",
-  "version": "3.2.3",
+  "version": "3.3.0",
   "description": "A repo of ui elements",
   "main": "index.js",
   "repository": {
@@ -26,26 +26,26 @@
   "author": "Alex Grant (@localnerve)",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "chromedriver": "~88.0.0",
+    "chromedriver": "^90.0.0",
     "express": "^4.17.1",
     "geckodriver": "^1.22.3",
-    "q": "^1.5.1",
+    "lodash": "latest",
     "selenium-assistant": "^6.1.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.17",
-    "@babel/preset-env": "^7.12.17",
+    "@babel/core": "^7.14.2",
+    "@babel/preset-env": "^7.14.2",
     "babel-loader": "^8.2.2",
-    "chai": "^4.3.0",
-    "eslint": "^7.20.0",
+    "chai": "^4.3.4",
+    "eslint": "^7.26.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
     "gulp": "^4.0.2",
-    "mocha": "^8.3.0",
+    "mocha": "^8.4.0",
     "picklr": "^0.5.0",
     "rimraf": "^3.0.2",
-    "terser-webpack-plugin": "^5.1.1",
-    "webpack": "^5.23.0"
+    "terser-webpack-plugin": "^5.1.2",
+    "webpack": "^5.37.0"
   },
   "engines": {
     "node": ">=12"
