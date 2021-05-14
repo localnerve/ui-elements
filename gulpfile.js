@@ -8,8 +8,8 @@
 
 const fs = require('fs');
 const path = require('path');
+const util = require('util');
 const { spawn } = require('child_process');
-const q = require('q');
 const gulp = require('gulp');
 const webpack = require('webpack');
 const TerserPlugin = require('terser-webpack-plugin');
@@ -82,7 +82,7 @@ function getWebpackConfig (env, dirs) {
 function createBundle (env) {
   return getSourceDirs()
     .then(getWebpackConfig.bind(null, env))
-    .then(webpackConfigs => q.nfcall(webpack, webpackConfigs))
+    .then(webpackConfigs => util.promisify(webpack)(webpackConfigs))
     .then((stats) => {
       if (stats.hasErrors()) {
         throw stats.toJson().errors;

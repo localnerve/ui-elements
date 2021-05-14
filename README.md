@@ -26,5 +26,5 @@ Requires NodeJS to run the demos.
 All UI Elements are LocalNerve [BSD-3-Clause](LICENSE.md) Licensed.
 
 ## Contact
-@localnerve
-alex@localnerve.com
+twitter: @localnerve
+email: alex@localnerve.com

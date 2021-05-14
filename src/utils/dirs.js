@@ -6,9 +6,7 @@
  */
 const path = require('path');
 const fs = require('fs');
-/* eslint-disable import/no-unresolved */
-const q = require('q');
-/* eslint-enable import/no-unresolved */
+const util = require('util');
 
 /**
  * Given an array of files, return the top level directories, ignoring `ignore`.
@@ -35,7 +33,7 @@ function getTLDirsFromFiles (files, rootDir, ignore) {
  * @returns {Promise} Resolves to an array of toplevel directories under rootDir.
  */
 function getTLDirs (rootDir, tlIgnore) {
-  return q.nfcall(fs.readdir, rootDir)
+  return util.promisify(fs.readdir)(rootDir)
     .then(files => getTLDirsFromFiles(files, rootDir, tlIgnore));
 }
 
