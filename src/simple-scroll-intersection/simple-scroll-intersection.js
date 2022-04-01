@@ -3,14 +3,13 @@
  * Use when you have a simple situation/animation where IntersectionObserver
  * doesn't make sense.
  *
- * Copyright (c) 2017-2021 Alex Grant (@localnerve), LocalNerve LLC
+ * Copyright (c) 2017-2022 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
 /* global window, document */
 
-/* eslint-disable import/no-unresolved */
-import { createPassiveEventHandlerOption } from '../utils/passiveEvent';
-/* eslint-enable import/no-unresolved */
+/* eslint-disable import/no-relative-packages */
+import { createPassiveEventHandlerOption } from '../utils/passive-event';
 
 export class SSIConst {
   static get top () {

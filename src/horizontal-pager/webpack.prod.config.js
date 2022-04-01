@@ -2,7 +2,7 @@
  * webpack config to build the public module.
  * Devdeps in outer repo.
  *
- * Copyright (c) 2017-2021 Alex Grant (@localnerve), LocalNerve LLC
+ * Copyright (c) 2017-2022 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
 /* eslint-disable import/no-extraneous-dependencies */
@@ -35,7 +35,7 @@ module.exports = {
       }
     }),
     new webpack.BannerPlugin({
-      banner: 'horizontal-pager, Copyright (c) 2017-2021 Alex Grant (@localnerve), LocalNerve LLC, BSD-3-Clause',
+      banner: 'horizontal-pager, Copyright (c) 2017-2022 Alex Grant (@localnerve), LocalNerve LLC, BSD-3-Clause',
       entryOnly: true
     })
   ]
