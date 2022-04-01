@@ -101,7 +101,8 @@ function runPackageInstalls () {
       const pkgDirs = dirs.filter(dir => {
         let exists = false;
         try {
-          exists = fs.accessSync(path.join(dir, 'package.json'));
+          fs.accessSync(path.join(dir, 'package.json'));
+          exists = true;
         } catch (e) {
           exists = false;
         }
