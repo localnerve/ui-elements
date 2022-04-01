@@ -1,7 +1,7 @@
 /**
  * Build scripts
  *
- * Copyright (c) 2017-2021 Alex Grant (@localnerve), LocalNerve LLC
+ * Copyright (c) 2017-2022 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
 /* eslint-disable import/no-unresolved, no-console */
@@ -83,7 +83,7 @@ function createBundle (env) {
   return getSourceDirs()
     .then(getWebpackConfig.bind(null, env))
     .then(webpackConfigs => util.promisify(webpack)(webpackConfigs))
-    .then((stats) => {
+    .then(stats => {
       if (stats.hasErrors()) {
         throw stats.toJson().errors;
       }
@@ -97,17 +97,24 @@ function createBundle (env) {
  */
 function runPackageInstalls () {
   return getSourceDirs()
-    .then((dirs) => {
-      const pkgDirs = dirs.filter(
-        dir => fs.existsSync(path.join(dir, 'package.json'))
-      );
+    .then(dirs => {
+      const pkgDirs = dirs.filter(dir => {
+        let exists = false;
+        try {
+          fs.accessSync(path.join(dir, 'package.json'));
+          exists = true;
+        } catch (e) {
+          exists = false;
+        }
+        return exists;
+      });
 
-      return Promise.all(pkgDirs.map((pkgDir) => {
+      return Promise.all(pkgDirs.map(pkgDir => {
         const cp = spawn('npm', ['install'], {
           cwd: pkgDir
         });
         return new Promise((resolve, reject) => {
-          cp.on('close', (code) => {
+          cp.on('close', code => {
             if (code !== 0) {
               return reject();
             }

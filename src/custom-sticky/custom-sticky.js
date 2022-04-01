@@ -4,13 +4,13 @@
  * Moves an element driven by scroll to a target element, where it stops moving,
  * or "sticks".
  *
- * Copyright (c) 2017-2021 Alex Grant (@localnerve), LocalNerve LLC
+ * Copyright (c) 2017-2022 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
 /* global document, window */
-/* eslint-disable import/no-unresolved */
+/* eslint-disable import/no-relative-packages */
+import { createPassiveEventHandlerOption } from '../utils/passive-event';
 import { createIntersectionObserver } from './intersection-observer';
-import { createPassiveEventHandlerOption } from '../utils/passiveEvent';
 
 export class CSDirection {
   static get up () {
@@ -101,8 +101,8 @@ class CustomSticky {
           targetRectFn().top - this.movingElement.getBoundingClientRect().bottom
         );
         break;
-      default:
       case CSDirection.up:
+      default:
         this.transform = boundY => `translateY(${-boundY}px)`;
         this.traverseLength = () => Math.ceil(
           this.movingElement.getBoundingClientRect().top - targetRectFn().bottom
