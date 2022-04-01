@@ -1,6 +1,6 @@
 {
   "name": "ui-elements",
-  "version": "3.3.3",
+  "version": "4.0.0",
   "description": "A repo of ui elements",
   "main": "index.js",
   "repository": {
@@ -26,28 +26,28 @@
   "author": "Alex Grant (@localnerve)",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "chromedriver": "^92.0.2",
-    "express": "^4.17.1",
-    "geckodriver": "^2.0.4",
-    "lodash": "latest",
+    "chromedriver": "^98.0.0",
+    "express": "^4.17.3",
+    "geckodriver": "^3.0.1",
+    "lodash": "~4.17.21",
     "selenium-assistant": "^6.1.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.15.0",
-    "@babel/preset-env": "^7.15.0",
-    "babel-loader": "^8.2.2",
-    "chai": "^4.3.4",
-    "eslint": "^7.32.0",
-    "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.23.4",
+    "@babel/core": "^7.17.8",
+    "@babel/preset-env": "^7.16.11",
+    "babel-loader": "^8.2.4",
+    "chai": "^4.3.6",
+    "eslint": "^8.12.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.4",
     "gulp": "^4.0.2",
-    "mocha": "^9.0.3",
-    "picklr": "^0.5.0",
+    "mocha": "^9.2.2",
+    "picklr": "^0.7.0",
     "rimraf": "^3.0.2",
-    "terser-webpack-plugin": "^5.1.4",
-    "webpack": "^5.37.0"
+    "terser-webpack-plugin": "^5.3.1",
+    "webpack": "^5.71.0"
   },
   "engines": {
-    "node": ">=12"
+    "node": ">=14"
   }
 }

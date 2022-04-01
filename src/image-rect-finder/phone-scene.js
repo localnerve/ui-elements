@@ -1,13 +1,11 @@
 /**
  * The phone scene test.
  *
- * Copyright (c) 2017-2021 Alex Grant (@localnerve), LocalNerve LLC
+ * Copyright (c) 2017-2022 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
 /* global window, document, Image, Worker */
-/* eslint-disable import/no-unresolved */
 import findRect from './find-rect';
-/* eslint-enable import/no-unresolved */
 
 /**
  * Make sure the given urls are loaded, resolve to array of Images.
@@ -95,8 +93,10 @@ function drawPhone (worker, image, imageUrl) {
 
       // Replace the color rect with "alpha"
       ctx.clearRect(
-        rect.left * scaleRevX, rect.top * scaleRevY,
-        rect.width * scaleRevX, rect.height * scaleRevY
+        rect.left * scaleRevX,
+        rect.top * scaleRevY,
+        rect.width * scaleRevX,
+        rect.height * scaleRevY
       );
 
       // Subst the downloaded bg img with transparency,

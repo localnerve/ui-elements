@@ -2,14 +2,13 @@
  * horizontal-pager
  * A small, fast, no-dep, horizontal pager.
  *
- * Copyright (c) 2017-2021 Alex Grant (@localnerve), LocalNerve LLC
+ * Copyright (c) 2017-2022 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
 /* global document, requestAnimationFrame, cancelAnimationFrame */
 
-/* eslint-disable import/no-unresolved */
-import { createPassiveEventHandlerOption } from '../utils/passiveEvent';
-/* eslint-enable import/no-unresolved */
+/* eslint-disable import/no-relative-packages */
+import { createPassiveEventHandlerOption } from '../utils/passive-event';
 
 class HorizontalPager {
   /**
