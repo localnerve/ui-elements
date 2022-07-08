@@ -3,6 +3,6 @@
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
 module.exports = {
-  chrome: 81,
+  chrome: 103,
   firefox: 75
 };
