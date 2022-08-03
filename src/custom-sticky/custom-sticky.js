@@ -10,6 +10,7 @@
 /* global document, window */
 /* eslint-disable import/no-relative-packages */
 import { createPassiveEventHandlerOption } from '../utils/passive-event';
+/* eslint-enable import/no-relative-packages */
 import { createIntersectionObserver } from './intersection-observer';
 
 export class CSDirection {
