@@ -5,7 +5,7 @@
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
 /* global */
-/* eslint-disable import/no-unresolved, no-underscore-dangle */
+/* eslint-disable no-underscore-dangle */
 const express = require('express');
 
 class LocalServer {

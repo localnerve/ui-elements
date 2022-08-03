@@ -5,7 +5,7 @@
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
 /* global describe, before, after, it */
-/* eslint-disable import/no-unresolved, no-console, prefer-arrow-callback, func-names */
+/* eslint-disable no-console, prefer-arrow-callback, func-names */
 
 const path = require('path');
 const fs = require('fs');
