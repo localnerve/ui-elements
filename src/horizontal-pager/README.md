@@ -33,9 +33,9 @@ To support older browsers, the following polyfills must be supplied by you (poly
 * Math.trunc
 * Array.includes  
 
-For example, here is the v2 [polyfill.io](https://polyfill.io/v2/docs/) tag required prior to loading/parsing this library:
+For example, here is the v3 [polyfill.io](https://polyfill.io/v3) tag required prior to loading/parsing this library:
 ```
-<script src="https://ft-polyfill-service.herokuapp.com/v2/polyfill.min.js?features=Promise,requestAnimationFrame,Object.assign,Math.trunc,Array.prototype.includes"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=Promise,requestAnimationFrame,Object.assign,Math.trunc,Array.prototype.includes"></script>
 ```
 
 ## RAF considerations
