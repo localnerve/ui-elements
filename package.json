@@ -44,7 +44,7 @@
     "picklr": "latest",
     "rimraf": "^3.0.2",
     "terser-webpack-plugin": "^5.3.6",
-    "webpack": "^5.75.0"
+    "webpack": "^5.76.0"
   },
   "engines": {
     "node": ">=14"
