@@ -40,8 +40,10 @@
   <script src="/test/helpers/browser.js"></script>
 
   <script>mocha.setup({
-    ui: 'bdd'
-  })</script>
+    ui: 'bdd',
+    globals: ['*']
+  });
+  </script>
 
   <!-- Add test scripts here -->
   <script src="get-horizontal-pager.js"></script>
