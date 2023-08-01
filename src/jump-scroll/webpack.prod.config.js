@@ -19,8 +19,9 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'index.js',
-    library: 'jump-scroll',
-    libraryTarget: 'umd'
+    library: {
+      type: 'commonjs-static'
+    }
   },
   module: {
     rules: [{
