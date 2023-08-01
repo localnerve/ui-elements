@@ -6,6 +6,111 @@
  */
 /* eslint-env browser */
 
+const JumpScrollCss = `
+  :host {
+    --js-width: 2em;
+    --js-height: 8em;
+    --js-bg-color: black;
+    --js-color: white;
+    --js-opacity-full: 0.7;
+    --js-opacity-rest: 0.3;
+
+    position: fixed;
+    bottom: 1rem;
+    right: 0.8rem;
+    width: var(--js-width);
+    height: var(--js-height);
+    color: var(--js-color);
+  }
+
+  .container {
+    display: block;
+    transition: opacity 1s;
+    opacity: var(--js-opacity-full);
+  }
+  .container.none {
+    display: none;
+  }
+  .container.rest {
+    opacity: var(--js-opacity-rest);
+  }
+  .container.mid {
+    transform: none;
+  }
+  .container.best.mid.down .top,
+  .container.start .top {
+    pointer-events: none;
+    opacity: 0;
+  }
+  .container.best.mid.up .bot,
+  .container.end .bot {
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(102%);
+  }
+  .container.best.mid.down .top,
+  .container.best.mid.up .top,
+  .container.end .top {
+    transform: translateY(102%);
+  }
+
+  .top,
+  .bot {
+    position: absolute;
+    width: 100%;
+    height: calc(var(--js-height) / 2);
+    transition: opacity 1s, transform 1s;
+    pointer-events: auto;
+  }
+  .top {
+    top: 0;
+  }
+  .bot {
+    bottom: 0;
+  }
+
+  .top .start,
+  .top .prev,
+  .bot .next,
+  .bot .end {
+    content: '';
+    position: absolute;
+    left: 50%;
+    width: 100%;
+    background: var(--js-bg-color);
+  }
+  .top .start,
+  .bot .end {
+    height: calc(var(--js-height) / 6);
+    clip-path: polygon(15% 5%, 85% 5%, 85% 30%, 60% 30%, 85% 95%, 15% 95%, 40% 30%, 15% 30%);
+  }
+  .top .prev,
+  .bot .next {
+    height: calc(var(--js-height) / 4);
+    clip-path: polygon(50% 5%, 85% 60%, 60% 60%, 85% 95%, 15% 95%, 40% 60%, 15% 60%);
+  }
+  .top .start,
+  .top .prev {
+    transform: translateX(-50%);
+  }
+  .bot .next,
+  .bot .end {
+    transform: translateX(-50%) rotateX(180deg);
+  }
+  .top .start {
+    top: 0;
+  }
+  .top .prev {
+    top: calc((var(--js-height) / 6) + 10%);
+  }
+  .bot .next {
+    bottom: calc((var(--js-height) / 6) + 10%);
+  }
+  .bot .end {
+    bottom: 0;
+  }
+`;
+
 class JumpScroll extends HTMLElement {
   #observer = null;
   #firstTarget = null;
@@ -242,108 +347,7 @@ class JumpScroll extends HTMLElement {
     const { shadowRoot } = this;
     shadowRoot.innerHTML = `
       <style>
-      :host {
-        --js-width: 2em;
-        --js-height: 8em;
-        --js-bg-color: black;
-        --js-color: white;
-        --js-opacity-full: 0.7;
-        --js-opacity-rest: 0.3;
-
-        position: fixed;
-        bottom: 1rem;
-        right: 0.8rem;
-        width: var(--js-width);
-        height: var(--js-height);
-        color: var(--js-color);
-      }
-
-      .container {
-        display: block;
-        transition: opacity 1s;
-        opacity: var(--js-opacity-full);
-      }
-      .container.none {
-        display: none;
-      }
-      .container.rest {
-        opacity: var(--js-opacity-rest);
-      }
-      .container.mid {
-        transform: none;
-      }
-      .container.best.mid.down .top,
-      .container.start .top {
-        pointer-events: none;
-        opacity: 0;
-      }
-      .container.best.mid.up .bot,
-      .container.end .bot {
-        pointer-events: none;
-        opacity: 0;
-        transform: translateY(102%);
-      }
-      .container.best.mid.down .top,
-      .container.best.mid.up .top,
-      .container.end .top {
-        transform: translateY(102%);
-      }
-
-      .top,
-      .bot {
-        position: absolute;
-        width: 100%;
-        height: calc(var(--js-height) / 2);
-        transition: opacity 1s, transform 1s;
-        pointer-events: auto;
-      }
-      .top {
-        top: 0;
-      }
-      .bot {
-        bottom: 0;
-      }
-
-      .top .start,
-      .top .prev,
-      .bot .next,
-      .bot .end {
-        content: '';
-        position: absolute;
-        left: 50%;
-        width: 100%;
-        background: var(--js-bg-color);
-      }
-      .top .start,
-      .bot .end {
-        height: calc(var(--js-height) / 6);
-        clip-path: polygon(15% 5%, 85% 5%, 85% 30%, 60% 30%, 85% 95%, 15% 95%, 40% 30%, 15% 30%);
-      }
-      .top .prev,
-      .bot .next {
-        height: calc(var(--js-height) / 4);
-        clip-path: polygon(50% 5%, 85% 60%, 60% 60%, 85% 95%, 15% 95%, 40% 60%, 15% 60%);
-      }
-      .top .start,
-      .top .prev {
-        transform: translateX(-50%);
-      }
-      .bot .next,
-      .bot .end {
-        transform: translateX(-50%) rotateX(180deg);
-      }
-      .top .start {
-        top: 0;
-      }
-      .top .prev {
-        top: calc((var(--js-height) / 6) + 10%);
-      }
-      .bot .next {
-        bottom: calc((var(--js-height) / 6) + 10%);
-      }
-      .bot .end {
-        bottom: 0;
-      }
+        ${JumpScrollCss}
       </style>
 
       <div class="container none">
@@ -401,4 +405,5 @@ class JumpScroll extends HTMLElement {
   }
 }
 
+export { JumpScroll, JumpScrollCss };
 customElements.define('jump-scroll', JumpScroll);
