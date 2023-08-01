@@ -1,6 +1,6 @@
 {
   "name": "@localnerve/jump-scroll",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A small, fast, no-dep, jump scroll control",
   "main": "dist/index.js",
   "scripts": {
