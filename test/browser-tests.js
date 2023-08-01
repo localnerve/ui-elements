@@ -1,7 +1,7 @@
 /*
  * Start mocha browser-tests.
  *
- * Copyright (c) 2017-2022 Alex Grant (@localnerve), LocalNerve LLC
+ * Copyright (c) 2017-2023 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
 /* global describe, before, after, it */
@@ -43,9 +43,7 @@ const browserDirections = {
 };
 
 // Init chai in this process.
-/* eslint-disable import/no-extraneous-dependencies */
 require('chai').should();
-/* eslint-enable import/no-extraneous-dependencies */
 
 // Sub paths to project tests by convention
 const pathDemo = 'index.html';
@@ -117,9 +115,7 @@ describe('Perform Browser Tests', function () {
   const queueFunctionalTest = (browserInfo, testInfo) => {
     it(`should pass functional tests for ${browserInfo.getPrettyName()} in ${testInfo.projectDir}`,
       function () {
-        /* eslint-disable global-require, import/no-dynamic-require */
         const tests = require(testInfo.testPath);
-        /* eslint-enable global-require, import/no-dynamic-require */
         return tests.startWebDriverFunctionalTests(
           globalDriverReference, testServerURL + testInfo.demoPath
         );

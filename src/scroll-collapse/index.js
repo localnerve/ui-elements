@@ -1,11 +1,10 @@
 /**
  * Entry point to scroll-collapse example.
  *
- * Copyright (c) 2017-2022 Alex Grant (@localnerve), LocalNerve LLC
+ * Copyright (c) 2017-2023 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
 /* global document */
-/* eslint-disable import/no-unresolved */
 import { startScrollCollapse, SCConstants } from './scroll-collapse';
 
 document.addEventListener('DOMContentLoaded', () => {

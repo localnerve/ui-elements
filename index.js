@@ -1,11 +1,10 @@
 /**
  * Simple static server for demo
  *
- * Copyright (c) 2017-2022 Alex Grant (@localnerve), LocalNerve LLC
+ * Copyright (c) 2017-2023 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
-/* global */
-/* eslint-disable no-console, import/no-unresolved */
+/* eslint-disable no-console */
 
 const path = require('path');
 const createLocalServer = require('./src/utils/local-server');
