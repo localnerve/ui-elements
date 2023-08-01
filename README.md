@@ -8,6 +8,7 @@
  * [horizontal-pager](/src/horizontal-pager) [![npm version](https://badge.fury.io/js/horizontal-pager.svg)](http://badge.fury.io/js/horizontal-pager)
  * [custom-sticky](/src/custom-sticky)
  * [image-rect-finder](/src/image-rect-finder)
+ * [jump-scroll](/src/jump-scroll) [![npm version](https://badge.fury.io/js/%40localnerve%2Fjump-scroll.svg)](http://badge.fury.io/js/%40localnerve%2Fjump-scroll)
  * [scroll-collapse](/src/scroll-collapse)
  * [simple-scroll-intersection](/src/simple-scroll-intersection)
 
