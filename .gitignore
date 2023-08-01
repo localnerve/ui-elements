@@ -4,5 +4,7 @@ src/**/node_modules
 src/**/bundle.js
 tmp
 src/horizontal-pager/dist
+src/jump-scroll/dist
 npm-debug.log
 *tgz
+dist/jump-scroll/node_modules

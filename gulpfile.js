@@ -138,6 +138,8 @@ gulp.task(
     `${srcRoot}/**/node_modules/**`,
     `!${srcRoot}/horizontal-pager/node_modules`,
     `!${srcRoot}/horizontal-pager/node_modules/**`,
+    `!${srcRoot}/jump-scroll/node_modules`,
+    `!${srcRoot}/jump-scroll/node_modules/**`,
     `!${srcRoot}/**/test`,
     `!${srcRoot}/**/test/**`,
   ]).pipe(gulp.dest('dist'))
