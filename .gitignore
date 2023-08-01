@@ -5,3 +5,4 @@ src/**/bundle.js
 tmp
 src/horizontal-pager/dist
 npm-debug.log
+*tgz

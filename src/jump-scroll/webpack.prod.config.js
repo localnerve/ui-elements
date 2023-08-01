@@ -12,14 +12,14 @@ const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
   mode: 'production',
-  entry: path.join(__dirname, 'horizontal-pager.js'),
+  entry: path.join(__dirname, 'index.js'),
   optimization: {
     minimizer: [new TerserPlugin({ extractComments: false })],
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'index.js',
-    library: 'horizontalPager',
+    library: 'jump-scroll',
     libraryTarget: 'umd'
   },
   module: {
@@ -35,7 +35,7 @@ module.exports = {
       }
     }),
     new webpack.BannerPlugin({
-      banner: 'horizontal-pager, Copyright (c) 2017-2023 Alex Grant (@localnerve), LocalNerve LLC, BSD-3-Clause',
+      banner: 'jump-scroll, Copyright (c) 2023 Alex Grant (@localnerve), LocalNerve LLC, BSD-3-Clause',
       entryOnly: true
     })
   ]

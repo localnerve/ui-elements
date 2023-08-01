@@ -2,7 +2,6 @@
  * Contain the intersection-observer/polyfill.
  */
 /* global IntersectionObserver */
-/* eslint-disable import/no-unresolved */
 
 // Polyfill the global IntersectionObserver/Entry, if required.
 import 'intersection-observer';

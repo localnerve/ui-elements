@@ -3,15 +3,12 @@
  *
  * A small, no-dep scroll handler that collapses two regions in relation to the scroll.
  *
- * Copyright (c) 2017-2022 Alex Grant (@localnerve), LocalNerve LLC
+ * Copyright (c) 2017-2023 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
 /* eslint no-underscore-dangle:0 */
 /* global window, document */
-
-/* eslint-disable import/no-relative-packages */
 import { createPassiveEventHandlerOption } from '../utils/passive-event';
-/* eslint-enable import/no-relative-packages */
 
 /**
  * ScrollCollapse Constants
