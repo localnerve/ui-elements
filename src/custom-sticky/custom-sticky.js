@@ -4,13 +4,11 @@
  * Moves an element driven by scroll to a target element, where it stops moving,
  * or "sticks".
  *
- * Copyright (c) 2017-2022 Alex Grant (@localnerve), LocalNerve LLC
+ * Copyright (c) 2017-2023 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
 /* global document, window */
-/* eslint-disable import/no-relative-packages */
 import { createPassiveEventHandlerOption } from '../utils/passive-event';
-/* eslint-enable import/no-relative-packages */
 import { createIntersectionObserver } from './intersection-observer';
 
 export class CSDirection {

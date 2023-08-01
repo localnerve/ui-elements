@@ -1,0 +1,31 @@
+{
+  "name": "@localnerve/jump-scroll",
+  "version": "0.1.0",
+  "description": "A small, fast, no-dep, jump scroll control",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "webpack-cli --config webpack.prod.config.js",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/localnerve/ui-elements.git"
+  },
+  "keywords": [
+    "vertical",
+    "jump",
+    "scroll",
+    "web-component",
+    "javascript"
+  ],
+  "author": "Alex Grant (@localnerve)",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/localnerve/ui-elements/issues"
+  },
+  "homepage": "https://github.com/localnerve/ui-elements/tree/master/src/jump-scroll#readme"
+}
