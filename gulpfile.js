@@ -26,7 +26,7 @@ const jsBundle = 'bundle.js';
  * @param {Array} dirs - toplevel directories under srcRoot.
  * @returns {Array} Webpack config objects.
  */
-function getWebpackConfig (env, dirs) {
+async function getWebpackConfig (env, dirs) {
   const prod = env === 'production';
   const definitions = {
     DEBUG: !prod,
@@ -54,7 +54,32 @@ function getWebpackConfig (env, dirs) {
     ];
   }
 
-  return dirs.map(dir => ({
+  // special case for jump-scroll, revisit...
+  const dir = dirs.find(dir => dir.includes('jump-scroll'));
+  if (dir) {
+    const { spawn } = require('child_process');
+    const cp = spawn('npm', ['run', 'build'], {
+      stdio: 'inherit',
+      cwd: dir
+    });
+    const result = new Promise((resolve, reject) => {
+      cp.on('close', code => {
+        if (code === 0) {
+          resolve();
+        } else {
+          reject();
+        }
+      });
+    });
+    await result;
+    fs.copyFileSync(
+      path.join(path.resolve(dir), 'dist/jump-scroll.js'),
+      path.join(path.resolve(dir), `${jsBundle}`)
+    );
+  }
+
+  const webpackDirs = dirs.filter(dir => !dir.includes('jump-scroll'));
+  return webpackDirs.map(dir => ({
     mode: prod ? 'production' : 'development',
     entry: `${path.join(dir, 'index.js')}`,
     output: {

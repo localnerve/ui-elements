@@ -2,4 +2,5 @@
 *.css
 *.js
 test
-!dist/index.js
+!dist/*.js
+!dist/*.css
