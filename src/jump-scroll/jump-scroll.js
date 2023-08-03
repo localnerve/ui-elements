@@ -196,19 +196,22 @@ class JumpScroll extends HTMLElement {
 
   intersectionCallback (entries) {
     const entry = entries[0];
-    const current = entry.target;
-    let pos = 'mid';
 
-    this.#scrollingDown = entry.boundingClientRect.top >= 0;
+    if (entry.isIntersecting) {
+      const current = entry.target;
+      let pos = 'mid';
 
-    if (current === this.#firstTarget) {
-      pos = 'start';
-    } else if (current === this.#lastTarget) {
-      pos = 'end';
+      this.#scrollingDown = entry.boundingClientRect.top >= 0;
+
+      if (current === this.#firstTarget) {
+        pos = 'start';
+      } else if (current === this.#lastTarget) {
+        pos = 'end';
+      }
+
+      this.#currentTarget = current;
+      this.update(pos);
     }
-
-    this.#currentTarget = current;
-    this.update(pos);
   }
 
   setup () {
