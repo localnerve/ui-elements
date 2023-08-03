@@ -16,7 +16,7 @@ const thisDir = url.fileURLToPath(new URL('.', import.meta.url));
  *
  * @returns {String} The utf8 css file content
  */
-export async function JumpScrollCssText () {
+export async function getJumpScrollCssText () {
   return await fs.readFile(path.join(thisDir, 'jump-scroll.css'), {
     encoding: 'utf8'
   });

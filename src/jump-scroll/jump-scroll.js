@@ -88,7 +88,11 @@ class JumpScroll extends HTMLElement {
 
   update (pos) {
     const newClasses = [pos];
-    
+    const resetClasses = ['mid', 'start', 'end', 'rest', 'up', 'down'];
+    if (this.#firstTarget !== null) {
+      resetClasses.push('none');
+    }
+
     if (this.display === 'best' && pos === 'mid') {
       if (this.#scrollingDown) {
         newClasses.push('down');
@@ -97,7 +101,7 @@ class JumpScroll extends HTMLElement {
       }
     }
 
-    this.#container.classList.remove('mid', 'start', 'end', 'none', 'rest', 'up', 'down');
+    this.#container.classList.remove(...resetClasses);
     this.#container.classList.add(...newClasses);
     setTimeout(() => {
       this.#container.classList.add('rest');
@@ -164,27 +168,29 @@ class JumpScroll extends HTMLElement {
       }
     });
 
-    this.#firstTarget = order[0].el;
-    this.#lastTarget = order[order.length - 1].el;
+    if (order.length > 0) {
+      this.#firstTarget = order[0].el;
+      this.#lastTarget = order[order.length - 1].el;
 
-    let currentIndex = 0;
-    for (i = 0; i < order.length; i++) {
-      if (0 > order[i].top) {
-        currentIndex = i + 1;
+      let currentIndex = 0;
+      for (i = 0; i < order.length; i++) {
+        if (0 > order[i].top) {
+          currentIndex = i + 1;
+        }
+        this.#mapTargets.set(order[i].el, {
+          prev: i > 0 ? order[i-1].el : null,
+          next: i < order.length-1 ? order[i+1].el : null
+        });
       }
-      this.#mapTargets.set(order[i].el, {
-        prev: i > 0 ? order[i-1].el : null,
-        next: i < order.length-1 ? order[i+1].el : null
-      });
-    }
 
-    this.#currentTarget = order[currentIndex].el;
-    if (currentIndex === 0) {
-      this.update('start');
-    } else if (currentIndex === order.length - 1) {
-      this.update('end');
-    } else {
-      this.update('mid');
+      this.#currentTarget = order[currentIndex].el;
+      if (currentIndex === 0) {
+        this.update('start');
+      } else if (currentIndex === order.length - 1) {
+        this.update('end');
+      } else {
+        this.update('mid');
+      }
     }
   }
 
@@ -244,23 +250,23 @@ class JumpScroll extends HTMLElement {
     const { shadowRoot } = this;
     shadowRoot.innerHTML = `<style>${JumpScrollCss}</style><div class="container none"><div class="top"><div class="start"></div><div class="prev"></div></div><div class="bot"><div class="next"></div><div class="end"></div></div></div>`;
 
-      this.#container = shadowRoot.querySelector('.container');
-      /* eslint-disable no-self-assign */
-      this.display = this.display;
-      /* eslint-enable no-self-assign */
+    this.#container = shadowRoot.querySelector('.container');
+    /* eslint-disable no-self-assign */
+    this.display = this.display;
+    /* eslint-enable no-self-assign */
 
-      shadowRoot.querySelector('.top .start').addEventListener(
-        'click', this.clickTop
-      );
-      shadowRoot.querySelector('.bot .end').addEventListener(
-        'click', this.clickBottom
-      );
-      shadowRoot.querySelector('.top .prev').addEventListener(
-        'click', this.clickPrev
-      );
-      shadowRoot.querySelector('.bot .next').addEventListener(
-        'click', this.clickNext
-      );
+    shadowRoot.querySelector('.top .start').addEventListener(
+      'click', this.clickTop
+    );
+    shadowRoot.querySelector('.bot .end').addEventListener(
+      'click', this.clickBottom
+    );
+    shadowRoot.querySelector('.top .prev').addEventListener(
+      'click', this.clickPrev
+    );
+    shadowRoot.querySelector('.bot .next').addEventListener(
+      'click', this.clickNext
+    );
   }
 
   disconnectedCallback () {
