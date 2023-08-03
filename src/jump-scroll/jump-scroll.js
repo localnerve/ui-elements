@@ -109,13 +109,21 @@ class JumpScroll extends HTMLElement {
   }
 
   clickTop () {
-    this.#firstTarget.scrollIntoView();
+    this.#firstTarget.scrollIntoView({
+      block: 'nearest',
+      inline: 'start',
+      behavior: 'smooth'
+    });
     this.#currentTarget = this.#firstTarget;
     this.update('start');
   }
 
   clickBottom () {
-    this.#lastTarget.scrollIntoView();
+    this.#lastTarget.scrollIntoView({
+      block: 'nearest',
+      inline: 'start',
+      behavior: 'smooth'
+    });
     this.#currentTarget = this.#lastTarget;
     this.update('end');
   }
@@ -124,10 +132,12 @@ class JumpScroll extends HTMLElement {
     const targets = this.#mapTargets.get(this.#currentTarget);
     if (targets && targets.next) {
       targets.next.scrollIntoView({
-        block: targets.next === this.#lastTarget ? 'start' : 'center',
+        block: 'nearest',
+        inline: 'start',
         behavior: 'smooth'
       });
       this.#currentTarget = targets.next;
+      this.update('mid');
     }
   }
 
@@ -135,10 +145,12 @@ class JumpScroll extends HTMLElement {
     const targets = this.#mapTargets.get(this.#currentTarget);
     if (targets && targets.prev) {
       targets.prev.scrollIntoView({
-        block: targets.prev === this.#firstTarget ? 'start' : 'center',
+        block: 'nearest',
+        inline: 'start',
         behavior: 'smooth'
       });
       this.#currentTarget = targets.prev;
+      this.update('mid');
     }
   }
 
