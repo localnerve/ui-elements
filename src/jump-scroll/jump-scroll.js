@@ -137,7 +137,6 @@ class JumpScroll extends HTMLElement {
         behavior: 'smooth'
       });
       this.#currentTarget = targets.next;
-      this.update('mid');
     }
   }
 
@@ -150,7 +149,6 @@ class JumpScroll extends HTMLElement {
         behavior: 'smooth'
       });
       this.#currentTarget = targets.prev;
-      this.update('mid');
     }
   }
 
