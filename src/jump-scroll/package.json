@@ -1,15 +1,18 @@
 {
   "name": "@localnerve/jump-scroll",
-  "version": "0.2.1",
-  "description": "A small, fast, no-dep, jump scroll control",
+  "version": "0.3.1",
+  "description": "A small, fast, no-dep, jump-scroll web component",
   "main": "dist/index.js",
+  "browser": "dist/jump-scroll.js",
+  "type": "module",
   "scripts": {
-    "build": "webpack-cli --config webpack.prod.config.js",
+    "build": "node build.js && webpack-cli --config webpack.prod.config.js",
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
     "webpack": "^5.88.2",
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "^5.1.4",
+    "clean-css": "^5.3.2"
   },
   "repository": {
     "type": "git",
@@ -19,7 +22,7 @@
     "vertical",
     "jump",
     "scroll",
-    "web-component",
+    "webcomponent",
     "javascript"
   ],
   "author": "Alex Grant (@localnerve)",

@@ -1,14 +1,18 @@
 # jump-scroll
 [![npm version](https://badge.fury.io/js/%40localnerve%2Fjump-scroll.svg)](http://badge.fury.io/js/%40localnerve%2Fjump-scroll)
 
-> A small, fast, no-dependency, jump scroll component.
+> A small, fast, no-dependency, jump scroll webcomponent.
 
 ## Live example
   https://localnerve.github.io/ui-elements/dist/jump-scroll/
 
+## Summary
+
+Provides a small scrolling control that allows the user to go to the top or bottom, or jump to the next (or previous) section of a page.
+
 ## Attributes
 
-* target - A selector that selects all the elements to vertically jump scroll to in the page. Defaults to 'section'.
+* target - A selector to select all the elements to vertically "jump scroll" to in the page. Defaults to 'section'.
 * display - "both" | "best"
   * `both` - Default. The control displays both [top, previous] AND [bottom, next] jump scrolling options simulataneously.
   * `best` - The control displays either [top, previous] OR [bottom, next] jump scrolling options. Which one is displayed depends on the position on the page and the direction of scrolling. If the user is in the middle of the page and scrolls, the control only displays the jump scroll options in the direction of the scroll. Less vertical space required.

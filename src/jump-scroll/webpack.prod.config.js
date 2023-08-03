@@ -5,22 +5,25 @@
  * Copyright (c) 2017-2023 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
-/* eslint-disable import/no-extraneous-dependencies */
-const path = require('path');
-const webpack = require('webpack');
-const TerserPlugin = require('terser-webpack-plugin');
+import * as path from 'node:path';
+import webpack from 'webpack';
+import TerserPlugin from 'terser-webpack-plugin';
+import { stageDir, distDir } from './build-settings.js';
 
-module.exports = {
+export default {
   mode: 'production',
-  entry: path.join(__dirname, 'index.js'),
+  entry: path.join(stageDir, 'jump-scroll.js'),
   optimization: {
     minimizer: [new TerserPlugin({ extractComments: false })],
   },
+  experiments: {
+    outputModule: true
+  },
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'index.js',
+    path: distDir,
+    filename: 'jump-scroll.js',
     library: {
-      type: 'commonjs-static'
+      type: 'module'
     }
   },
   module: {
