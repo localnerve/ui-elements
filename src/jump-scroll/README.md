@@ -8,7 +8,7 @@
 
 ## Summary
 
-Provides a small scrolling control that allows the user to go to the top or bottom, or jump to the next (or previous) section of a page.
+Provides a small scrolling control that allows the user to go to the top or bottom, or jump to the next (or previous) section of a page. Non-browser version of the module exports build helpers (for building CSP rules, etc).
 
 ## Attributes
 
@@ -28,6 +28,11 @@ Provides a small scrolling control that allows the user to go to the top or bott
 ```html 
     <jump-scroll target="article" display="best"></jump-scroll>
 ```
+## Non-browser Exports
+The non-browser version of the module exports methods to help with builds.
+
+### {Promise} getJumpScrollCssText()
+A function to asynchronously get the raw shadow css text. This is useful for computing the hash for a CSP style rule. Returns a Promise that resolves to the full utf8 string of css text.
 
 ## License
 LocalNerve [BSD-3-Clause](LICENSE.md) Licensed
