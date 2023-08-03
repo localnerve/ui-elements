@@ -8,3 +8,4 @@ src/jump-scroll/dist
 npm-debug.log
 *tgz
 dist/jump-scroll/node_modules
+dist/jump-scroll/dist
