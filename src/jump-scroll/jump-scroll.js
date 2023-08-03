@@ -196,18 +196,19 @@ class JumpScroll extends HTMLElement {
 
   intersectionCallback (entries) {
     const entry = entries[0];
-    const isIntersecting = entry.isIntersecting;
-    
-    if (isIntersecting) {
-      this.#scrollingDown = entry.boundingClientRect.top >= 0;
 
+    if (entry.isIntersecting) {
       const current = entry.target;
       let pos = 'mid';
+
+      this.#scrollingDown = entry.boundingClientRect.top >= 0;
+
       if (current === this.#firstTarget) {
         pos = 'start';
       } else if (current === this.#lastTarget) {
         pos = 'end';
       }
+
       this.#currentTarget = current;
       this.update(pos);
     }
@@ -248,7 +249,11 @@ class JumpScroll extends HTMLElement {
     }
 
     const { shadowRoot } = this;
-    shadowRoot.innerHTML = `<style>${JumpScrollCss}</style><div class="container none"><div class="top"><div class="start"></div><div class="prev"></div></div><div class="bot"><div class="next"></div><div class="end"></div></div></div>`;
+    shadowRoot.innerHTML = `<style>${JumpScrollCss}</style>\
+<div class="container none">\
+<div class="top"><div class="start"></div><div class="prev"></div></div>\
+<div class="bot"><div class="next"></div><div class="end"></div></div>\
+</div>`;
 
     this.#container = shadowRoot.querySelector('.container');
     /* eslint-disable no-self-assign */
