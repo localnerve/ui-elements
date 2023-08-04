@@ -4,9 +4,34 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta content="initial-scale=1, width=device-width" name="viewport">
+    <meta name="color-scheme" content="light dark">
     <style>
+      :root {
+        --dark: #2a2a2a;
+        --light: #fafafa;
+
+        --color: var(--dark);
+        --bg-color: var(--light);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --color: var(--light);
+          --bg-color: var(--dark);
+        }
+      }
+      body {
+        background-color: var(--bg-color);
+      }
       article {
-        border-bottom: 1px solid black;
+        border-bottom: 1px solid var(--color);
+      }
+      article:nth-child(odd) {
+        background-color: var(--bg-color);
+        color: var(--color);
+      }
+      article:nth-child(even) {
+        background-color: var(--color);
+        color: var(--bg-color);
       }
     </style>
   </head>
@@ -120,7 +145,7 @@
           666666 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
         </p>
       </article>
-      <jump-scroll target="article" display="best"></jump-scroll>
+      <jump-scroll target="article" display="best" colormap="1:--bg-color;3:--bg-color;5:--bg-color"></jump-scroll>
     </section>
     <script src="bundle.js"></script>
   </body>

@@ -8,7 +8,7 @@
 
 ## Summary
 
-Provides a small scrolling control that allows the user to go to the top or bottom, or jump to the next (or previous) section of a page.
+Provides a small scrolling control that allows the user to go to the top or bottom, or jump to the next (or previous) section of a page. Non-browser version of the module exports build helpers (for building CSP rules, etc).
 
 ## Attributes
 
@@ -23,11 +23,18 @@ Provides a small scrolling control that allows the user to go to the top or bott
 * `--js-bg-color` - The color of the control arrows. Defaults to black.
 * `--js-opacity-full` - The opacity of the control arrows at attention. Defaults to 0.7.
 * `--js-opacity-rest` - The opacity of the control arrows at rest. Defaults to 0.3.
+* `--js-attach-right` - The distance from the fixed, right-edge attachment. Defaults to 0.5rem;
+* `--js-attach-bottom` - The distance form the fixed, bottom-edge attachment. Defaults to 0.7rem;
 
 ## Usage Example
 ```html 
     <jump-scroll target="article" display="best"></jump-scroll>
 ```
+## Non-browser Exports
+The non-browser version of the module exports methods to help with builds.
+
+### {Promise} getJumpScrollCssText()
+A function to asynchronously get the raw shadow css text. This is useful for computing the hash for a CSP style rule. Returns a Promise that resolves to the full utf8 string of css text.
 
 ## License
 LocalNerve [BSD-3-Clause](LICENSE.md) Licensed
