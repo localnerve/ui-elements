@@ -23,6 +23,8 @@ Provides a small scrolling control that allows the user to go to the top or bott
 * `--js-bg-color` - The color of the control arrows. Defaults to black.
 * `--js-opacity-full` - The opacity of the control arrows at attention. Defaults to 0.7.
 * `--js-opacity-rest` - The opacity of the control arrows at rest. Defaults to 0.3.
+* `--js-attach-right` - The distance from the fixed, right-edge attachment. Defaults to 0.5rem;
+* `--js-attach-bottom` - The distance form the fixed, bottom-edge attachment. Defaults to 0.7rem;
 
 ## Usage Example
 ```html 
