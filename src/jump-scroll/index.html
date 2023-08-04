@@ -33,6 +33,9 @@
         background-color: var(--color);
         color: var(--bg-color);
       }
+      .jump-scroll {
+        --js-bg-color: var(--color);
+      }
     </style>
   </head>
   <body>
@@ -145,7 +148,7 @@
           666666 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
         </p>
       </article>
-      <jump-scroll target="article" display="best" colormap="1:--bg-color;3:--bg-color;5:--bg-color"></jump-scroll>
+      <jump-scroll class="jump-scroll" target="article" display="best" colormap="1:--bg-color;3:--bg-color;5:--bg-color"></jump-scroll>
     </section>
     <script src="bundle.js"></script>
   </body>
