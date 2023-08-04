@@ -5,10 +5,12 @@
   --js-color: white;
   --js-opacity-full: 0.7;
   --js-opacity-rest: 0.3;
+  --js-attach-right: 0.5rem;
+  --js-attach-bottom: 0.7rem;
 
   position: fixed;
-  bottom: 1rem;
-  right: 0.8rem;
+  bottom: var(--js-attach-bottom);
+  right: var(--js-attach-right);
   width: var(--js-width);
   height: var(--js-height);
   color: var(--js-color);
