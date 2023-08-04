@@ -9,11 +9,13 @@
 const JumpScrollCss = `__CSS_REPLACEMENT__`;
 
 class JumpScroll extends HTMLElement {
-  #observer = null;
+  #targetObserver = null;
+  #controlObserver = null;
   #firstTarget = null;
   #lastTarget = null;
   #currentTarget = null;
   #mapTargets = null;
+  #mapColors = null;
   #container = null;
   #scrollingDown = true;
   #setup = false;
@@ -24,13 +26,14 @@ class JumpScroll extends HTMLElement {
     display: 'both' // or 'best'
   }
   static get observedAttributes () {
-    return [...JumpScroll.#observedTargetAttributes, 'display'];
+    return [...JumpScroll.#observedTargetAttributes, 'display', 'colormap'];
   }
 
   constructor () {
     super();
     this.attachShadow({ mode: 'open' });
-    this.intersectionCallback = this.intersectionCallback.bind(this);
+    this.targetIntersection = this.targetIntersection.bind(this);
+    this.controlIntersection = this.controlIntersection.bind(this);
     this.setup = this.setup.bind(this);
     this.clickTop = this.clickTop.bind(this);
     this.clickBottom = this.clickBottom.bind(this);
@@ -70,19 +73,45 @@ class JumpScroll extends HTMLElement {
   set display (value) {
     const propName = 'display';
     const values = ['both', 'best'];
-    const container = this.#container ?? {
-      classList: {
-        remove: () => {},
-        add: () => {}
-      }
-    };
 
-    container.classList.remove(...values.concat('up', 'down'));
+    this.#container &&
+      this.#container.classList.remove(...values.concat('up', 'down'));
     if (values.includes(value)) {
       this.setAttribute(propName, value);
-      container.classList.add(value);
+      this.#container && this.#container.classList.add(value);
     } else {
       this.removeAttribute(propName);
+    }
+  }
+
+  get colormap () {
+    let result = '';
+    const propName = 'colormap';
+    if (this.hasAttribute(propName)) {
+      result = this.getAttribute(propName);
+    }
+    return result;
+  }
+  set colormap (value) {
+    if (this.#container === null) {
+      return;
+    }
+
+    const propName = 'colormap';
+    const mapItems = value && value.split(';');
+    if (mapItems && mapItems.length > 0 && mapItems[0].includes(':')) {
+      this.setAttribute(propName, value);
+      this.#mapColors = new Map();
+      for (const item of mapItems) {
+        let [index, color] = item.replace(/\s/, '').split(':');
+        if (color.startsWith('--')) {
+          color = `var(${color})`;
+        }
+        this.#mapColors.set(parseInt(index, 10), color);
+      }
+    } else {
+      this.removeAttribute(propName);
+      this.#mapColors = null;
     }
   }
 
@@ -109,46 +138,46 @@ class JumpScroll extends HTMLElement {
   }
 
   clickTop () {
+    this.#currentTarget = this.#firstTarget;
     this.#firstTarget.scrollIntoView({
       block: 'nearest',
       inline: 'start',
       behavior: 'smooth'
     });
-    this.#currentTarget = this.#firstTarget;
     this.update('start');
   }
 
   clickBottom () {
+    this.#currentTarget = this.#lastTarget;
     this.#lastTarget.scrollIntoView({
       block: 'nearest',
       inline: 'start',
       behavior: 'smooth'
     });
-    this.#currentTarget = this.#lastTarget;
     this.update('end');
   }
 
   clickNext () {
     const targets = this.#mapTargets.get(this.#currentTarget);
     if (targets && targets.next) {
+      this.#currentTarget = targets.next;
       targets.next.scrollIntoView({
         block: 'nearest',
         inline: 'start',
         behavior: 'smooth'
       });
-      this.#currentTarget = targets.next;
     }
   }
 
   clickPrev () {
     const targets = this.#mapTargets.get(this.#currentTarget);
     if (targets && targets.prev) {
+      this.#currentTarget = targets.prev;
       targets.prev.scrollIntoView({
         block: 'nearest',
         inline: 'start',
         behavior: 'smooth'
       });
-      this.#currentTarget = targets.prev;
     }
   }
 
@@ -188,6 +217,7 @@ class JumpScroll extends HTMLElement {
           currentIndex = i + 1;
         }
         this.#mapTargets.set(order[i].el, {
+          index: i,
           prev: i > 0 ? order[i-1].el : null,
           next: i < order.length-1 ? order[i+1].el : null
         });
@@ -204,7 +234,7 @@ class JumpScroll extends HTMLElement {
     }
   }
 
-  intersectionCallback (entries) {
+  targetIntersection (entries) {
     const entry = entries[0];
 
     if (entry.isIntersecting) {
@@ -224,28 +254,57 @@ class JumpScroll extends HTMLElement {
     }
   }
 
+  controlIntersection (entries) {
+    const intersectors = entries.filter(entry => entry.isIntersecting);
+
+    if (intersectors && intersectors.length > 0) {
+      if (this.#mapColors) {
+        const entry = intersectors[0];
+        const current = this.#mapTargets.get(entry.target);
+        if (current) {
+          const newColor = current && this.#mapColors.get(current.index);
+          if (newColor) {
+            this.#container.style.setProperty('--js-bg-color', newColor);
+          } else {
+            this.#container.style.removeProperty('--js-bg-color');
+          }
+        }
+      }
+    }
+  }
+
   setup () {
     this.#setup = true;
-    this.#observer = new IntersectionObserver(this.intersectionCallback, {
+    this.#targetObserver = new IntersectionObserver(this.targetIntersection, {
       threshold: 0.5
+    });
+    this.#controlObserver = new IntersectionObserver(this.controlIntersection, {
+      threshold: 0.05,
+      rootMargin: '-90% 0px 0px 0px'
     });
     JumpScroll.#observedTargetAttributes.forEach(propName => {
       this.updateTargetMap(propName, el => {
-        this.#observer.observe(el);
+        this.#targetObserver.observe(el);
+        this.#controlObserver.observe(el);
       });
     });
   }
 
   teardown () {
-    if (this.#observer) {
-      this.#observer.disconnect();
+    if (this.#targetObserver) {
+      this.#targetObserver.disconnect();
     }
-    this.#observer = null;
+    if (this.#controlObserver) {
+      this.#controlObserver.disconnect();
+    }
+    this.#targetObserver = null;
+    this.#controlObserver = null;
     this.#firstTarget = null;
     this.#lastTarget = null;
     this.#currentTarget = null;
     this.#container = null;
     this.#mapTargets = null;
+    this.#mapColors = null;
     this.#setup = false;
   }
 
@@ -268,6 +327,7 @@ class JumpScroll extends HTMLElement {
     this.#container = shadowRoot.querySelector('.container');
     /* eslint-disable no-self-assign */
     this.display = this.display;
+    this.colormap = this.colormap;
     /* eslint-enable no-self-assign */
 
     shadowRoot.querySelector('.top .start').addEventListener(
