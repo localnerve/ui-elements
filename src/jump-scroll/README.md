@@ -12,12 +12,19 @@ Provides a small scrolling control that allows the user to go to the top or bott
 
 ## Attributes
 
-* target - A selector to select all the elements to vertically "jump scroll" to in the page. Defaults to 'section'.
-* display - "both" | "best"
-  * `both` - Default. The control displays both [top, previous] AND [bottom, next] jump scrolling options simulataneously.
-  * `best` - The control displays either [top, previous] OR [bottom, next] jump scrolling options. Which one is displayed depends on the position on the page and the direction of scrolling. If the user is in the middle of the page and scrolls, the control only displays the jump scroll options in the direction of the scroll. Less vertical space required.
+* `target` - *Required*. A selector to select all the elements to vertically "jump scroll" to in the page. Defaults to 'section'.  
+
+* `display` - "both" | "best"  
+  **"both"** - *Default*. The control displays both [top, previous] AND [bottom, next] jump scrolling options simulataneously.  
+  **"best"** - The control displays either [top, previous] OR [bottom, next] jump scrolling options. Which one is displayed depends on the position on the page and the direction of scrolling. If the user is in the middle of the page and scrolls, the control only displays the jump scroll options in the direction of the scroll. Less vertical space required.  
+  
+* `colormap` - *Optional*. A map of targets to colors. Changes the color of the jump-scroll control over specific elements.  
+  **Format:** `index:color[;index:color]*`  
+  **index** - *Integer*. A zero-based index of the elements selected by the `target` attribute. The index is in the order of selected elements top-down on the page. Zero is the top most element, larger numbers are further down on the page.  
+  **color** - *CssColor|CssCustomProperty*. A css color or a css variable of a color to use for the background of the control.  
 
 ## Overridable CSS Variables
+
 * `--js-width` - The overall width of the control. Defaults to 2em.
 * `--js-height` - The overall height of the control. Defaults to 8em.
 * `--js-bg-color` - The color of the control arrows. Defaults to black.
@@ -27,18 +34,25 @@ Provides a small scrolling control that allows the user to go to the top or bott
 * `--js-attach-bottom` - The distance form the fixed, bottom-edge attachment. Defaults to 0.7rem;
 
 ## Usage Example
+
 ```html 
-    <jump-scroll target="article" display="best"></jump-scroll>
+  <jump-scroll target="article" display="best"></jump-scroll>
 ```
 ## Non-browser Exports
+
 The non-browser version of the module exports methods to help with builds.
 
 ### {Promise} getJumpScrollCssText()
-A function to asynchronously get the raw shadow css text. This is useful for computing the hash for a CSP style rule. Returns a Promise that resolves to the full utf8 string of css text.
+
+Asynchronously gets the raw shadow css text.  
+Useful for computing the hash for a CSP style rule.  
+Returns a Promise that resolves to the full utf8 string of css text.
 
 ## License
+
 LocalNerve [BSD-3-Clause](LICENSE.md) Licensed
 
 ## Contact
+
 twitter: @localnerve
 email: alex@localnerve.com
