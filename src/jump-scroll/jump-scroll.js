@@ -235,9 +235,10 @@ class JumpScroll extends HTMLElement {
   }
 
   targetIntersection (entries) {
-    const entry = entries[0];
+    const intersectors = entries.filter(entry => entry.isIntersecting);
 
-    if (entry.isIntersecting) {
+    if (intersectors && intersectors.length > 0) {
+      const entry = intersectors[0];
       const current = entry.target;
       let pos = 'mid';
 
