@@ -10,7 +10,8 @@ const JumpScrollCss = `__CSS_REPLACEMENT__`;
 
 class JumpScroll extends HTMLElement {
   #targetObserver = null;
-  #controlObserver = null;
+  #controlObserver1 = null;
+  #controlObserver2 = null;
   #firstTarget = null;
   #lastTarget = null;
   #currentTarget = null;
@@ -19,7 +20,9 @@ class JumpScroll extends HTMLElement {
   #container = null;
   #scrollingDown = true;
   #setup = false;
+  #resizeTick = false;
 
+  static #resizeWait = 800;
   static #observedTargetAttributes = ['target'];
   static #observedAttributeDefaults = {
     target: 'section',
@@ -29,11 +32,23 @@ class JumpScroll extends HTMLElement {
     return [...JumpScroll.#observedTargetAttributes, 'display', 'colormap'];
   }
 
+  /**
+   * Pull the numeric part of a string and parse as float.
+   *
+   * @param {String} input - The string to parse as float.
+   * @returns {Number} The parsed float.
+   */
+  static getNumber (input) {
+    const reNotNum = /[^.+\-\d]+/;
+    return parseFloat(input.replace(reNotNum, ''));
+  }
+
   constructor () {
     super();
     this.attachShadow({ mode: 'open' });
     this.targetIntersection = this.targetIntersection.bind(this);
     this.controlIntersection = this.controlIntersection.bind(this);
+    this.resizeHandler = this.resizeHandler.bind(this);
     this.setup = this.setup.bind(this);
     this.clickTop = this.clickTop.bind(this);
     this.clickBottom = this.clickBottom.bind(this);
@@ -189,7 +204,11 @@ class JumpScroll extends HTMLElement {
     this.#firstTarget = null;
     this.#lastTarget = null;
     this.#currentTarget = null;
-    this.#mapTargets = new WeakMap();
+    if (this.#mapTargets) {
+      this.#mapTargets.clear();
+    } else {
+      this.#mapTargets = new Map();
+    }
 
     let rect, i; const order = [];
     document.querySelectorAll(this[propName]).forEach(el => {
@@ -256,14 +275,14 @@ class JumpScroll extends HTMLElement {
   }
 
   controlIntersection (entries) {
-    const intersectors = entries.filter(entry => entry.isIntersecting);
+    if (this.#mapColors) {
+      const intersectors = entries.filter(entry => entry.isIntersecting);
 
-    if (intersectors && intersectors.length > 0) {
-      if (this.#mapColors) {
+      if (intersectors && intersectors.length > 0) {
         const entry = intersectors[0];
         const current = this.#mapTargets.get(entry.target);
         if (current) {
-          const newColor = current && this.#mapColors.get(current.index);
+          const newColor = this.#mapColors.get(current.index);
           if (newColor) {
             this.#container.style.setProperty('--js-bg-color', newColor);
           } else {
@@ -274,37 +293,97 @@ class JumpScroll extends HTMLElement {
     }
   }
 
-  setup () {
-    this.#setup = true;
+  #installIntersectionObservers () {
+    const viewportHeight = window.innerHeight;
+    const controlIntersectionWindow = 2;
+    const heightFactor = this.display === 'best' ? 2 : 1;
+    const controlHeight = this.offsetHeight / heightFactor;
+    const controlTopTop = viewportHeight - controlHeight;
+    const controlTopBottom = controlHeight - controlIntersectionWindow;
+    const controlBottomBottom = JumpScroll.getNumber(
+      window.getComputedStyle(this).bottom
+    );
+    const controlBottomTop =
+      viewportHeight - controlBottomBottom - controlIntersectionWindow;
+
     this.#targetObserver = new IntersectionObserver(this.targetIntersection, {
       threshold: 0.5
     });
-    this.#controlObserver = new IntersectionObserver(this.controlIntersection, {
-      threshold: 0.05,
-      rootMargin: '-90% 0px 0px 0px'
+    this.#controlObserver1 = new IntersectionObserver(this.controlIntersection, {
+      threshold: 0,
+      rootMargin: `-${controlTopTop}px 0px -${controlTopBottom}px 0px`
     });
-    JumpScroll.#observedTargetAttributes.forEach(propName => {
-      this.updateTargetMap(propName, el => {
-        this.#targetObserver.observe(el);
-        this.#controlObserver.observe(el);
-      });
+    this.#controlObserver2 = new IntersectionObserver(this.controlIntersection, {
+      threshold: 0,
+      rootMargin: `-${controlBottomTop}px 0px -${controlBottomBottom}px 0px`
     });
-  }
 
-  teardown () {
+    const els = this.#mapTargets.keys();
+    for (const el of els) {
+      this.#targetObserver.observe(el);
+      this.#controlObserver1.observe(el);
+      this.#controlObserver2.observe(el);
+    }
+  }
+  
+  #uninstallIntersectionObservers () {
     if (this.#targetObserver) {
       this.#targetObserver.disconnect();
     }
-    if (this.#controlObserver) {
-      this.#controlObserver.disconnect();
+    if (this.#controlObserver1) {
+      this.#controlObserver1.disconnect();
+    }
+    if (this.#controlObserver2) {
+      this.#controlObserver2.disconnect();
     }
     this.#targetObserver = null;
-    this.#controlObserver = null;
+    this.#controlObserver1 = null;
+    this.#controlObserver2 = null;
+  }
+
+  resizeHandler () {
+    if (!this.#resizeTick) {
+      this.#resizeTick = true;
+      this.#uninstallIntersectionObservers();
+      setTimeout(() => {
+        this.#installIntersectionObservers();
+        this.#resizeTick = false;
+      }, JumpScroll.#resizeWait);
+    }
+  }
+
+  #installResizeObserver () {
+    window.addEventListener('resize', this.resizeHandler);
+  }
+
+  #uninstallResizeObserver () {
+    window.removeEventListener('resize', this.resizeHandler);
+  }
+
+  setup () {
+    if (this.#setup) {
+      this.teardown();
+    }
+    this.#setup = true;
+
+    JumpScroll.#observedTargetAttributes.forEach(propName => {
+      this.updateTargetMap(propName);
+    });
+
+    this.#installIntersectionObservers();
+    this.#installResizeObserver();
+  }
+
+  teardown () {
+    this.#uninstallResizeObserver();
+    this.#uninstallIntersectionObservers();
     this.#firstTarget = null;
     this.#lastTarget = null;
     this.#currentTarget = null;
     this.#container = null;
+    this.#mapTargets.clear();
     this.#mapTargets = null;
+    this.#mapColors.clear();
     this.#mapColors = null;
     this.#setup = false;
   }
