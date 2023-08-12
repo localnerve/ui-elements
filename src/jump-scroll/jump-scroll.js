@@ -12,14 +12,18 @@ class JumpScroll extends HTMLElement {
   #targetObserver = null;
   #controlObserver1 = null;
   #controlObserver2 = null;
+  #scrollingDown = true;
+
   #firstTarget = null;
   #lastTarget = null;
+  #mapFirstLastScroll = null;
   #currentTarget = null;
   #mapTargets = null;
+
   #mapColors = null;
+
   #container = null;
-  #scrollingDown = true;
-  #setup = false;
+  #setupInit = false;
   #resizeTick = false;
 
   static #resizeWait = 800;
@@ -93,6 +97,8 @@ class JumpScroll extends HTMLElement {
       this.#container.classList.remove(...values.concat('up', 'down'));
     if (values.includes(value)) {
       this.setAttribute(propName, value);
+      this.#uninstallIntersectionObservers();
+      this.#installIntersectionObservers();
       this.#container && this.#container.classList.add(value);
     } else {
       this.removeAttribute(propName);
@@ -197,12 +203,13 @@ class JumpScroll extends HTMLElement {
   }
 
   updateTargetMap (propName, perTargetWork) {
-    if (!JumpScroll.#observedTargetAttributes.includes(propName) || !this.#setup) {
+    if (!JumpScroll.#observedTargetAttributes.includes(propName) || !this.#setupInit) {
       return;
     }
 
     this.#firstTarget = null;
     this.#lastTarget = null;
+    this.#mapFirstLastScroll = null;
     this.#currentTarget = null;
     if (this.#mapTargets) {
       this.#mapTargets.clear();
@@ -229,6 +236,10 @@ class JumpScroll extends HTMLElement {
     if (order.length > 0) {
       this.#firstTarget = order[0].el;
       this.#lastTarget = order[order.length - 1].el;
+      this.#mapFirstLastScroll = new WeakMap([
+        [this.#firstTarget, { pos: 'start', down: true }],
+        [this.#lastTarget, { pos: 'end', down: false }]
+      ])
 
       let currentIndex = 0;
       for (i = 0; i < order.length; i++) {
@@ -253,24 +264,68 @@ class JumpScroll extends HTMLElement {
     }
   }
 
+  /**
+   * Update #currentTarget, #scrollingDown, and the UI state accordingly.
+   *
+   * @param {Array} entries
+   */
   targetIntersection (entries) {
-    const intersectors = entries.filter(entry => entry.isIntersecting);
+    const intersectors = entries.sort((a, b) => {
+      let result = a.isIntersecting ? -1 : b.isIntersecting ? 1 : 0;
+      if (result) {
+        const leftTarget = this.#mapTargets.get(a.target);
+        const rightTarget = this.#mapTargets.get(b.target);
+        if (this.#scrollingDown) {
+          result = rightTarget.index - leftTarget.index;
+        } else {
+          result = leftTarget.index - rightTarget.index;
+        }
+        if (!result) {
+          result = b.intersectionRatio - a.intersectionRatio;
+        }
+      }
+      return result;
+    });
 
-    if (intersectors && intersectors.length > 0) {
-      const entry = intersectors[0];
-      const current = entry.target;
-      let pos = 'mid';
+    const entry = intersectors[0];
+    if (entry.isIntersecting) {
+      const lastTarget = this.#mapTargets.get(this.#currentTarget);
+      const lastFirstLast = this.#mapFirstLastScroll.has(this.#currentTarget);
+      const nextTarget = this.#mapTargets.get(entry.target);
+      const nextTop = entry.boundingClientRect.top;
+      const nextRatio = entry.intersectionRatio;
+      const nextElement = entry.target;
+      const nextRatioThreshold = lastFirstLast ? 0.9 : 0.49;
 
-      this.#scrollingDown = entry.boundingClientRect.top >= 0;
+      let { pos, down } = this.#mapFirstLastScroll.get(nextElement) ?? {
+        pos: 'mid',
+        down: nextTarget.lastTop === undefined
+          ? this.#scrollingDown
+          : nextTop < nextTarget.lastTop
+      };
 
-      if (current === this.#firstTarget) {
-        pos = 'start';
-      } else if (current === this.#lastTarget) {
-        pos = 'end';
+      const nextEligible = (
+        this.#scrollingDown
+          ? nextTarget.index > lastTarget.index
+          : nextTarget.index < lastTarget.index
+        ) && nextRatio > nextRatioThreshold;
+
+      if (nextEligible) {
+        // console.log('@@@ currentTarget assigned', nextTarget.index, nextRatio);
+        this.#currentTarget = nextElement;
       }
 
-      this.#currentTarget = current;
+      if (down !== this.#scrollingDown) {
+        const vals = this.#mapTargets.values();
+        for (const val of vals) {
+          val.lastTop = undefined;
+        }
+      }
+
+      nextTarget.lastTop = nextTop;
       this.update(pos);
+
+      this.#scrollingDown = down;
     }
   }
 
@@ -294,12 +349,17 @@ class JumpScroll extends HTMLElement {
   }
 
   #installIntersectionObservers () {
+    if (!this.#mapTargets) {
+      return;
+    }
+
     const viewportHeight = window.innerHeight;
     const controlIntersectionWindow = 2;
-    const heightFactor = this.display === 'best' ? 2 : 1;
-    const controlHeight = this.offsetHeight / heightFactor;
+    const controlHeight = this.offsetHeight;
     const controlTopTop = viewportHeight - controlHeight;
-    const controlTopBottom = controlHeight - controlIntersectionWindow;
+    const controlTopBottom = Math.abs(
+      controlHeight - controlIntersectionWindow
+    );
     const controlBottomBottom = JumpScroll.getNumber(
       window.getComputedStyle(this).bottom
     );
@@ -307,7 +367,7 @@ class JumpScroll extends HTMLElement {
       viewportHeight - controlBottomBottom - controlIntersectionWindow;
 
     this.#targetObserver = new IntersectionObserver(this.targetIntersection, {
-      threshold: 0.5
+      threshold: [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
     });
     this.#controlObserver1 = new IntersectionObserver(this.controlIntersection, {
       threshold: 0,
@@ -339,6 +399,7 @@ class JumpScroll extends HTMLElement {
     this.#targetObserver = null;
     this.#controlObserver1 = null;
     this.#controlObserver2 = null;
+    this.#scrollingDown = true;
   }
 
   resizeHandler () {
@@ -361,10 +422,10 @@ class JumpScroll extends HTMLElement {
   }
 
   setup () {
-    if (this.#setup) {
+    if (this.#setupInit) {
       this.teardown();
     }
-    this.#setup = true;
+    this.#setupInit = true;
 
     JumpScroll.#observedTargetAttributes.forEach(propName => {
       this.updateTargetMap(propName);
@@ -379,13 +440,14 @@ class JumpScroll extends HTMLElement {
     this.#uninstallIntersectionObservers();
     this.#firstTarget = null;
     this.#lastTarget = null;
+    this.#mapFirstLastScroll = null;
     this.#currentTarget = null;
     this.#container = null;
     this.#mapTargets.clear();
     this.#mapTargets = null;
     this.#mapColors.clear();
     this.#mapColors = null;
-    this.#setup = false;
+    this.#setupInit = false;
   }
 
   connectedCallback () {

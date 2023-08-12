@@ -1,6 +1,6 @@
 {
   "name": "ui-elements",
-  "version": "5.4.15",
+  "version": "5.4.16",
   "description": "A repo of ui elements",
   "main": "index.js",
   "repository": {
@@ -26,17 +26,17 @@
   "author": "Alex Grant (@localnerve)",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "chromedriver": "^115.0.0",
+    "chromedriver": "^115.0.1",
     "express": "^4.18.2",
-    "geckodriver": "^4.1.3",
+    "geckodriver": "^4.2.0",
     "selenium-assistant": "^6.1.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.22.9",
-    "@babel/preset-env": "^7.22.9",
+    "@babel/core": "^7.22.10",
+    "@babel/preset-env": "^7.22.10",
     "babel-loader": "^9.1.3",
     "chai": "^4.3.7",
-    "eslint": "^8.46.0",
+    "eslint": "^8.47.0",
     "gulp": "^4.0.2",
     "mocha": "^10.2.0",
     "picklr": "latest",
