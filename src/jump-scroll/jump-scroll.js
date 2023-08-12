@@ -271,9 +271,15 @@ class JumpScroll extends HTMLElement {
    * @param {Array} entries
    */
   targetIntersection (entries) {
+    let firstEntry, lastEntry;
     const intersectors = entries.sort((a, b) => {
       let result = a.isIntersecting ? -1 : b.isIntersecting ? 1 : 0;
       if (result) {
+        firstEntry = (a.target === this.#firstTarget && a) ||
+          (b.target === this.#firstTarget && b);
+        lastEntry = (a.target === this.#lastTarget && a) ||
+          (b.target === this.#lastTarget && b);
+
         const leftTarget = this.#mapTargets.get(a.target);
         const rightTarget = this.#mapTargets.get(b.target);
         if (this.#scrollingDown) {
@@ -281,6 +287,7 @@ class JumpScroll extends HTMLElement {
         } else {
           result = leftTarget.index - rightTarget.index;
         }
+
         if (!result) {
           result = b.intersectionRatio - a.intersectionRatio;
         }
@@ -296,7 +303,8 @@ class JumpScroll extends HTMLElement {
       const nextTop = entry.boundingClientRect.top;
       const nextRatio = entry.intersectionRatio;
       const nextElement = entry.target;
-      const nextRatioThreshold = nextFirstLast ? 0 : 0.49;
+      const endRatio = 0.49;
+      const nextRatioThreshold = nextFirstLast ? 0 : endRatio;
 
       let { pos, down } = this.#mapFirstLastScroll.get(nextElement) ?? {
         pos: 'mid',
@@ -306,13 +314,18 @@ class JumpScroll extends HTMLElement {
       };
 
       if (pos !== 'mid') {
-        if (nextRatio > 0.49) {
-          this.#scrollMidIgnore = true;
-        } else {
-          this.#scrollMidIgnore = false;
-        }
+        this.#scrollMidIgnore = nextRatio > endRatio ? pos : false;
       } else {
         if (this.#scrollMidIgnore) {
+          if (this.#scrollMidIgnore === 'start') {
+            if (firstEntry && firstEntry.intersectionRatio <= endRatio) {
+              this.#scrollMidIgnore = false;
+            }
+          } else {
+            if (lastEntry && lastEntry.intersectionRatio <= endRatio) {
+              this.#scrollMidIgnore = false;
+            }
+          }
           return;
         }
       }
