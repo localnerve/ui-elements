@@ -307,7 +307,7 @@ class JumpScroll extends HTMLElement {
       if (firstEntryCandidate) {
         if (!firstEntry) { firstEntry = firstEntryCandidate; }
         else {
-          if (firstEntryCandidate.intersectionRatio < firstEntryCandidate.intersectionRatio) {
+          if (firstEntryCandidate.intersectionRatio < firstEntry.intersectionRatio) {
             firstEntry = firstEntryCandidate;
           }
         }
@@ -318,7 +318,7 @@ class JumpScroll extends HTMLElement {
       if (lastEntryCandidate) {
         if (!lastEntry) { lastEntry = lastEntryCandidate; }
         else {
-          if (lastEntryCandidate.intersectionRatio < lastEntryCandidate.intersectionRatio) {
+          if (lastEntryCandidate.intersectionRatio < lastEntry.intersectionRatio) {
             lastEntry = lastEntryCandidate;
           }
         }
