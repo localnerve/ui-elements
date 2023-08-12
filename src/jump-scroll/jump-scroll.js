@@ -13,6 +13,7 @@ class JumpScroll extends HTMLElement {
   #controlObserver1 = null;
   #controlObserver2 = null;
   #scrollingDown = true;
+  #scrollMidIgnore = false;
 
   #firstTarget = null;
   #lastTarget = null;
@@ -290,12 +291,12 @@ class JumpScroll extends HTMLElement {
     const entry = intersectors[0];
     if (entry.isIntersecting) {
       const lastTarget = this.#mapTargets.get(this.#currentTarget);
-      const lastFirstLast = this.#mapFirstLastScroll.has(this.#currentTarget);
+      const nextFirstLast = this.#mapFirstLastScroll.has(entry.target);
       const nextTarget = this.#mapTargets.get(entry.target);
       const nextTop = entry.boundingClientRect.top;
       const nextRatio = entry.intersectionRatio;
       const nextElement = entry.target;
-      const nextRatioThreshold = lastFirstLast ? 0.9 : 0.49;
+      const nextRatioThreshold = nextFirstLast ? 0 : 0.49;
 
       let { pos, down } = this.#mapFirstLastScroll.get(nextElement) ?? {
         pos: 'mid',
@@ -304,12 +305,25 @@ class JumpScroll extends HTMLElement {
           : nextTop < nextTarget.lastTop
       };
 
+      if (pos !== 'mid') {
+        if (nextRatio > 0.49) {
+          this.#scrollMidIgnore = true;
+        } else {
+          this.#scrollMidIgnore = false;
+        }
+      } else {
+        if (this.#scrollMidIgnore) {
+          return;
+        }
+      }
+
       const nextEligible = (
         this.#scrollingDown
           ? nextTarget.index > lastTarget.index
           : nextTarget.index < lastTarget.index
         ) && nextRatio > nextRatioThreshold;
 
+      // console.log('@@@ ', pos, this.#scrollingDown ? 'down' : 'up', nextTarget.index, lastTarget.index, nextRatio, nextRatioThreshold);
       if (nextEligible) {
         // console.log('@@@ currentTarget assigned', nextTarget.index, nextRatio);
         this.#currentTarget = nextElement;
@@ -367,7 +381,7 @@ class JumpScroll extends HTMLElement {
       viewportHeight - controlBottomBottom - controlIntersectionWindow;
 
     this.#targetObserver = new IntersectionObserver(this.targetIntersection, {
-      threshold: [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+      threshold: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
     });
     this.#controlObserver1 = new IntersectionObserver(this.controlIntersection, {
       threshold: 0,
@@ -400,6 +414,7 @@ class JumpScroll extends HTMLElement {
     this.#controlObserver1 = null;
     this.#controlObserver2 = null;
     this.#scrollingDown = true;
+    this.#scrollMidIgnore = false;
   }
 
   resizeHandler () {
