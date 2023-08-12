@@ -26,14 +26,14 @@
         background-color: var(--bg-color);
         font-family: 'Open Sans', sans-serif;
       }
-      article {
+      header, footer, article {
         padding: 1em;
       }
-      article:nth-of-type(odd) {
+      header, article:nth-of-type(odd) {
         background-color: var(--bg-color);
         color: var(--color);
       }
-      article:nth-of-type(even) {
+      footer, article:nth-of-type(even) {
         background-color: var(--color);
         color: var(--bg-color);
       }
@@ -45,6 +45,18 @@
   </head>
   <body>
     <jump-scroll class="jump-scroll" target="article" display="best" colormap="1:--bg-color;3:--bg-color;5:--bg-color"></jump-scroll>
+    <header>
+      <h1>This is a demo of jump-scroll</h1>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+      </p>
+    </header>
     <article>
       <h2>Article 1</h2>
       <p>
@@ -198,6 +210,18 @@
         5.66666 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
       </p>
     </article>
+    <footer>
+      <h1>This is a demo of jump-scroll</h1>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+      </p>
+    </footer>
     <script src="bundle.js"></script>
   </body>
 </html>
