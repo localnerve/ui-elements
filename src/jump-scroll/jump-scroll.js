@@ -203,6 +203,22 @@ class JumpScroll extends HTMLElement {
     }
   }
 
+  /**
+   * Creates HTMLElement orders of elements selected by the `target` property.
+   * Creates the following data:
+   *   #mapTargets
+   *   #firstTarget
+   *   #lastTarget
+   *   #mapFirstLastScroll
+   *
+   * #mapTargets target data items:
+   *   - index (0 based order index, preserving ascending top-down order).
+   *   - next, prev HTMLElements in the order.
+   *   - [lastTop] transient top data taken at intersection time
+   * 
+   * @param {String} propName - The target property name
+   * @param {Function} [perTargetWork] - optional function to execute on the HTMLElements selected.
+   */
   updateTargetMap (propName, perTargetWork) {
     if (!JumpScroll.#observedTargetAttributes.includes(propName) || !this.#setupInit) {
       return;
@@ -268,18 +284,47 @@ class JumpScroll extends HTMLElement {
   /**
    * Update #currentTarget, #scrollingDown, and the UI state accordingly.
    *
-   * @param {Array} entries
+   * @param {Array} entries - Array of intersectionEntry items
    */
   targetIntersection (entries) {
     let firstEntry, lastEntry;
-    const intersectors = entries.sort((a, b) => {
-      let result = a.isIntersecting ? -1 : b.isIntersecting ? 1 : 0;
-      if (result) {
-        firstEntry = (a.target === this.#firstTarget && a) ||
-          (b.target === this.#firstTarget && b);
-        lastEntry = (a.target === this.#lastTarget && a) ||
-          (b.target === this.#lastTarget && b);
 
+    /**
+     * Put the most desired entry first.
+     * Also, save the lowest available intersetionRatio first and last entries (if supplied).
+     * Sort by:
+     *   1. entry intersecting boolean === true
+     *   2. corresponding mapTarget entry index (descending order for scrolldown, ascending order for scrollup)
+     *   3. entry intersectionRatio (descending order)
+     */
+    const intersectors = entries.sort((a, b) => {
+      const bothIntersecting = a.isIntersecting && b.isIntersecting;
+      let result = a.isIntersecting ? -1 : b.isIntersecting ? 1 : 0;
+
+      const firstEntryCandidate = 
+        (a.target === this.#firstTarget && a) || 
+        (b.target === this.#firstTarget && b);
+      if (firstEntryCandidate) {
+        if (!firstEntry) { firstEntry = firstEntryCandidate; }
+        else {
+          if (firstEntryCandidate.intersectionRatio < firstEntryCandidate.intersectionRatio) {
+            firstEntry = firstEntryCandidate;
+          }
+        }
+      }
+      const lastEntryCandidate = 
+        (a.target === this.#lastTarget && a) ||
+        (b.target === this.#lastTarget && b);
+      if (lastEntryCandidate) {
+        if (!lastEntry) { lastEntry = lastEntryCandidate; }
+        else {
+          if (lastEntryCandidate.intersectionRatio < lastEntryCandidate.intersectionRatio) {
+            lastEntry = lastEntryCandidate;
+          }
+        }
+      }
+
+      if (bothIntersecting) {
         const leftTarget = this.#mapTargets.get(a.target);
         const rightTarget = this.#mapTargets.get(b.target);
         if (this.#scrollingDown) {
@@ -292,6 +337,7 @@ class JumpScroll extends HTMLElement {
           result = b.intersectionRatio - a.intersectionRatio;
         }
       }
+
       return result;
     });
 
@@ -306,6 +352,10 @@ class JumpScroll extends HTMLElement {
       const endRatio = 0.49;
       const nextRatioThreshold = nextFirstLast ? 0 : endRatio;
 
+      /**
+       * For the chosen entry:
+       * Grab position enum ['start', 'end', 'mid'] and next scroll direction.
+       */
       let { pos, down } = this.#mapFirstLastScroll.get(nextElement) ?? {
         pos: 'mid',
         down: nextTarget.lastTop === undefined
@@ -313,6 +363,10 @@ class JumpScroll extends HTMLElement {
           : nextTop < nextTarget.lastTop
       };
 
+      /**
+       * Guard the end nodes from unwanted 'mid' intersection action.
+       * Allow 'mid' if end node is entering or exiting less than `endRatio`.
+       */
       if (pos !== 'mid') {
         this.#scrollMidIgnore = nextRatio > endRatio ? pos : false;
       } else {
@@ -330,18 +384,21 @@ class JumpScroll extends HTMLElement {
         }
       }
 
+      /**
+       * Update currentTarget if the direction and threshold is ok
+       */
       const nextEligible = (
         this.#scrollingDown
           ? nextTarget.index > lastTarget.index
           : nextTarget.index < lastTarget.index
         ) && nextRatio > nextRatioThreshold;
-
-      // console.log('@@@ ', pos, this.#scrollingDown ? 'down' : 'up', nextTarget.index, lastTarget.index, nextRatio, nextRatioThreshold);
       if (nextEligible) {
-        // console.log('@@@ currentTarget assigned', nextTarget.index, nextRatio);
         this.#currentTarget = nextElement;
       }
 
+      /**
+       * If we're going to switch directions, purge all saved lastTops.
+       */
       if (down !== this.#scrollingDown) {
         const vals = this.#mapTargets.values();
         for (const val of vals) {
@@ -349,9 +406,19 @@ class JumpScroll extends HTMLElement {
         }
       }
 
+      /**
+       * Save top to detect scroll direction
+       */
       nextTarget.lastTop = nextTop;
+
+      /**
+       * Update the UI
+       */
       this.update(pos);
 
+      /**
+       * Switches at end node or mid when clientRect tops are getting smaller.
+       */
       this.#scrollingDown = down;
     }
   }
@@ -360,7 +427,7 @@ class JumpScroll extends HTMLElement {
     if (this.#mapColors) {
       const intersectors = entries.filter(entry => entry.isIntersecting);
 
-      if (intersectors && intersectors.length > 0) {
+      if (intersectors.length > 0) {
         const entry = intersectors[0];
         const current = this.#mapTargets.get(entry.target);
         if (current) {
@@ -433,23 +500,25 @@ class JumpScroll extends HTMLElement {
   resizeHandler () {
     if (!this.#resizeTick) {
       this.#resizeTick = true;
-      this.#uninstallIntersectionObservers();
+      this.teardown(false);
       setTimeout(() => {
-        this.#installIntersectionObservers();
+        this.setup(false);
         this.#resizeTick = false;
       }, JumpScroll.#resizeWait);
     }
   }
 
   #installResizeObserver () {
+    this.#resizeTick = false;
     window.addEventListener('resize', this.resizeHandler);
   }
 
   #uninstallResizeObserver () {
     window.removeEventListener('resize', this.resizeHandler);
+    this.#resizeTick = false;
   }
 
-  setup () {
+  setup (resize = true) {
     if (this.#setupInit) {
       this.teardown();
     }
@@ -460,21 +529,23 @@ class JumpScroll extends HTMLElement {
     });
 
     this.#installIntersectionObservers();
-    this.#installResizeObserver();
+    if (resize) {
+      this.#installResizeObserver();
+    }
   }
 
-  teardown () {
-    this.#uninstallResizeObserver();
+  teardown (resize = true) {
+    if (resize) {
+      this.#uninstallResizeObserver();
+    }
     this.#uninstallIntersectionObservers();
     this.#firstTarget = null;
     this.#lastTarget = null;
     this.#mapFirstLastScroll = null;
     this.#currentTarget = null;
-    this.#container = null;
-    this.#mapTargets.clear();
+    if (this.#mapTargets)
+      this.#mapTargets.clear();
     this.#mapTargets = null;
-    this.#mapColors.clear();
-    this.#mapColors = null;
     this.#setupInit = false;
   }
 
