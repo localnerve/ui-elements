@@ -493,8 +493,6 @@ class JumpScroll extends HTMLElement {
     this.#targetObserver = null;
     this.#controlObserver1 = null;
     this.#controlObserver2 = null;
-    this.#scrollingDown = true;
-    this.#scrollMidIgnore = false;
   }
 
   resizeHandler () {
