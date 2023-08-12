@@ -1,5 +1,7 @@
 :host {
   --js-width: 2em;
+  --js-aspect-ratio: 0.25;
+  --js-height: calc(var(--js-width) * (1 / var(--js-aspect-ratio)));
   --js-bg-color: black;
   --js-color: white;
   --js-opacity-full: 0.7;
@@ -19,10 +21,10 @@
   opacity: var(--js-opacity-full);
   width: var(--js-width);
   height: auto;
-  aspect-ratio: 1/4;
+  aspect-ratio: var(--js-aspect-ratio);
 }
 .container.best {
-  aspect-ratio: 1/2;
+  aspect-ratio: calc(var(--js-aspect-ratio) * 2);
 }
 .container.none {
   display: none;
