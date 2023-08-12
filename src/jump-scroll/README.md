@@ -26,7 +26,6 @@ Provides a small scrolling control that allows the user to go to the top or bott
 ## Overridable CSS Variables
 
 * `--js-width` - The overall width of the control. Defaults to 2em.
-* `--js-height` - The overall height of the control. Defaults to 8em.
 * `--js-bg-color` - The color of the control arrows. Defaults to black.
 * `--js-opacity-full` - The opacity of the control arrows at attention. Defaults to 0.7.
 * `--js-opacity-rest` - The opacity of the control arrows at rest. Defaults to 0.3.
