@@ -493,16 +493,14 @@ class JumpScroll extends HTMLElement {
     this.#targetObserver = null;
     this.#controlObserver1 = null;
     this.#controlObserver2 = null;
-    this.#scrollingDown = true;
-    this.#scrollMidIgnore = false;
   }
 
   resizeHandler () {
     if (!this.#resizeTick) {
       this.#resizeTick = true;
-      this.teardown(false);
+      this.#uninstallIntersectionObservers();
       setTimeout(() => {
-        this.setup(false);
+        this.#installIntersectionObservers();
         this.#resizeTick = false;
       }, JumpScroll.#resizeWait);
     }
