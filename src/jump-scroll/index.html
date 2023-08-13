@@ -42,9 +42,17 @@
         --js-width: 4em;
       }
     </style>
+    <script>
+      function setThirdTarget () {
+        const jumpScroll = document.querySelector('jump-scroll');
+        const thirdTarget = document.querySelector('.third');
+        jumpScroll.currentTarget = thirdTarget;
+      }
+    </script>
   </head>
   <body>
     <jump-scroll class="jump-scroll" target="article" display="best" colormap="1:--bg-color;3:--bg-color;5:--bg-color"></jump-scroll>
+    <button onclick="setThirdTarget()">Set CurrentTarget to 3</button>
     <header>
       <h1>This is a demo of jump-scroll</h1>
       <p>
@@ -93,7 +101,7 @@
         5.22222 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
       </p>
     </article>
-    <article>
+    <article class="third">
       <h2>Article 3</h2>
       <p>
       1.33333 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!

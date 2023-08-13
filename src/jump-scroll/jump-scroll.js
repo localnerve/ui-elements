@@ -137,6 +137,15 @@ class JumpScroll extends HTMLElement {
     }
   }
 
+  get currentTarget () {
+    return this.#currentTarget;
+  }
+  set currentTarget (targetElement) {
+    if (this.#mapTargets.has(targetElement)) {
+      this.#currentTarget = targetElement;
+    }
+  }
+
   update (pos) {
     const newClasses = [pos];
     const resetClasses = ['mid', 'start', 'end', 'rest', 'up', 'down'];
