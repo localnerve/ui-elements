@@ -28,6 +28,7 @@ class JumpScroll extends HTMLElement {
   #resizeTick = false;
 
   static #resizeWait = 800;
+  static #scrollDelayFrames = 15;
   static #observedTargetAttributes = ['target'];
   static #observedAttributeDefaults = {
     target: 'section',
@@ -204,7 +205,7 @@ class JumpScroll extends HTMLElement {
           preLastTop === Math.round(targetNext.lastTop)) {
           this.clickNext();
         }
-      }, 16.67 * 10);
+      }, 16.67 * JumpScroll.#scrollDelayFrames);
     }
   }
 
@@ -223,7 +224,7 @@ class JumpScroll extends HTMLElement {
         if (preLastTop > 0 && preLastTop === Math.round(targetPrev.lastTop)) {
           this.clickPrev();
         }
-      }, 16.67 * 10);
+      }, 16.67 * JumpScroll.#scrollDelayFrames);
     }
   }
 
@@ -306,7 +307,8 @@ class JumpScroll extends HTMLElement {
   }
 
   /**
-   * Update #currentTarget, #scrollingDown, and the UI state accordingly.
+   * Callback for target-viewport intersection.
+   * Update #currentTarget, #scrollingDown, and the UI state.
    *
    * @param {Array} entries - Array of intersectionEntry items
    */
@@ -406,7 +408,7 @@ class JumpScroll extends HTMLElement {
       };
 
       /**
-       * Save top to detect scroll direction
+       * Save top to detect scroll direction.
        */
       nextTarget.lastTop = nextTop;
 
@@ -432,7 +434,7 @@ class JumpScroll extends HTMLElement {
       }
 
       /**
-       * Update currentTarget if the direction and threshold is ok
+       * Update currentTarget if the direction and threshold is ok.
        */
       const nextEligible = (
         this.#scrollingDown
@@ -442,14 +444,17 @@ class JumpScroll extends HTMLElement {
       if (nextEligible) {
         this.#currentTarget = nextElement;
       }
+
       /**
-       * Switches at end node or mid when clientRect tops are getting smaller.
-       */
-      this.#scrollingDown = down;
-      /**
-       * Update the UI
+       * Update the UI.
        */
       this.update(pos);
+
+      /**
+       * Update scrolling direction.
+       * Switches at end nodes or mid when clientRect tops are changing (smaller eq down else up).
+       */
+      this.#scrollingDown = down;
     } else {
       if (entry.intersectionRatio <= 0.49) {
         this.#mapTargets.get(entry.target).lastTop = undefined;
