@@ -19,9 +19,9 @@ Provides a small scrolling control that allows the user to go to the top or bott
   **"best"** - The control displays either [top, previous] OR [bottom, next] jump scrolling options. Which one is displayed depends on the position on the page and the direction of scrolling. If the user is in the middle of the page and scrolls, the control only displays the jump scroll options in the direction of the scroll. Less vertical space required.  
   
 * `colormap` - *Optional*. A map of targets to colors. Changes the color of the jump-scroll control over specific elements.  
-  **Format:** `index:color[;index:color]*`  
-  **index** - *Integer*. A zero-based index of the elements selected by the `target` attribute. The index is in the order of selected elements top-down on the page. Zero is the top most element, larger numbers are further down on the page.  
-  **color** - *CssColor|CssCustomProperty*. A css color or a css variable of a color to use for the background of the control.  
+  **Format:** `selector@color[;selector@color]*`  
+  **selector** - *string*. Must be a selector of DOM element(s). When a selected element crosses the vertical bounds of the `jump-scroll` control, the `js-bg-color` background will be changed to the color (or variable) provided.
+  **color** - *CssColor|CssCustomProperty*. A css color or a css variable of a color to use for the `js-bg-color` background of the control.  
 
 ## Overridable CSS Variables
 
@@ -37,6 +37,8 @@ Provides a small scrolling control that allows the user to go to the top or bott
 ```html 
   <jump-scroll target="article" display="best"></jump-scroll>
 ```
+See [The reference implementation](index.html) for more detailed usage example.
+
 ## Non-browser Exports
 
 The non-browser version of the module exports methods to help with builds.
