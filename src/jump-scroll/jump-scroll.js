@@ -479,6 +479,8 @@ class JumpScroll extends HTMLElement {
         } else {
           this.#container.style.removeProperty('--js-bg-color');
         }
+      } else {
+        this.#container.style.removeProperty('--js-bg-color');
       }
     }
   }
@@ -513,9 +515,12 @@ class JumpScroll extends HTMLElement {
       rootMargin: `-${controlBottomTop}px 0px -${controlBottomBottom}px 0px`
     });
 
-    const els = this.#mapTargets.keys();
-    for (const el of els) {
+    const targetEls = this.#mapTargets.keys();
+    for (const el of targetEls) {
       this.#targetObserver.observe(el);
+    }
+    const colorEls = this.#mapColors.keys();
+    for (const el of colorEls) {
       this.#controlObserver1.observe(el);
       this.#controlObserver2.observe(el);
     }
