@@ -33,7 +33,7 @@
         background-color: var(--bg-color);
         color: var(--color);
       }
-      footer, article:nth-of-type(even) {
+      footer, #double, article:nth-of-type(even) {
         background-color: var(--color);
         color: var(--bg-color);
       }
@@ -51,7 +51,7 @@
     </script>
   </head>
   <body>
-    <jump-scroll class="jump-scroll" target="article" display="best" colormap="footer, article:nth-of-type(even)@--bg-color"></jump-scroll>
+    <jump-scroll class="jump-scroll" target="article" display="best" colormap="footer,article:nth-of-type(even)@--bg-color"></jump-scroll>
     <button onclick="setThirdTarget()">Set CurrentTarget to 3</button>
     <header>
       <h1>This is a demo of jump-scroll</h1>
@@ -119,6 +119,24 @@
         5.33333 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
       </p>
     </article>
+    <div id="#double">
+      <h2>Article 3.5</h2>
+      <p>
+      1.35353 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+      </p>
+      <p>
+        2.35353 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+      </p>
+      <p>
+        3.35353 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+      </p>
+      <p>
+        4.35353 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+      </p>
+      <p>
+        5.35353 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+      </p>
+    </div>
     <article>
       <h2>Article 4</h2>
       <p>
