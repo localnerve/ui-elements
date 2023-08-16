@@ -178,75 +178,64 @@ class JumpScroll extends HTMLElement {
     }, 500);
   }
 
-  clickTop () {
-    this.#currentTarget = this.#firstTarget;
-    this.#firstTarget.scrollIntoView({
+  #scrollStep (dir, continueTest) {
+    const target = this.#mapTargets.get(this.#currentTarget);
+    if (target[dir]) {
+      const elementNext = target[dir];
+      const targetNext = this.#mapTargets.get(elementNext);
+      const preLastTop = Math.round(targetNext.lastTop);
+      this.#currentTarget = elementNext;
+      this.#currentTarget.scrollIntoView({
+        block: 'nearest',
+        inline: 'start',
+        behavior: 'smooth'
+      });
+      setTimeout(() => {
+        if (preLastTop === Math.round(targetNext.lastTop)) {
+          if (continueTest(preLastTop)) {
+            this.#scrollStep(dir, continueTest);
+          } else {
+            window.scrollBy({
+              top: preLastTop,
+              behavior: 'smooth'
+            });
+          }
+        }
+      }, 16.67 * JumpScroll.#scrollDelayFrames);
+    } else {
+      this.#currentTarget.scrollIntoView({
+        block: 'nearest',
+        inline: 'start',
+        behavior: 'smooth'
+      });
+    }
+  }
+
+  #scrollEdge (edge = 'start') {
+    this.#currentTarget =
+      edge === 'start' ? this.#firstTarget : this.#lastTarget;
+    this.#currentTarget.scrollIntoView({
       block: 'nearest',
       inline: 'start',
       behavior: 'smooth'
     });
-    this.update('start');
+    this.update(edge);
+  }
+
+  clickTop () {
+    this.#scrollEdge('start');
   }
 
   clickBottom () {
-    this.#currentTarget = this.#lastTarget;
-    this.#lastTarget.scrollIntoView({
-      block: 'nearest',
-      inline: 'start',
-      behavior: 'smooth'
-    });
-    this.update('end');
+    this.#scrollEdge('end');
   }
 
   clickNext () {
-    const target = this.#mapTargets.get(this.#currentTarget);
-    if (target.next) {
-      const targetNext = this.#mapTargets.get(target.next);
-      const preLastTop = Math.round(targetNext.lastTop);
-      this.#currentTarget = target.next;
-      target.next.scrollIntoView({
-        block: 'nearest',
-        inline: 'start',
-        behavior: 'smooth'
-      });
-      setTimeout(() => {
-        if (preLastTop < window.innerHeight &&
-          preLastTop === Math.round(targetNext.lastTop)) {
-          this.clickNext();
-        }
-      }, 16.67 * JumpScroll.#scrollDelayFrames);
-    } else {
-      this.#currentTarget.scrollIntoView({
-        block: 'nearest',
-        inline: 'start',
-        behavior: 'smooth'
-      });
-    }
+    this.#scrollStep('next', lastTop => lastTop < window.innerHeight);
   }
 
   clickPrev () {
-    const target = this.#mapTargets.get(this.#currentTarget);
-    if (target.prev) {
-      const targetPrev = this.#mapTargets.get(target.prev);
-      const preLastTop = Math.round(targetPrev.lastTop);
-      this.#currentTarget = target.prev;
-      target.prev.scrollIntoView({
-        block: 'nearest',
-        inline: 'start',
-        behavior: 'smooth'
-      });
-      setTimeout(() => {
-        if (preLastTop > 0 && preLastTop === Math.round(targetPrev.lastTop)) {
-          this.clickPrev();
-        }
-      }, 16.67 * JumpScroll.#scrollDelayFrames);
-    } else {
-      this.#currentTarget.scrollIntoView({
-        block: 'nearest',
-        inline: 'start',
-        behavior: 'smooth'
-      });
-    }
+    this.#scrollStep('prev', lastTop => lastTop > 0);
   }
 
   /**
@@ -489,11 +478,14 @@ class JumpScroll extends HTMLElement {
         }
       } else {
         this.#controlIntersectionCount--;
+        // This is even when both edges cross a colormap region
         const diff = Math.abs(
           this.#controlIntersectionColor - this.#controlIntersectionCount
         );
+        // This is false when transitioning between two adjoining colormap regions
         const control = side !== this.#controlIntersection;
 
+        // controlIntersectionColor count goes over 2 in contiguous colormap regions
         if (control || (diff % 2 && this.#controlIntersectionColor < 3)) {
           this.#container.style.removeProperty('--js-bg-color');
           this.#controlIntersectionCount = 0;
