@@ -26,14 +26,21 @@
         background-color: var(--bg-color);
         font-family: 'Open Sans', sans-serif;
       }
-      header, footer, article {
+      .direct-button {
+        position: fixed;
+        top: 0.5rem;
+        left: 0.5rem;
+        border-radius: 0.5rem;
         padding: 1em;
       }
-      header, article:nth-of-type(odd) {
+      header, footer, article, .non-element {
+        padding: 1em;
+      }
+      header, .non-element, article:nth-of-type(odd) {
         background-color: var(--bg-color);
         color: var(--color);
       }
-      footer, #double, article:nth-of-type(even) {
+      footer, article:nth-of-type(even) {
         background-color: var(--color);
         color: var(--bg-color);
       }
@@ -43,16 +50,16 @@
       }
     </style>
     <script>
-      function setThirdTarget () {
+      function setTarget (selector) {
         const jumpScroll = document.querySelector('jump-scroll');
-        const thirdTarget = document.querySelector('.third');
-        jumpScroll.currentTarget = thirdTarget;
+        const target = document.querySelector(selector);
+        jumpScroll.currentTarget = target;
       }
     </script>
   </head>
   <body>
     <jump-scroll class="jump-scroll" target="article" display="best" colormap="footer,article:nth-of-type(even)@--bg-color"></jump-scroll>
-    <button onclick="setThirdTarget()">Set CurrentTarget to 3</button>
+    <button class="direct-button" onclick="setTarget('.third')">Set CurrentTarget to 3</button>
     <header>
       <h1>This is a demo of jump-scroll</h1>
       <p>
@@ -119,8 +126,8 @@
         5.33333 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
       </p>
     </article>
-    <div id="#double">
-      <h2>Article 3.5</h2>
+    <div class="non-element">
+      <h2>Article 3.5 (not in target or color map)</h2>
       <p>
       1.35353 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
       </p>
