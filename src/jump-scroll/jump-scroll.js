@@ -14,6 +14,9 @@ class JumpScroll extends HTMLElement {
   #controlObserver2 = null;
   #scrollingDown = true;
   #scrollMidIgnore = false;
+  #controlIntersectionColor = 0;
+  #controlIntersectionCount = 0;
+  #controlIntersection = '';
 
   #firstTarget = null;
   #lastTarget = null;
@@ -467,20 +470,34 @@ class JumpScroll extends HTMLElement {
     }
   }
 
-  controlIntersection (entries) {
+  controlIntersection (side, entries) {
     if (this.#mapColors) {
       const intersectors = entries.filter(entry => entry.isIntersecting);
 
       if (intersectors.length > 0) {
         const entry = intersectors[0];
         const newColor = this.#mapColors.get(entry.target);
+        this.#controlIntersectionCount++;
+        this.#controlIntersection = side;
+        this.#controlIntersectionColor = this.#controlIntersectionCount;
+
         if (newColor) {
           this.#container.style.setProperty('--js-bg-color', newColor);
         } else {
           this.#container.style.removeProperty('--js-bg-color');
+          this.#controlIntersectionCount = 0;
         }
       } else {
-        this.#container.style.removeProperty('--js-bg-color');
+        this.#controlIntersectionCount--;
+        const diff = Math.abs(
+          this.#controlIntersectionColor - this.#controlIntersectionCount
+        );
+        const control = side !== this.#controlIntersection;
+
+        if (control || (diff % 2 && this.#controlIntersectionColor < 3)) {
+          this.#container.style.removeProperty('--js-bg-color');
+          this.#controlIntersectionCount = 0;
+        }
       }
     }
   }
@@ -506,14 +523,16 @@ class JumpScroll extends HTMLElement {
     this.#targetObserver = new IntersectionObserver(this.targetIntersection, {
       threshold: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
     });
-    this.#controlObserver1 = new IntersectionObserver(this.controlIntersection, {
+    this.#controlObserver1 = new IntersectionObserver(this.controlIntersection.bind(null, 'top'), {
       threshold: 0,
       rootMargin: `-${controlTopTop}px 0px -${controlTopBottom}px 0px`
     });
-    this.#controlObserver2 = new IntersectionObserver(this.controlIntersection, {
+    this.#controlObserver2 = new IntersectionObserver(this.controlIntersection.bind(null, 'bot'), {
       threshold: 0,
       rootMargin: `-${controlBottomTop}px 0px -${controlBottomBottom}px 0px`
     });
+    this.#controlIntersectionCount = 0;
+    this.#controlIntersectionColor = 0;
 
     const targetEls = this.#mapTargets.keys();
     for (const el of targetEls) {
