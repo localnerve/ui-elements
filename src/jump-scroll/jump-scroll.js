@@ -279,7 +279,11 @@ class JumpScroll extends HTMLElement {
         }
       }
       if (i === 0 || (i > 0 && order[i-1].top !== rect.top)) { // disallow duplicate tops
-        order.splice(i, 0, { top: rect.top, el });
+        order.splice(i, 0, {
+          top: rect.top,
+          bot: rect.bottom,
+          el
+        });
       }
 
       if (typeof perTargetWork === 'function') {
@@ -295,10 +299,12 @@ class JumpScroll extends HTMLElement {
         [this.#lastTarget, { pos: 'end', down: false }]
       ])
 
-      let currentIndex = 0;
+      let currentIndex = 0, n = 0;
+      const windowHeight = window.innerHeight;
       for (i = 0; i < order.length; i++) {
         if (0 > order[i].top) {
-          currentIndex = i + 1;
+          n = order[i].bot < windowHeight ? 1 : 0;
+          currentIndex = i + n < order.length ? i + n : i;
         }
         this.#mapTargets.set(order[i].el, {
           index: i,
