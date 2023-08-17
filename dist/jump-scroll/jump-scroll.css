@@ -1,13 +1,13 @@
 :host {
-  --js-width: 2em;
-  --js-aspect-ratio: 0.25;
+  --js-width: 3em;
+  --js-aspect-ratio: 0.18;
   --js-height: calc(var(--js-width) * (1 / var(--js-aspect-ratio)));
   --js-bg-color: black;
   --js-color: white;
   --js-opacity-full: 0.7;
   --js-opacity-rest: 0.3;
-  --js-attach-right: 0.5rem;
-  --js-attach-bottom: 0.7rem;
+  --js-attach-right: 1rem;
+  --js-attach-bottom: 1rem;
 
   position: fixed;
   bottom: var(--js-attach-bottom);
@@ -84,12 +84,12 @@
 .top .start,
 .bot .end {
   height: calc(var(--js-height) / 6);
-  clip-path: polygon(15% 5%, 85% 5%, 85% 30%, 60% 30%, 85% 95%, 15% 95%, 40% 30%, 15% 30%);
+  clip-path: polygon(10% 0%, 90% 0%, 90% 30%, 65% 30%, 100% 100%, 0% 100%, 35% 30%, 10% 30%);
 }
 .top .prev,
 .bot .next {
   height: calc(var(--js-height) / 4);
-  clip-path: polygon(50% 5%, 85% 60%, 60% 60%, 85% 95%, 15% 95%, 40% 60%, 15% 60%);
+  clip-path: polygon(50% 0%, 100% 60%, 65% 60%, 100% 100%, 0% 100%, 35% 60%, 0% 60%);
 }
 .top .start,
 .top .prev {
