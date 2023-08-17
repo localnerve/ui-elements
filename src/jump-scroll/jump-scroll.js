@@ -35,7 +35,7 @@ class JumpScroll extends HTMLElement {
   static #observedTargetAttributes = ['target'];
   static #observedAttributeDefaults = {
     target: 'section',
-    display: 'both' // or 'best'
+    display: 'best' // or 'both'
   }
   static get observedAttributes () {
     return [...JumpScroll.#observedTargetAttributes, 'display', 'colormap'];
@@ -279,7 +279,11 @@ class JumpScroll extends HTMLElement {
         }
       }
       if (i === 0 || (i > 0 && order[i-1].top !== rect.top)) { // disallow duplicate tops
-        order.splice(i, 0, { top: rect.top, el });
+        order.splice(i, 0, {
+          top: rect.top,
+          bot: rect.bottom,
+          el
+        });
       }
 
       if (typeof perTargetWork === 'function') {
@@ -295,10 +299,12 @@ class JumpScroll extends HTMLElement {
         [this.#lastTarget, { pos: 'end', down: false }]
       ])
 
-      let currentIndex = 0;
+      let currentIndex = 0, n = 0;
+      const windowHeight = window.innerHeight;
       for (i = 0; i < order.length; i++) {
         if (0 > order[i].top) {
-          currentIndex = i + 1;
+          n = order[i].bot < windowHeight ? 1 : 0;
+          currentIndex = i + n < order.length ? i + n : i;
         }
         this.#mapTargets.set(order[i].el, {
           index: i,
@@ -370,7 +376,7 @@ class JumpScroll extends HTMLElement {
      * 
      * So, the sorted collection head is the largest ratio, intersecting element in the relevant direction.
      */
-    const intersectors = entries.sort((a, b) => {
+    const sorted = entries.sort((a, b) => {
       const bothIntersecting = a.isIntersecting && b.isIntersecting;
       let result = a.isIntersecting ? -1 : b.isIntersecting ? 1 : 0;
 
@@ -386,7 +392,7 @@ class JumpScroll extends HTMLElement {
     });
 
     const endRatio = 0.49;
-    const entry = intersectors[0];
+    const entry = sorted[0];
     if (entry.isIntersecting) {
       const lastTarget = this.#mapTargets.get(this.#currentTarget);
       const nextFirstLast = this.#mapFirstLastScroll.has(entry.target);

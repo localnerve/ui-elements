@@ -8,6 +8,7 @@
 import * as path from 'node:path';
 import webpack from 'webpack';
 import TerserPlugin from 'terser-webpack-plugin';
+import pkgJson from './package.json' assert { type: 'json' };
 import { stageDir, distDir } from './build-settings.js';
 
 export default {
@@ -39,7 +40,7 @@ export default {
       }
     }),
     new webpack.BannerPlugin({
-      banner: 'jump-scroll, Copyright (c) 2023 Alex Grant (@localnerve), LocalNerve LLC, BSD-3-Clause',
+      banner: `jump-scroll@${pkgJson.version}, Copyright (c) 2023 Alex Grant (@localnerve), LocalNerve LLC, BSD-3-Clause`,
       entryOnly: true
     })
   ]
