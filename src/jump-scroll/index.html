@@ -25,13 +25,17 @@
       body {
         background-color: var(--bg-color);
         font-family: 'Open Sans', sans-serif;
+        font-size: 16px;
       }
       .direct-button {
         position: fixed;
-        top: 0.5rem;
-        left: 0.5rem;
-        border-radius: 0.5rem;
+        top: 1rem;
+        right: 1rem;
         padding: 1em;
+        border-radius: 0.5em;
+        border: 1px solid var(--bg-color);
+        color: var(--bg-color);
+        background: var(--color);
       }
       header, footer, article, .non-element {
         padding: 1em;
@@ -46,7 +50,7 @@
       }
       .jump-scroll {
         --js-bg-color: var(--color);
-        --js-width: 4em;
+        --js-width: 3.5em;
       }
     </style>
     <script>
@@ -62,6 +66,7 @@
     <button class="direct-button" onclick="setTarget('.third')">Set CurrentTarget to 3</button>
     <header>
       <h1>This is a demo of jump-scroll</h1>
+      <h4>(Not in target or color map)</h4>
       <p>
         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
       </p>
@@ -244,7 +249,8 @@
       </p>
     </article>
     <footer>
-      <h1>This is a demo of jump-scroll</h1>
+      <h2>This is a demo of jump-scroll</h2>
+      <h4>(In color map, but NOT in target map)</h4>
       <p>
         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
       </p>

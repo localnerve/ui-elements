@@ -35,7 +35,7 @@ class JumpScroll extends HTMLElement {
   static #observedTargetAttributes = ['target'];
   static #observedAttributeDefaults = {
     target: 'section',
-    display: 'both' // or 'best'
+    display: 'best' // or 'both'
   }
   static get observedAttributes () {
     return [...JumpScroll.#observedTargetAttributes, 'display', 'colormap'];
@@ -370,7 +370,7 @@ class JumpScroll extends HTMLElement {
      * 
      * So, the sorted collection head is the largest ratio, intersecting element in the relevant direction.
      */
-    const intersectors = entries.sort((a, b) => {
+    const sorted = entries.sort((a, b) => {
       const bothIntersecting = a.isIntersecting && b.isIntersecting;
       let result = a.isIntersecting ? -1 : b.isIntersecting ? 1 : 0;
 
@@ -386,7 +386,7 @@ class JumpScroll extends HTMLElement {
     });
 
     const endRatio = 0.49;
-    const entry = intersectors[0];
+    const entry = sorted[0];
     if (entry.isIntersecting) {
       const lastTarget = this.#mapTargets.get(this.#currentTarget);
       const nextFirstLast = this.#mapFirstLastScroll.has(entry.target);
