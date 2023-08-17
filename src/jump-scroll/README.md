@@ -20,7 +20,7 @@ Provides a small scrolling control that allows the user to go to the top or bott
   
 * `colormap` - *Optional*. A map of targets to colors. Changes the color of the jump-scroll control over specific elements.  
   **Format:** `selector@color[;selector@color]*`  
-  **selector** - *string*. Must be a selector of DOM element(s). When a selected element crosses the vertical bounds of the `jump-scroll` control, the `js-bg-color` background will be changed to the color (or variable) provided.
+  **selector** - *string*. Must be a selector of DOM element(s). When a selected element crosses the vertical bounds of the `jump-scroll` control, the `js-bg-color` background will be changed to the color (or variable) provided.  
   **color** - *CssColor|CssCustomProperty*. A css color or a css variable of a color to use for the `js-bg-color` background of the control.  
 
 ## Overridable CSS Variables
