@@ -28,7 +28,9 @@ class JumpScroll extends HTMLElement {
 
   #container = null;
   #setupInit = false;
+
   #resizeTick = false;
+  #resizeWidth = 0;
 
   static #resizeWait = 800;
   static #scrollDelayFrames = 15;
@@ -466,7 +468,7 @@ class JumpScroll extends HTMLElement {
   }
 
   controlIntersection (side, entries) {
-    if (this.#mapColors) {
+    if (this.#mapColors && !this.#resizeTick) {
       const intersectors = entries.filter(entry => entry.isIntersecting);
 
       if (intersectors.length > 0) {
@@ -529,8 +531,6 @@ class JumpScroll extends HTMLElement {
       threshold: 0,
       rootMargin: `-${controlBottomTop}px 0px -${controlBottomBottom}px 0px`
     });
-    this.#controlIntersectionCount = 0;
-    this.#controlIntersectionColor = 0;
 
     const targetEls = this.#mapTargets.keys();
     for (const el of targetEls) {
@@ -562,7 +562,16 @@ class JumpScroll extends HTMLElement {
     if (!this.#resizeTick) {
       this.#resizeTick = true;
       setTimeout(() => {
-        this.setup(false);
+        let fullSetup = false;
+        const width = window.innerWidth;
+        if (width !== this.#resizeWidth) {
+          // if the width grows, then its possible the order changes.
+          if (width > this.#resizeWidth) {
+            fullSetup = true;
+          }
+          this.#resizeWidth = width;
+        }
+        this.setup(false, fullSetup);
         this.#resizeTick = false;
       }, JumpScroll.#resizeWait);
     }
@@ -578,15 +587,19 @@ class JumpScroll extends HTMLElement {
     this.#resizeTick = false;
   }
 
-  setup (resize = true) {
+  setup (resize = true, fullSetup = true) {
     if (this.#setupInit) {
-      this.teardown(resize);
+      this.teardown(resize, fullSetup);
+    } else {
+      this.#resizeWidth = window.innerWidth;
     }
     this.#setupInit = true;
 
-    JumpScroll.#observedTargetAttributes.forEach(propName => {
-      this.updateTargetMap(propName);
-    });
+    if (fullSetup) {
+      JumpScroll.#observedTargetAttributes.forEach(propName => {
+        this.updateTargetMap(propName);
+      });
+    }
 
     this.#installIntersectionObservers();
     if (resize) {
@@ -594,18 +607,20 @@ class JumpScroll extends HTMLElement {
     }
   }
 
-  teardown (resize = true) {
+  teardown (resize = true, fullTeardown = true) {
     if (resize) {
       this.#uninstallResizeObserver();
     }
     this.#uninstallIntersectionObservers();
-    this.#firstTarget = null;
-    this.#lastTarget = null;
-    this.#mapFirstLastScroll = null;
-    this.#currentTarget = null;
-    if (this.#mapTargets)
-      this.#mapTargets.clear();
-    this.#mapTargets = null;
+    if (fullTeardown) {
+      this.#firstTarget = null;
+      this.#lastTarget = null;
+      this.#mapFirstLastScroll = null;
+      this.#currentTarget = null;
+      if (this.#mapTargets)
+        this.#mapTargets.clear();
+      this.#mapTargets = null;
+    }
     this.#setupInit = false;
   }
 
