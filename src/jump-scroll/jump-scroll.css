@@ -23,6 +23,10 @@
   height: auto;
   aspect-ratio: var(--js-aspect-ratio);
 }
+.container a, a:link, a:hover, a:visited, a:focus, a:active {
+  outline: none;
+  text-decoration: none;
+}
 .container.best {
   aspect-ratio: calc(var(--js-aspect-ratio) * 2);
 }

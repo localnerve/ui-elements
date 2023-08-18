@@ -224,19 +224,23 @@ class JumpScroll extends HTMLElement {
     this.update(edge);
   }
 
-  clickTop () {
+  clickTop (e) {
+    e.preventDefault();
     this.#scrollEdge('start');
   }
 
-  clickBottom () {
+  clickBottom (e) {
+    e.preventDefault();
     this.#scrollEdge('end');
   }
 
-  clickNext () {
+  clickNext (e) {
+    e.preventDefault();
     this.#scrollStep('next', lastTop => lastTop < window.innerHeight);
   }
 
-  clickPrev () {
+  clickPrev (e) {
+    e.preventDefault();
     this.#scrollStep('prev', lastTop => lastTop > 0);
   }
 
@@ -636,8 +640,8 @@ class JumpScroll extends HTMLElement {
     const { shadowRoot } = this;
     shadowRoot.innerHTML = `<style>${JumpScrollCss}</style>\
 <div class="container none">\
-<div class="top"><div class="start"></div><div class="prev"></div></div>\
-<div class="bot"><div class="next"></div><div class="end"></div></div>\
+<div class="top"><a href="#" class="start"></a><a href="#" class="prev"></a></div>\
+<div class="bot"><a href="#" class="next"></a><a href="#" class="end"></a></div>\
 </div>`;
 
     this.#container = shadowRoot.querySelector('.container');
