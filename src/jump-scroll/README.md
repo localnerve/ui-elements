@@ -14,13 +14,13 @@ Provides a small scrolling control that allows the user to go to the top or bott
 
 * `target` - *Required*. A selector to select all the elements to vertically "jump scroll" to in the page. Defaults to 'section'.  
 
-* `display` - "both" | "best"  
+* `display` - *Optional*.  Values: `"best" | "both"`  
   **"best"** - *Default*. The control displays either [top, previous] OR [bottom, next] jump scrolling options. Which one is displayed depends on the position on the page and the direction of scrolling. If the user is in the middle of the page and scrolls, the control only displays the jump scroll options in the direction of the scroll. Less vertical space required.  
   **"both"** - The control displays both [top, previous] AND [bottom, next] jump scrolling options simulataneously. Larger footprint.  
   
 * `colormap` - *Optional*. A map of targets to colors. Changes the color of the jump-scroll control over specific elements.  
   **Format:** `selector@color[;selector@color]*`  
-  **selector** - *string*. Must be a selector of DOM element(s). When a selected element crosses the vertical bounds of the `jump-scroll` control, the `js-bg-color` background will be changed to the color (or variable) provided.  
+  **selector** - *String*. Must be a selector of DOM element(s). When a selected element crosses the vertical bounds of the `jump-scroll` control, the `js-bg-color` background will be changed to the color (or variable) provided.  
   **color** - *CssColor|CssCustomProperty*. A css color or a custom property (variable) of a color to use for the `js-bg-color` background of the control.  
 
 ## Overridable CSS Variables
@@ -37,7 +37,7 @@ Provides a small scrolling control that allows the user to go to the top or bott
 ```html 
   <jump-scroll target="article" display="best" colormap="footer,article:nth-of-type(even)@--bg-color"></jump-scroll>
 ```
-See [The reference implementation](./index.html) for more detailed usage example.
+See [The reference implementation](https://github.com/localnerve/ui-elements/blob/master/src/jump-scroll/index.html) for more detailed usage example.
 
 ## Non-browser Exports
 
@@ -51,7 +51,7 @@ Returns a Promise that resolves to the full utf8 string of css text.
 
 ## License
 
-LocalNerve [BSD-3-Clause](LICENSE.md) Licensed
+LocalNerve [BSD-3-Clause](https://github.com/localnerve/ui-elements/blob/master/src/jump-scroll/LICENSE.md) Licensed
 
 ## Contact
 
