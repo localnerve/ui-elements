@@ -155,6 +155,7 @@ class JumpScroll extends HTMLElement {
   set currentTarget (targetElement) {
     if (this.#mapTargets.has(targetElement)) {
       this.#currentTarget = targetElement;
+      this.#setAriaScrollState();
     }
   }
 
@@ -192,6 +193,7 @@ class JumpScroll extends HTMLElement {
         inline: 'start',
         behavior: 'smooth'
       });
+      this.#setAriaScrollState();
       setTimeout(() => {
         if (preLastTop === Math.round(targetNext.lastTop)) {
           if (continueTest(preLastTop)) {
@@ -221,6 +223,7 @@ class JumpScroll extends HTMLElement {
       inline: 'start',
       behavior: 'smooth'
     });
+    this.#setAriaScrollState();
     this.update(edge);
   }
 
@@ -242,6 +245,41 @@ class JumpScroll extends HTMLElement {
   clickPrev (e) {
     e.preventDefault();
     this.#scrollStep('prev', lastTop => lastTop > 0);
+  }
+
+  #setupAriaAttributes () {
+    if (!this.#container || !this.#firstTarget || !this.#mapTargets) {
+      return;
+    }
+
+    const scrollContainer = this.#firstTarget.parentElement;
+    if (scrollContainer) {
+      let scid;
+      if (scrollContainer.id) {
+        scid = scrollContainer.id;
+      } else {
+        const bytes = new Uint8Array(10);
+        scid = `js-${btoa(crypto.getRandomValues(bytes))}`;
+        scrollContainer.id = scid;
+      }
+      this.#container.setAttribute('aria-controls', scid);
+    }
+
+    if (this.#mapTargets) {
+      const range = this.#mapTargets.size - 1;
+      this.#container.setAttribute('aria-valuemax', range > 0 ? range : 1);
+    }
+  }
+
+  #setAriaScrollState () {
+    if (!this.#container || !this.#mapTargets) {
+      return;
+    }
+
+    this.#container.setAttribute(
+      'aria-valuenow',
+      this.#mapTargets.get(this.#currentTarget).index
+    );
   }
 
   /**
@@ -320,6 +358,7 @@ class JumpScroll extends HTMLElement {
       }
 
       this.#currentTarget = order[currentIndex].el;
+      this.#setAriaScrollState();
       if (currentIndex === 0) {
         this.update('start');
       } else if (currentIndex === order.length - 1) {
@@ -447,6 +486,7 @@ class JumpScroll extends HTMLElement {
           ;
         if (correctDirection && nextRatio > nextRatioThreshold) {
           this.#currentTarget = nextElement;
+          this.#setAriaScrollState();
         }
 
         /**
@@ -463,6 +503,7 @@ class JumpScroll extends HTMLElement {
       
       if (this.#scrollMidIgnore && entry.intersectionRatio >= 0.98) {
         this.#currentTarget = nextElement;
+        this.#setAriaScrollState();
       }
     } else {
       if (entry.intersectionRatio <= endRatio) {
@@ -592,10 +633,11 @@ class JumpScroll extends HTMLElement {
   }
 
   setup (resize = true, fullSetup = true) {
+    let firstInit = false;
     if (this.#setupInit) {
       this.teardown(resize, fullSetup);
     } else {
-      this.#resizeWidth = window.innerWidth;
+      firstInit = true;
     }
     this.#setupInit = true;
 
@@ -603,6 +645,11 @@ class JumpScroll extends HTMLElement {
       JumpScroll.#observedTargetAttributes.forEach(propName => {
         this.updateTargetMap(propName);
       });
+    }
+
+    if (firstInit) {
+      this.#resizeWidth = window.innerWidth;
+      this.#setupAriaAttributes();
     }
 
     this.#installIntersectionObservers();
@@ -639,9 +686,15 @@ class JumpScroll extends HTMLElement {
 
     const { shadowRoot } = this;
     shadowRoot.innerHTML = `<style>${JumpScrollCss}</style>\
-<div class="container none">\
-<div class="top"><a href="#" class="start"></a><a href="#" class="prev"></a></div>\
-<div class="bot"><a href="#" class="next"></a><a href="#" class="end"></a></div>\
+<div role="scrollbar" aria-controls="body" aria-valuenow="0" aria-valuemax="1" aria-valuemin="0" class="container none">\
+<div class="top">\
+<button type="button" tabindex="-1" class="start">Scroll to start</button>\
+<button type="button" tabindex="-1" class="prev">Scroll to previous</button>\
+</div>\
+<div class="bot">\
+<button type="button" tabindex="-1" class="next">Scroll to next</button>\
+<button type="button" tabindex="-1" class="end">Scroll to end</button>\
+</div>\
 </div>`;
 
     this.#container = shadowRoot.querySelector('.container');
