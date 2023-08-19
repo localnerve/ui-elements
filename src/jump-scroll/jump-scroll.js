@@ -228,33 +228,34 @@ class JumpScroll extends HTMLElement {
   }
 
   clickTop (e) {
-    e.preventDefault();
+    e && e.preventDefault();
     this.#scrollEdge('start');
   }
 
   clickBottom (e) {
-    e.preventDefault();
+    e && e.preventDefault();
     this.#scrollEdge('end');
   }
 
   clickNext (e) {
-    e.preventDefault();
+    e && e.preventDefault();
     this.#scrollStep('next', lastTop => lastTop < window.innerHeight);
   }
 
   clickPrev (e) {
-    e.preventDefault();
+    e && e.preventDefault();
     this.#scrollStep('prev', lastTop => lastTop > 0);
   }
 
   #setupAriaAttributes () {
-    if (!this.#container || !this.#firstTarget || !this.#mapTargets) {
+    if (!this.#firstTarget || !this.#mapTargets) {
       return;
     }
 
     const scrollContainer = this.#firstTarget.parentElement;
     if (scrollContainer) {
       let scid;
+
       if (scrollContainer.id) {
         scid = scrollContainer.id;
       } else {
@@ -262,21 +263,23 @@ class JumpScroll extends HTMLElement {
         scid = `js-${btoa(crypto.getRandomValues(bytes))}`;
         scrollContainer.id = scid;
       }
-      this.#container.setAttribute('aria-controls', scid);
-    }
 
-    if (this.#mapTargets) {
-      const range = this.#mapTargets.size - 1;
-      this.#container.setAttribute('aria-valuemax', range > 0 ? range : 1);
+      this.setAttribute('aria-role', 'scrollbar');
+      this.setAttribute('aria-controls', scid);
+      this.setAttribute('aria-valuemin', '0');
+      if (this.#mapTargets) {
+        const range = this.#mapTargets.size - 1;
+        this.setAttribute('aria-valuemax', range > 0 ? range : 1);
+      }
     }
   }
 
   #setAriaScrollState () {
-    if (!this.#container || !this.#mapTargets) {
+    if (!this.#mapTargets) {
       return;
     }
 
-    this.#container.setAttribute(
+    this.setAttribute(
       'aria-valuenow',
       this.#mapTargets.get(this.#currentTarget).index
     );
@@ -686,7 +689,7 @@ class JumpScroll extends HTMLElement {
 
     const { shadowRoot } = this;
     shadowRoot.innerHTML = `<style>${JumpScrollCss}</style>\
-<div role="scrollbar" aria-controls="body" aria-valuenow="0" aria-valuemax="1" aria-valuemin="0" class="container none">\
+<div class="container none">\
 <div class="top">\
 <button type="button" tabindex="-1" class="start">Scroll to start</button>\
 <button type="button" tabindex="-1" class="prev">Scroll to previous</button>\
