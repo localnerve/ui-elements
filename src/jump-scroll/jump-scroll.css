@@ -1,7 +1,6 @@
 :host {
-  --js-width: 3em;
-  --js-aspect-ratio: 0.17;
-  --js-aspect-ratio-container: calc(var(--js-aspect-ratio) * (1 + var(--js-aspect-ratio)));
+  --js-width: 3rem;
+  --js-aspect-ratio: 0.2;
   --js-height: calc(var(--js-width) * (1 / var(--js-aspect-ratio)));
   --js-bg-color: black;
   --js-color: white;
@@ -22,14 +21,14 @@
   opacity: var(--js-opacity-full);
   width: var(--js-width);
   height: auto;
-  aspect-ratio: var(--js-aspect-ratio-container);
+  aspect-ratio: var(--js-aspect-ratio);
 }
 .container button {
   padding: 0; margin: 0; border: none;
   color: transparent;
 }
 .container.best {
-  aspect-ratio: calc(var(--js-aspect-ratio-container) * 2);
+  aspect-ratio: calc(var(--js-aspect-ratio) * 2);
 }
 .container.none {
   display: none;
@@ -54,7 +53,7 @@
 .container.best.mid.down .top,
 .container.best.mid.up .top,
 .container.best.end .top {
-  transform: translateY(8%);
+  transform: translateY(5%);
 }
 .container.end .top {
   transform: translateY(102%);
@@ -65,7 +64,7 @@
   position: absolute;
   width: var(--js-width);
   height: auto;
-  aspect-ratio: calc(var(--js-aspect-ratio-container) * 2);
+  aspect-ratio: calc(var(--js-aspect-ratio) * 2);
   transition: opacity 1s, transform 1s;
   pointer-events: auto;
 }

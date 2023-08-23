@@ -15,6 +15,11 @@
 
         --color: var(--dark);
         --bg-color: var(--light);
+
+        font-size: 16px;
+        --rem-base: 16px;
+        --max-font-size: 22px;
+        --font-diff: 6;
       }
       @media (prefers-color-scheme: dark) {
         :root {
@@ -25,8 +30,18 @@
       body {
         background-color: var(--bg-color);
         font-family: 'Open Sans', sans-serif;
-        font-size: 16px;
       }
+      @media (min-width: 320px) {
+        body {
+          font-size: calc(var(--rem-base) + var(--font-diff) * ((100vw - 320px) / (1920 - 320)));
+        }
+      }
+      @media (min-width: 1920px) {
+        body {
+          font-size: var(--max-font-size);
+        }
+      }
+
       .direct-button {
         position: fixed;
         top: 1rem;
@@ -50,7 +65,7 @@
       }
       .jump-scroll {
         --js-bg-color: var(--color);
-        --js-width: 3.5em;
+        --js-width: 3.5rem;
       }
     </style>
     <script>
