@@ -247,28 +247,40 @@ class JumpScroll extends HTMLElement {
   }
 
   /**
-   * Find the target element with the fewest parents
+   * Find the common ancestor of the targets
    */
-  #findFewestParentTarget () {
+  #findTargetCommonAncestor () {
     if (!this.#firstTarget || !this.#mapTargets) {
       return;
     }
 
-    let parents, el;
-    const fewest = { parents: 1000000, el: this.#firstTarget };
+    let parents, el, fewest = 1e6;
+    const fewestParents = [];
     const targetEls = this.#mapTargets.keys();
     for (const targetEl of targetEls) {
       el = targetEl;
       for (parents = 0; el.parentElement; el = el.parentElement) {
         parents++;
       }
-      if (parents < fewest.parents) {
-        fewest.parents = parents;
-        fewest.el = targetEl;
+      if (parents <= fewest) {
+        fewest = parents;
+        fewestParents.unshift(targetEl);
       }
     }
 
-    return fewest.el;
+    let result = fewestParents[0].parentElement ?? fewestParents[0];
+    if (fewestParents.length > 1) {
+      const range = new Range();
+      range.setStart(fewestParents[0], 0);
+      range.setEnd(fewestParents[1], 0);
+      if(range.collapsed) {
+        range.setStart(fewestParents[1], 0);
+        range.setEnd(fewestParents[0], 0);
+      }
+      result = range.commonAncestorContainer ?? result;
+    }
+
+    return result;
   }
 
   #setupAriaAttributes () {
@@ -276,8 +288,7 @@ class JumpScroll extends HTMLElement {
       return;
     }
 
-    const topEl = this.#findFewestParentTarget();
-    const scrollContainer = topEl.parentElement ?? topEl;
+    const scrollContainer = this.#findTargetCommonAncestor();
     if (scrollContainer) {
       let scid;
 
