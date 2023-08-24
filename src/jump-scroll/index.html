@@ -55,11 +55,11 @@
       header, footer, article, .non-element {
         padding: 1em;
       }
-      header, .non-element, article:nth-of-type(odd) {
+      footer, header, .non-element, article:nth-of-type(odd) {
         background-color: var(--bg-color);
         color: var(--color);
       }
-      footer, article:nth-of-type(even) {
+      .reverse, article:nth-of-type(odd).reverse, article:nth-of-type(even) {
         background-color: var(--color);
         color: var(--bg-color);
       }
@@ -77,7 +77,7 @@
     </script>
   </head>
   <body>
-    <jump-scroll class="jump-scroll" target="article" display="best" colormap="footer,article:nth-of-type(even)@--bg-color"></jump-scroll>
+    <jump-scroll class="jump-scroll" target="article" display="best" colormap=".reverse,article:nth-of-type(even)@--bg-color"></jump-scroll>
     <button class="direct-button" onclick="setTarget('.third')">Set CurrentTarget to 3</button>
     <header>
       <h1>This is a demo of jump-scroll</h1>
@@ -92,6 +92,24 @@
         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
       </p>
     </header>
+    <article class="reverse">
+      <h2>Article 0</h2>
+      <p>
+        1.00000 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+      </p>
+      <p>
+        2.00000 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+      </p>
+      <p>
+        3.00000 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+      </p>
+      <p>
+        4.00000 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+      </p>
+      <p>
+        5.00000 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+      </p>
+    </article>
     <article>
       <h2>Article 1</h2>
       <p>
@@ -245,7 +263,7 @@
         5.55555 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
       </p>
     </article>
-    <article>
+    <article class="reverse">
       <h2>Article 6</h2>
       <p>
       1.66666 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
@@ -263,9 +281,8 @@
         5.66666 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
       </p>
     </article>
-    <footer>
+    <footer class="reverse">
       <h2>This is a demo of jump-scroll</h2>
-      <h4>(In color map, but NOT in target map)</h4>
       <p>
         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
       </p>
