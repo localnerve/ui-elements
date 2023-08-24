@@ -246,12 +246,38 @@ class JumpScroll extends HTMLElement {
     this.#scrollStep('prev', lastTop => lastTop > 0);
   }
 
+  /**
+   * Find the target element with the fewest parents
+   */
+  #findFewestParentTarget () {
+    if (!this.#firstTarget || !this.#mapTargets) {
+      return;
+    }
+
+    let parents, el;
+    const fewest = { parents: 1000000, el: this.#firstTarget };
+    const targetEls = this.#mapTargets.keys();
+    for (const targetEl of targetEls) {
+      el = targetEl;
+      for (parents = 0; el.parentElement; el = el.parentElement) {
+        parents++;
+      }
+      if (parents < fewest.parents) {
+        fewest.parents = parents;
+        fewest.el = targetEl;
+      }
+    }
+
+    return fewest.el;
+  }
+
   #setupAriaAttributes () {
     if (!this.#firstTarget || !this.#mapTargets) {
       return;
     }
 
-    const scrollContainer = this.#firstTarget.parentElement;
+    const topEl = this.#findFewestParentTarget();
+    const scrollContainer = topEl.parentElement ?? topEl;
     if (scrollContainer) {
       let scid;
 
