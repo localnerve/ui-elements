@@ -14,7 +14,6 @@ class JumpScroll extends HTMLElement {
   #controlObserver2 = null;
   #scrollingDown = true;
   #scrollMidIgnore = false;
-  #controlIntersectionColor = 0;
   #controlIntersectionCount = 0;
   #controlIntersection = '';
 
@@ -247,12 +246,38 @@ class JumpScroll extends HTMLElement {
     this.#scrollStep('prev', lastTop => lastTop > 0);
   }
 
+  /**
+   * Find the target element with the fewest parents
+   */
+  #findFewestParentTarget () {
+    if (!this.#firstTarget || !this.#mapTargets) {
+      return;
+    }
+
+    let parents, el;
+    const fewest = { parents: 1000000, el: this.#firstTarget };
+    const targetEls = this.#mapTargets.keys();
+    for (const targetEl of targetEls) {
+      el = targetEl;
+      for (parents = 0; el.parentElement; el = el.parentElement) {
+        parents++;
+      }
+      if (parents < fewest.parents) {
+        fewest.parents = parents;
+        fewest.el = targetEl;
+      }
+    }
+
+    return fewest.el;
+  }
+
   #setupAriaAttributes () {
     if (!this.#firstTarget || !this.#mapTargets) {
       return;
     }
 
-    const scrollContainer = this.#firstTarget.parentElement;
+    const topEl = this.#findFewestParentTarget();
+    const scrollContainer = topEl.parentElement ?? topEl;
     if (scrollContainer) {
       let scid;
 
@@ -524,7 +549,6 @@ class JumpScroll extends HTMLElement {
         const newColor = this.#mapColors.get(entry.target);
         this.#controlIntersectionCount++;
         this.#controlIntersection = side;
-        this.#controlIntersectionColor = this.#controlIntersectionCount;
 
         if (newColor) {
           this.#container.style.setProperty('--js-bg-color', newColor);
@@ -534,15 +558,12 @@ class JumpScroll extends HTMLElement {
         }
       } else {
         this.#controlIntersectionCount--;
-        // This is even when both edges cross a colormap region
-        const diff = Math.abs(
-          this.#controlIntersectionColor - this.#controlIntersectionCount
-        );
         // This is false when transitioning between two adjoining colormap regions
         const control = side !== this.#controlIntersection;
+        // This is a partial transition with a direction reversal
+        const specialCase = this.#controlIntersectionCount <= 0 && side === this.#controlIntersection;
 
-        // controlIntersectionColor count goes over 2 in contiguous colormap regions
-        if (control || (diff % 2 && this.#controlIntersectionColor < 3)) {
+        if (control || specialCase) {
           this.#container.style.removeProperty('--js-bg-color');
           this.#controlIntersectionCount = 0;
         }
