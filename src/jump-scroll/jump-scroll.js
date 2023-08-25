@@ -186,13 +186,12 @@ class JumpScroll extends HTMLElement {
       const elementNext = target[dir];
       const targetNext = this.#mapTargets.get(elementNext);
       const preLastTop = Math.round(targetNext.lastTop);
-      this.#currentTarget = elementNext;
+      this.currentTarget = elementNext;
       this.#currentTarget.scrollIntoView({
         block: 'nearest',
         inline: 'start',
         behavior: 'smooth'
       });
-      this.#setAriaScrollState();
       setTimeout(() => {
         if (preLastTop === Math.round(targetNext.lastTop)) {
           if (continueTest(preLastTop)) {
@@ -215,14 +214,13 @@ class JumpScroll extends HTMLElement {
   }
 
   #scrollEdge (edge = 'start') {
-    this.#currentTarget =
+    this.currentTarget =
       edge === 'start' ? this.#firstTarget : this.#lastTarget;
     this.#currentTarget.scrollIntoView({
       block: 'nearest',
       inline: 'start',
       behavior: 'smooth'
     });
-    this.#setAriaScrollState();
     this.update(edge);
   }
 
@@ -397,8 +395,7 @@ class JumpScroll extends HTMLElement {
         });
       }
 
-      this.#currentTarget = order[currentIndex].el;
-      this.#setAriaScrollState();
+      this.currentTarget = order[currentIndex].el;
       if (currentIndex === 0) {
         this.update('start');
       } else if (currentIndex === order.length - 1) {
@@ -525,8 +522,7 @@ class JumpScroll extends HTMLElement {
           : nextTarget.index < lastTarget.index
           ;
         if (correctDirection && nextRatio > nextRatioThreshold) {
-          this.#currentTarget = nextElement;
-          this.#setAriaScrollState();
+          this.currentTarget = nextElement;
         }
 
         /**
@@ -542,8 +538,7 @@ class JumpScroll extends HTMLElement {
       } 
       
       if (this.#scrollMidIgnore && entry.intersectionRatio >= 0.98) {
-        this.#currentTarget = nextElement;
-        this.#setAriaScrollState();
+        this.currentTarget = nextElement;
       }
     } else {
       if (entry.intersectionRatio <= endRatio) {
