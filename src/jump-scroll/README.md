@@ -8,20 +8,29 @@
 
 ## Summary
 
-Provides a small scrolling control that allows the user to go to the top or bottom, or jump to the next (or previous) section of a page. Non-browser version of the module exports build helpers (for building CSP rules, etc).
+A small scrolling assistant that allows a user to jump to author defined page target sections [next, previous, first, last].  
+Non-browser version of the module exports build helpers (for building CSP rules, etc).
 
 ## Attributes
 
-* `target` - *Required*. A selector to select all the elements to vertically "jump scroll" to in the page. Defaults to 'section'.  
+* `target` - *Required*. A selector that defins all the target elements to vertically "jump scroll" to in a page. Defaults to `"section"`.  
 
-* `display` - *Optional*.  Values: `"best" | "both"`  
-  **"best"** - *Default*. The control displays either [top, previous] OR [bottom, next] jump scrolling options. Which one is displayed depends on the position on the page and the direction of scrolling. If the user is in the middle of the page and scrolls, the control only displays the jump scroll options in the direction of the scroll. Less vertical space required.  
-  **"both"** - The control displays both [top, previous] AND [bottom, next] jump scrolling options simulataneously. Larger footprint.  
+* `display` - *Optional*.  Values: `"best" | "both"`. Defaults to `"best"`.  
+  **"best"** - *Default*. The control displays **either** [top, previous] **OR** [bottom, next] jump scrolling control surface. Which one is displayed depends on the position on the page and the direction of scrolling. If the user is in the middle of the page and scrolls, the control only displays the jump scroll options in the direction of the scroll. If near the end, turns in the opposite direction. Less vertical space required.  
+  **"both"** - The control displays both [top, previous] **AND** [bottom, next] jump scrolling options simulataneously. Larger footprint.  
   
-* `colormap` - *Optional*. A map of targets to colors. Changes the color of the jump-scroll control over specific elements.  
+* `colormap` - *Optional*. A map of targets to colors. Changes the color of the jump-scroll control over specific elements. Defaults to nothing.  
   **Format:** `selector@color[;selector@color]*`  
   **selector** - *String*. Must be a selector of DOM element(s). When a selected element crosses the vertical bounds of the `jump-scroll` control, the `js-bg-color` background will be changed to the color (or variable) provided.  
   **color** - *CssColor|CssCustomProperty*. A css color or a custom property (variable) of a color to use for the `js-bg-color` background of the control.  
+
+* `enableKeyboard` - *Optional*. Values: `"true" | "false"`. Defaults to `"true"`.  
+  Enables keyboard scrolling by handling the following keydown events at the common scroll target ancestor:
+
+  + `PageDown | Space` - Jumps to the next scroll target.
+  + `PageUp | Shift+Space` - Jumps to the previous scroll target.
+  + `Shift+PageDown` - Jumps to the bottom scroll target.
+  + `Shift+PageUp` - Jumps to the top scroll target.  
 
 ## Overridable CSS Variables
 
