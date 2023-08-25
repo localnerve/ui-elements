@@ -303,6 +303,7 @@ class JumpScroll extends HTMLElement {
       this.setAttribute('aria-role', 'scrollbar');
       this.setAttribute('aria-controls', scid);
       this.setAttribute('aria-valuemin', '0');
+      this.setAttribute('aria-label', 'Alternate scroller, jump directly to author\'s sections');
       if (this.#mapTargets) {
         const range = this.#mapTargets.size - 1;
         this.setAttribute('aria-valuemax', range > 0 ? range : 1);
