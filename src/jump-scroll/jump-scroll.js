@@ -28,23 +28,27 @@ class JumpScroll extends HTMLElement {
   #currentTarget = null;
   #mapTargets = null;
 
+  static #scrollDelayFrames = 15;
+
   #mapColors = null;
 
   #container = null;
+  #scrollContainer = null;
   #setupInit = false;
 
   #resizeTick = false;
   #resizeWidth = 0;
-
   static #resizeWait = 800;
-  static #scrollDelayFrames = 15;
+  
   static #observedTargetAttributes = ['target']; // maybe expand to horizontal...
   static #observedAttributeDefaults = {
     target: 'section',
-    display: 'best' // or 'both'
+    display: 'best', // or 'both'
+    colormap: '',
+    enablekeyboard: true
   }
   static get observedAttributes () {
-    return [...JumpScroll.#observedTargetAttributes, 'display', 'colormap'];
+    return [...JumpScroll.#observedTargetAttributes, 'display', 'colormap', 'enablekeyboard'];
   }
 
   /**
@@ -69,6 +73,7 @@ class JumpScroll extends HTMLElement {
     this.clickBottom = this.clickBottom.bind(this);
     this.clickNext = this.clickNext.bind(this);
     this.clickPrev = this.clickPrev.bind(this);
+    this.keydownHandler = this.keydownHandler.bind(this);
     this.#createTargetProperties();
   }
 
@@ -102,11 +107,11 @@ class JumpScroll extends HTMLElement {
    * @returns {String} The display property setting.
    */
   get display () {
-    const propName = 'display';
-    if (this.hasAttribute(propName)) {
-      return this.getAttribute(propName);
+    const attributeName = 'display';
+    if (this.hasAttribute(attributeName)) {
+      return this.getAttribute(attributeName);
     }
-    return JumpScroll.#observedAttributeDefaults[propName];
+    return JumpScroll.#observedAttributeDefaults[attributeName];
   }
   /**
    * Set the display property.
@@ -114,18 +119,18 @@ class JumpScroll extends HTMLElement {
    * @param {String} value - 'both' or 'best'
    */
   set display (value) {
-    const propName = 'display';
+    const attributeName = 'display';
     const values = ['both', 'best'];
 
     this.#container &&
       this.#container.classList.remove(...values.concat('up', 'down'));
     if (values.includes(value)) {
-      this.setAttribute(propName, value);
+      this.setAttribute(attributeName, value);
       this.#uninstallIntersectionObservers();
       this.#installIntersectionObservers();
       this.#container && this.#container.classList.add(value);
     } else {
-      this.removeAttribute(propName);
+      this.removeAttribute(attributeName);
     }
   }
 
@@ -135,12 +140,11 @@ class JumpScroll extends HTMLElement {
    * @returns {String} The colormap definition string
    */
   get colormap () {
-    let result = '';
-    const propName = 'colormap';
-    if (this.hasAttribute(propName)) {
-      result = this.getAttribute(propName);
+    const attributeName = 'colormap';
+    if (this.hasAttribute(attributeName)) {
+      return this.getAttribute(attributeName);
     }
-    return result;
+    return JumpScroll.#observedAttributeDefaults[attributeName];
   }
   /**
    * Set the colormap property.
@@ -157,10 +161,10 @@ class JumpScroll extends HTMLElement {
     }
     this.#mapColors = null;
 
-    const propName = 'colormap';
+    const attributeName = 'colormap';
     const mapItems = value && value.split(';');
     if (mapItems && mapItems.length > 0 && mapItems[0].includes('@')) {
-      this.setAttribute(propName, value);
+      this.setAttribute(attributeName, value);
       this.#mapColors = new Map();
       for (const item of mapItems) {
         let [selector, color] = item.replace(/\s/, '').split('@');
@@ -172,7 +176,7 @@ class JumpScroll extends HTMLElement {
         });
       }
     } else {
-      this.removeAttribute(propName);
+      this.removeAttribute(attributeName);
     }
   }
 
@@ -192,6 +196,58 @@ class JumpScroll extends HTMLElement {
       this.#currentTarget = targetElement;
       this.#setAriaScrollState();
     }
+  }
+
+  /**
+   * Get the enableKeyboard property.
+   * 
+   * @returns {Boolean}
+   */
+  get enableKeyboard () {
+    const attributeName = 'enablekeyboard';
+    if (this.hasAttribute(attributeName)) {
+      return this.getAttribute(attributeName) !== 'false';
+    }
+    return JumpScroll.#observedAttributeDefaults[attributeName];
+  }
+  /**
+   * Handle `keydown` events from #scrollContainer.
+   * 
+   * @param {Event} - The event object.
+   */
+  keydownHandler (e) {
+    const actionMap = {
+      'PageDown': {
+        'true': this.clickBottom,
+        'false': this.clickNext
+      },
+      'Space': {
+        'true': this.clickPrev,
+        'false': this.clickNext
+      },
+      'PageUp': {
+        'true': this.clickTop,
+        'false': this.clickPrev
+      }
+    };
+
+    const action = actionMap[e.code]?.[Boolean(e.shiftKey).toString()];
+    action && action(e);
+  }
+  /**
+   * Setup or teardown keyboard event handling.
+   * 
+   * @param {Boolean} - true to setup, false to teardown.
+   */
+  set enableKeyboard (value) {
+    if (!this.#scrollContainer) {
+      return;
+    }
+
+    const attributeName = 'enablekeyboard';
+    const method = value ? 'addEventListener' : 'removeEventListener';
+    this.#scrollContainer[method]('keydown', this.keydownHandler);
+    this.setAttribute(attributeName, value);
   }
 
   /**
@@ -342,19 +398,19 @@ class JumpScroll extends HTMLElement {
       return;
     }
 
-    const scrollContainer = this.#findTargetCommonAncestor();
-    if (scrollContainer) {
+    this.#scrollContainer = this.#findTargetCommonAncestor();
+    if (this.#scrollContainer) {
       let scid;
 
-      if (scrollContainer.id) {
-        scid = scrollContainer.id;
+      if (this.#scrollContainer.id) {
+        scid = this.#scrollContainer.id;
       } else {
         const bytes = new Uint8Array(10);
         scid = `js-${btoa(crypto.getRandomValues(bytes))}`;
-        scrollContainer.id = scid;
+        this.#scrollContainer.id = scid;
       }
 
-      this.setAttribute('aria-role', 'scrollbar');
+      this.setAttribute('role', 'scrollbar');
       this.setAttribute('aria-controls', scid);
       this.setAttribute('aria-valuemin', '0');
       this.setAttribute('aria-label', 'Alternate scroller, jump directly to author\'s sections');
@@ -763,6 +819,9 @@ class JumpScroll extends HTMLElement {
     if (firstInit) {
       this.#resizeWidth = window.innerWidth;
       this.#setupAriaAttributes();
+      /* eslint-disable no-self-assign */
+      this.enableKeyboard = this.enableKeyboard;
+      /* eslint-enable no-self-assign */
     }
 
     this.#installIntersectionObservers();
@@ -790,6 +849,7 @@ class JumpScroll extends HTMLElement {
       if (this.#mapTargets)
         this.#mapTargets.clear();
       this.#mapTargets = null;
+      this.#scrollContainer = null;
     }
     this.#setupInit = false;
   }
@@ -842,6 +902,7 @@ class JumpScroll extends HTMLElement {
 
   disconnectedCallback () {
     this.#container = null;
+    this.enableKeyboard = false;
     this.shadowRoot.querySelector('.top .start').removeEventListener(
       'click', this.clickTop
     );
