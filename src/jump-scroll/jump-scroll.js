@@ -64,10 +64,10 @@ class JumpScroll extends HTMLElement {
     this.clickBottom = this.clickBottom.bind(this);
     this.clickNext = this.clickNext.bind(this);
     this.clickPrev = this.clickPrev.bind(this);
-    this.createTargetProperties();
+    this.#createTargetProperties();
   }
 
-  createTargetProperties () {
+  #createTargetProperties () {
     JumpScroll.#observedTargetAttributes.forEach(propName => {
       Object.defineProperty(this, propName, {
         get () {
@@ -82,7 +82,7 @@ class JumpScroll extends HTMLElement {
           } else {
             this.removeAttribute(propName);
           }
-          this.updateTargetMap(value);
+          this.#updateTargetMap(value);
         }
       });
     });
@@ -158,7 +158,7 @@ class JumpScroll extends HTMLElement {
     }
   }
 
-  update (pos) {
+  #update (pos) {
     const newClasses = [pos];
     const resetClasses = ['mid', 'start', 'end', 'rest', 'up', 'down'];
     if (this.#firstTarget !== null) {
@@ -221,7 +221,7 @@ class JumpScroll extends HTMLElement {
       inline: 'start',
       behavior: 'smooth'
     });
-    this.update(edge);
+    this.#update(edge);
   }
 
   clickTop (e) {
@@ -336,7 +336,7 @@ class JumpScroll extends HTMLElement {
    * @param {String} propName - The target property name
    * @param {Function} [perTargetWork] - optional function to execute on the HTMLElements selected.
    */
-  updateTargetMap (propName, perTargetWork) {
+  #updateTargetMap (propName, perTargetWork) {
     if (!JumpScroll.#observedTargetAttributes.includes(propName) || !this.#setupInit) {
       return;
     }
@@ -397,11 +397,11 @@ class JumpScroll extends HTMLElement {
 
       this.currentTarget = order[currentIndex].el;
       if (currentIndex === 0) {
-        this.update('start');
+        this.#update('start');
       } else if (currentIndex === order.length - 1) {
-        this.update('end');
+        this.#update('end');
       } else {
-        this.update('mid');
+        this.#update('mid');
       }
     }
   }
@@ -528,7 +528,7 @@ class JumpScroll extends HTMLElement {
         /**
          * Update the UI.
          */
-        this.update(pos);
+        this.#update(pos);
 
         /**
          * Update scrolling direction.
@@ -674,7 +674,7 @@ class JumpScroll extends HTMLElement {
 
     if (fullSetup) {
       JumpScroll.#observedTargetAttributes.forEach(propName => {
-        this.updateTargetMap(propName);
+        this.#updateTargetMap(propName);
       });
     }
 
