@@ -8,6 +8,11 @@
 
 const JumpScrollCss = `__CSS_REPLACEMENT__`;
 
+/**
+ * JumpScroll component
+ * 
+ * Alternative scroller to jump to author defined page sections.
+ */
 class JumpScroll extends HTMLElement {
   #targetObserver = null;
   #controlObserver1 = null;
@@ -23,23 +28,27 @@ class JumpScroll extends HTMLElement {
   #currentTarget = null;
   #mapTargets = null;
 
+  static #scrollDelayFrames = 15;
+
   #mapColors = null;
 
   #container = null;
+  #scrollContainer = null;
   #setupInit = false;
 
   #resizeTick = false;
   #resizeWidth = 0;
-
   static #resizeWait = 800;
-  static #scrollDelayFrames = 15;
-  static #observedTargetAttributes = ['target'];
+  
+  static #observedTargetAttributes = ['target']; // maybe expand to horizontal...
   static #observedAttributeDefaults = {
     target: 'section',
-    display: 'best' // or 'both'
+    display: 'best', // or 'both'
+    colormap: '',
+    enablekeyboard: true
   }
   static get observedAttributes () {
-    return [...JumpScroll.#observedTargetAttributes, 'display', 'colormap'];
+    return [...JumpScroll.#observedTargetAttributes, 'display', 'colormap', 'enablekeyboard'];
   }
 
   /**
@@ -64,10 +73,14 @@ class JumpScroll extends HTMLElement {
     this.clickBottom = this.clickBottom.bind(this);
     this.clickNext = this.clickNext.bind(this);
     this.clickPrev = this.clickPrev.bind(this);
-    this.createTargetProperties();
+    this.keydownHandler = this.keydownHandler.bind(this);
+    this.#createTargetProperties();
   }
 
-  createTargetProperties () {
+  /**
+   * Define all the target properties.
+   */
+  #createTargetProperties () {
     JumpScroll.#observedTargetAttributes.forEach(propName => {
       Object.defineProperty(this, propName, {
         get () {
@@ -82,43 +95,62 @@ class JumpScroll extends HTMLElement {
           } else {
             this.removeAttribute(propName);
           }
-          this.updateTargetMap(value);
+          this.#updateTargetMap(value);
         }
       });
     });
   }
 
+  /**
+   * Get the display property.
+   * 
+   * @returns {String} The display property setting.
+   */
   get display () {
-    const propName = 'display';
-    if (this.hasAttribute(propName)) {
-      return this.getAttribute(propName);
+    const attributeName = 'display';
+    if (this.hasAttribute(attributeName)) {
+      return this.getAttribute(attributeName);
     }
-    return JumpScroll.#observedAttributeDefaults[propName];
+    return JumpScroll.#observedAttributeDefaults[attributeName];
   }
+  /**
+   * Set the display property.
+   * 
+   * @param {String} value - 'both' or 'best'
+   */
   set display (value) {
-    const propName = 'display';
+    const attributeName = 'display';
     const values = ['both', 'best'];
 
     this.#container &&
       this.#container.classList.remove(...values.concat('up', 'down'));
     if (values.includes(value)) {
-      this.setAttribute(propName, value);
+      this.setAttribute(attributeName, value);
       this.#uninstallIntersectionObservers();
       this.#installIntersectionObservers();
       this.#container && this.#container.classList.add(value);
     } else {
-      this.removeAttribute(propName);
+      this.removeAttribute(attributeName);
     }
   }
 
+  /**
+   * Get the colormap property.
+   *
+   * @returns {String} The colormap definition string
+   */
   get colormap () {
-    let result = '';
-    const propName = 'colormap';
-    if (this.hasAttribute(propName)) {
-      result = this.getAttribute(propName);
+    const attributeName = 'colormap';
+    if (this.hasAttribute(attributeName)) {
+      return this.getAttribute(attributeName);
     }
-    return result;
+    return JumpScroll.#observedAttributeDefaults[attributeName];
   }
+  /**
+   * Set the colormap property.
+   * 
+   * @param {String} value - The colormap definition string
+   */
   set colormap (value) {
     if (this.#container === null) {
       return;
@@ -129,10 +161,10 @@ class JumpScroll extends HTMLElement {
     }
     this.#mapColors = null;
 
-    const propName = 'colormap';
+    const attributeName = 'colormap';
     const mapItems = value && value.split(';');
     if (mapItems && mapItems.length > 0 && mapItems[0].includes('@')) {
-      this.setAttribute(propName, value);
+      this.setAttribute(attributeName, value);
       this.#mapColors = new Map();
       for (const item of mapItems) {
         let [selector, color] = item.replace(/\s/, '').split('@');
@@ -144,13 +176,21 @@ class JumpScroll extends HTMLElement {
         });
       }
     } else {
-      this.removeAttribute(propName);
+      this.removeAttribute(attributeName);
     }
   }
 
+  /**
+   * Get the current target element.
+   */
   get currentTarget () {
     return this.#currentTarget;
   }
+  /**
+   * Set the current target element.
+   *
+   * @param {HTMLElement} targetElement - The new current element.
+   */
   set currentTarget (targetElement) {
     if (this.#mapTargets.has(targetElement)) {
       this.#currentTarget = targetElement;
@@ -158,7 +198,64 @@ class JumpScroll extends HTMLElement {
     }
   }
 
-  update (pos) {
+  /**
+   * Get the enableKeyboard property.
+   * 
+   * @returns {Boolean}
+   */
+  get enableKeyboard () {
+    const attributeName = 'enablekeyboard';
+    if (this.hasAttribute(attributeName)) {
+      return this.getAttribute(attributeName) !== 'false';
+    }
+    return JumpScroll.#observedAttributeDefaults[attributeName];
+  }
+  /**
+   * Handle `keydown` events from #scrollContainer.
+   * 
+   * @param {Event} - The event object.
+   */
+  keydownHandler (e) {
+    const actionMap = {
+      'PageDown': {
+        'true': this.clickBottom,
+        'false': this.clickNext
+      },
+      'Space': {
+        'true': this.clickPrev,
+        'false': this.clickNext
+      },
+      'PageUp': {
+        'true': this.clickTop,
+        'false': this.clickPrev
+      }
+    };
+
+    const action = actionMap[e.code]?.[Boolean(e.shiftKey).toString()];
+    action && action(e);
+  }
+  /**
+   * Setup or teardown keyboard event handling.
+   * 
+   * @param {Boolean} - true to setup, false to teardown.
+   */
+  set enableKeyboard (value) {
+    if (!this.#scrollContainer) {
+      return;
+    }
+
+    const attributeName = 'enablekeyboard';
+    const method = value ? 'addEventListener' : 'removeEventListener';
+    this.#scrollContainer[method]('keydown', this.keydownHandler);
+    this.setAttribute(attributeName, value);
+  }
+
+  /**
+   * Update the UI.
+   * 
+   * @param {String} pos - 'mid', 'start', or 'end' 
+   */
+  #update (pos) {
     const newClasses = [pos];
     const resetClasses = ['mid', 'start', 'end', 'rest', 'up', 'down'];
     if (this.#firstTarget !== null) {
@@ -180,19 +277,24 @@ class JumpScroll extends HTMLElement {
     }, 500);
   }
 
+  /**
+   * Jump scroll to the next/prev target.
+   *
+   * @param {String} dir - 'next' or 'prev'
+   * @param {Function} continueTest - The continuation boolean function
+   */
   #scrollStep (dir, continueTest) {
     const target = this.#mapTargets.get(this.#currentTarget);
     if (target[dir]) {
       const elementNext = target[dir];
       const targetNext = this.#mapTargets.get(elementNext);
       const preLastTop = Math.round(targetNext.lastTop);
-      this.#currentTarget = elementNext;
+      this.currentTarget = elementNext;
       this.#currentTarget.scrollIntoView({
         block: 'nearest',
         inline: 'start',
         behavior: 'smooth'
       });
-      this.#setAriaScrollState();
       setTimeout(() => {
         if (preLastTop === Math.round(targetNext.lastTop)) {
           if (continueTest(preLastTop)) {
@@ -214,33 +316,37 @@ class JumpScroll extends HTMLElement {
     }
   }
 
+  /**
+   * Scroll to the first or last target.
+   *
+   * @param {String} edge - 'start' or 'end'
+   */
   #scrollEdge (edge = 'start') {
-    this.#currentTarget =
+    this.currentTarget =
       edge === 'start' ? this.#firstTarget : this.#lastTarget;
     this.#currentTarget.scrollIntoView({
       block: 'nearest',
       inline: 'start',
       behavior: 'smooth'
     });
-    this.#setAriaScrollState();
-    this.update(edge);
+    this.#update(edge);
   }
 
+  /// ----------------------------------------------
+  // Click handlers
+  /// ----------------------------------------------
   clickTop (e) {
     e && e.preventDefault();
     this.#scrollEdge('start');
   }
-
   clickBottom (e) {
     e && e.preventDefault();
     this.#scrollEdge('end');
   }
-
   clickNext (e) {
     e && e.preventDefault();
     this.#scrollStep('next', lastTop => lastTop < window.innerHeight);
   }
-
   clickPrev (e) {
     e && e.preventDefault();
     this.#scrollStep('prev', lastTop => lastTop > 0);
@@ -248,6 +354,7 @@ class JumpScroll extends HTMLElement {
 
   /**
    * Find the common ancestor of the targets
+   * @returns {HTMLElement} The common ancestor of the targets in targetMap
    */
   #findTargetCommonAncestor () {
     if (!this.#firstTarget || !this.#mapTargets) {
@@ -283,26 +390,30 @@ class JumpScroll extends HTMLElement {
     return result;
   }
 
+  /**
+   * Setup the aria attributes for the control.
+   */
   #setupAriaAttributes () {
     if (!this.#firstTarget || !this.#mapTargets) {
       return;
     }
 
-    const scrollContainer = this.#findTargetCommonAncestor();
-    if (scrollContainer) {
+    this.#scrollContainer = this.#findTargetCommonAncestor();
+    if (this.#scrollContainer) {
       let scid;
 
-      if (scrollContainer.id) {
-        scid = scrollContainer.id;
+      if (this.#scrollContainer.id) {
+        scid = this.#scrollContainer.id;
       } else {
         const bytes = new Uint8Array(10);
         scid = `js-${btoa(crypto.getRandomValues(bytes))}`;
-        scrollContainer.id = scid;
+        this.#scrollContainer.id = scid;
       }
 
-      this.setAttribute('aria-role', 'scrollbar');
+      this.setAttribute('role', 'scrollbar');
       this.setAttribute('aria-controls', scid);
       this.setAttribute('aria-valuemin', '0');
+      this.setAttribute('aria-label', 'Alternate scroller, jump directly to author\'s sections');
       if (this.#mapTargets) {
         const range = this.#mapTargets.size - 1;
         this.setAttribute('aria-valuemax', range > 0 ? range : 1);
@@ -310,6 +421,9 @@ class JumpScroll extends HTMLElement {
     }
   }
 
+  /**
+   * Set the `aria-valuenow` value
+   */
   #setAriaScrollState () {
     if (!this.#mapTargets) {
       return;
@@ -337,7 +451,7 @@ class JumpScroll extends HTMLElement {
    * @param {String} propName - The target property name
    * @param {Function} [perTargetWork] - optional function to execute on the HTMLElements selected.
    */
-  updateTargetMap (propName, perTargetWork) {
+  #updateTargetMap (propName, perTargetWork) {
     if (!JumpScroll.#observedTargetAttributes.includes(propName) || !this.#setupInit) {
       return;
     }
@@ -396,14 +510,13 @@ class JumpScroll extends HTMLElement {
         });
       }
 
-      this.#currentTarget = order[currentIndex].el;
-      this.#setAriaScrollState();
+      this.currentTarget = order[currentIndex].el;
       if (currentIndex === 0) {
-        this.update('start');
+        this.#update('start');
       } else if (currentIndex === order.length - 1) {
-        this.update('end');
+        this.#update('end');
       } else {
-        this.update('mid');
+        this.#update('mid');
       }
     }
   }
@@ -412,7 +525,7 @@ class JumpScroll extends HTMLElement {
    * Callback for target-viewport intersection.
    * Update #currentTarget, #scrollingDown, and the UI state.
    *
-   * @param {Array} entries - Array of intersectionEntry items
+   * @param {Array} entries - Array of intersectionObserverEntry
    */
   targetIntersection (entries) {
     const updateLastTop = entry => {
@@ -524,14 +637,13 @@ class JumpScroll extends HTMLElement {
           : nextTarget.index < lastTarget.index
           ;
         if (correctDirection && nextRatio > nextRatioThreshold) {
-          this.#currentTarget = nextElement;
-          this.#setAriaScrollState();
+          this.currentTarget = nextElement;
         }
 
         /**
          * Update the UI.
          */
-        this.update(pos);
+        this.#update(pos);
 
         /**
          * Update scrolling direction.
@@ -541,8 +653,7 @@ class JumpScroll extends HTMLElement {
       } 
       
       if (this.#scrollMidIgnore && entry.intersectionRatio >= 0.98) {
-        this.#currentTarget = nextElement;
-        this.#setAriaScrollState();
+        this.currentTarget = nextElement;
       }
     } else {
       if (entry.intersectionRatio <= endRatio) {
@@ -551,6 +662,12 @@ class JumpScroll extends HTMLElement {
     }
   }
 
+  /**
+   * Handle intersection with an edge of this control.
+   *
+   * @param {String} side - (prebound) handler affiliation with top or bottom
+   * @param {Array} entries - Array of IntersectionObserverEntry
+   */
   controlIntersection (side, entries) {
     if (this.#mapColors && !this.#resizeTick) {
       const intersectors = entries.filter(entry => entry.isIntersecting);
@@ -582,6 +699,9 @@ class JumpScroll extends HTMLElement {
     }
   }
 
+  /**
+   * Create the intersection observers for the control and targets, and start observing.
+   */
   #installIntersectionObservers () {
     if (!this.#mapTargets) {
       return;
@@ -623,6 +743,9 @@ class JumpScroll extends HTMLElement {
     }
   }
   
+  /**
+   * Destroy the intersection observers and stop observing.
+   */
   #uninstallIntersectionObservers () {
     if (this.#targetObserver) {
       this.#targetObserver.disconnect();
@@ -638,6 +761,9 @@ class JumpScroll extends HTMLElement {
     this.#controlObserver2 = null;
   }
 
+  /**
+   * Handle resize events
+   */
   resizeHandler () {
     if (!this.#resizeTick) {
       this.#resizeTick = true;
@@ -657,16 +783,24 @@ class JumpScroll extends HTMLElement {
     }
   }
 
+  /// ----------------------------------------------
+  /// Create and destroy the resize handler
+  /// ----------------------------------------------
   #installResizeObserver () {
     this.#resizeTick = false;
     window.addEventListener('resize', this.resizeHandler);
   }
-
   #uninstallResizeObserver () {
     window.removeEventListener('resize', this.resizeHandler);
     this.#resizeTick = false;
   }
 
+  /**
+   * Full and required setup this control.
+   *
+   * @param {Boolean} resize - true to setup resize, false otherwise.
+   * @param {Boolean} fullSetup - true to do a full setup, false otherwise.
+   */
   setup (resize = true, fullSetup = true) {
     let firstInit = false;
     if (this.#setupInit) {
@@ -678,13 +812,16 @@ class JumpScroll extends HTMLElement {
 
     if (fullSetup) {
       JumpScroll.#observedTargetAttributes.forEach(propName => {
-        this.updateTargetMap(propName);
+        this.#updateTargetMap(propName);
       });
     }
 
     if (firstInit) {
       this.#resizeWidth = window.innerWidth;
       this.#setupAriaAttributes();
+      /* eslint-disable no-self-assign */
+      this.enableKeyboard = this.enableKeyboard;
+      /* eslint-enable no-self-assign */
     }
 
     this.#installIntersectionObservers();
@@ -693,6 +830,12 @@ class JumpScroll extends HTMLElement {
     }
   }
 
+  /**
+   * Full destruction of the control resources.
+   *
+   * @param {Boolean} resize - true to teardown resize, false otherwise.
+   * @param {Boolean} fullTeardown - true to do a full teardown, false otherwise.
+   */
   teardown (resize = true, fullTeardown = true) {
     if (resize) {
       this.#uninstallResizeObserver();
@@ -706,9 +849,14 @@ class JumpScroll extends HTMLElement {
       if (this.#mapTargets)
         this.#mapTargets.clear();
       this.#mapTargets = null;
+      this.#scrollContainer = null;
     }
     this.#setupInit = false;
   }
+
+  /// ----------------------------------------------
+  /// WebComponent lifecycle methods
+  /// ----------------------------------------------
 
   connectedCallback () {
     if (document.readyState !== 'complete') {
@@ -754,6 +902,7 @@ class JumpScroll extends HTMLElement {
 
   disconnectedCallback () {
     this.#container = null;
+    this.enableKeyboard = false;
     this.shadowRoot.querySelector('.top .start').removeEventListener(
       'click', this.clickTop
     );
