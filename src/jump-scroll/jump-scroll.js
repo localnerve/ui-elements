@@ -796,7 +796,7 @@ class JumpScroll extends HTMLElement {
   }
 
   /**
-   * Full and required setup this control.
+   * Full and required control setup.
    *
    * @param {Boolean} resize - true to setup resize, false otherwise.
    * @param {Boolean} fullSetup - true to do a full setup, false otherwise.
@@ -819,9 +819,7 @@ class JumpScroll extends HTMLElement {
     if (firstInit) {
       this.#resizeWidth = window.innerWidth;
       this.#setupAriaAttributes();
-      /* eslint-disable no-self-assign */
-      this.enableKeyboard = this.enableKeyboard;
-      /* eslint-enable no-self-assign */
+      this.enableKeyboard = JumpScroll.#observedAttributeDefaults['enablekeyboard'];
     }
 
     this.#installIntersectionObservers();
@@ -850,8 +848,9 @@ class JumpScroll extends HTMLElement {
         this.#mapTargets.clear();
       this.#mapTargets = null;
       this.#scrollContainer = null;
+      this.enableKeyboard = false;
+      this.#setupInit = false;
     }
-    this.#setupInit = false;
   }
 
   /// ----------------------------------------------
@@ -902,7 +901,6 @@ class JumpScroll extends HTMLElement {
 
   disconnectedCallback () {
     this.#container = null;
-    this.enableKeyboard = false;
     this.shadowRoot.querySelector('.top .start').removeEventListener(
       'click', this.clickTop
     );
