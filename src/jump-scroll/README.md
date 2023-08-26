@@ -8,8 +8,11 @@
 
 ## Summary
 
-A small scrolling assistant that allows a user to jump to author defined page target sections [next, previous, first, last].  
-Non-browser version of the module exports build helpers (for building CSP rules, etc).
+A native Web Component. A scrolling assistant that allows a user to jump to author defined page target sections. Navigation options: [next, previous, first, last].  
+Non-browser module exports build helpers (for building CSP rules, etc).
+
+## Web Size
+  + ~11.8k full, ~4k gzip
 
 ## Attributes
 
