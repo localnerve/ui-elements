@@ -588,8 +588,11 @@ class JumpScroll extends HTMLElement {
       return result;
     });
 
-    const endRatio = 0.49;
     const entry = sorted[0];
+    const rootHeight = entry.rootBounds.height;
+    const entryHeight = entry.boundingClientRect.height;
+    const endRatio =
+      entryHeight <= rootHeight ? 0.49 : (rootHeight / 2) / entryHeight;
     if (entry.isIntersecting) {
       const lastTarget = this.#mapTargets.get(this.#currentTarget);
       const nextFirstLast = this.#mapFirstLastScroll.has(entry.target);
@@ -632,7 +635,7 @@ class JumpScroll extends HTMLElement {
         /**
          * Update currentTarget if the direction and threshold is ok.
          */
-        const correctDirection = this.#scrollingDown
+        const correctDirection = down
           ? nextTarget.index > lastTarget.index
           : nextTarget.index < lastTarget.index
           ;
