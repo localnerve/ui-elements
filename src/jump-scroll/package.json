@@ -1,6 +1,6 @@
 {
   "name": "@localnerve/jump-scroll",
-  "version": "0.7.0-rc.2",
+  "version": "0.7.0",
   "description": "A small, fast, no-dep, jump-scroll web component",
   "main": "dist/index.js",
   "browser": "dist/jump-scroll.js",
