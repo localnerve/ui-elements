@@ -84,6 +84,8 @@
   left: 50%;
   width: 100%;
   background: var(--js-bg-color);
+  -webkit-user-select: none;
+  user-select: none;
 }
 .top .start,
 .bot .end {
