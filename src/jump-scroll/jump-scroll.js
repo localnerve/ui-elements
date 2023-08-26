@@ -589,7 +589,7 @@ class JumpScroll extends HTMLElement {
     });
 
     const entry = sorted[0];
-    const rootHeight = entry.rootBounds.height;
+    const rootHeight = entry.rootBounds?.height ?? 1e6;
     const entryHeight = entry.boundingClientRect.height;
     const endRatio =
       entryHeight <= rootHeight ? 0.49 : (rootHeight / 2) / entryHeight;
@@ -634,8 +634,9 @@ class JumpScroll extends HTMLElement {
       if (!this.#scrollMidIgnore || pos !== 'mid') {
         /**
          * Update currentTarget if the direction and threshold is ok.
+         * Compare against saved scrolling direction in case arrived at `firstLast`.
          */
-        const correctDirection = down
+        const correctDirection = this.#scrollingDown
           ? nextTarget.index > lastTarget.index
           : nextTarget.index < lastTarget.index
           ;
