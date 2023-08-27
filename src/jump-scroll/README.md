@@ -8,7 +8,7 @@
 
 ## Summary
 
-A native Web Component. A scrolling assistant that allows a user to jump to author defined page target sections. Navigation options: [next, previous, first, last].  
+A native web component scrolling assistant that allows a user to jump to author defined page target sections. Navigation options: [next, previous, first, last].  
 Non-browser module exports build helpers (for building CSP rules, etc).
 
 ## Web Size
