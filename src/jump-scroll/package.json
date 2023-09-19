@@ -1,6 +1,6 @@
 {
   "name": "@localnerve/jump-scroll",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "description": "A small, fast, no-dep, jump-scroll web component",
   "main": "dist/index.js",
   "browser": "dist/jump-scroll.js",
@@ -25,7 +25,7 @@
     "webcomponent",
     "javascript"
   ],
-  "author": "Alex Grant (@localnerve)",
+  "author": "Alex Grant <alex@localnerve.com> (https://www.localnerve.com)",
   "license": "BSD-3-Clause",
   "bugs": {
     "url": "https://github.com/localnerve/ui-elements/issues"

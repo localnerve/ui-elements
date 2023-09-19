@@ -8,7 +8,8 @@
 
 ## Summary
 
-A native Web Component. A scrolling assistant that allows a user to jump to author defined page target sections. Navigation options: [next, previous, first, last].  
+A native web component scrolling assistant that allows a user to jump to author defined page target sections.  
+Navigation options: [next, previous, first, last].  
 Non-browser module exports build helpers (for building CSP rules, etc).
 
 ## Web Size
@@ -16,7 +17,7 @@ Non-browser module exports build helpers (for building CSP rules, etc).
 
 ## Attributes
 
-* `target` - *Required*. A selector that defins all the target elements to vertically "jump scroll" to in a page. Defaults to `"section"`.  
+* `target` - *Required*. A selector that defines all the target elements to vertically "jump scroll" to in a page. Defaults to `"section"`.  
 
 * `display` - *Optional*.  Values: `"best" | "both"`. Defaults to `"best"`.  
   **"best"** - *Default*. The control displays **either** [top, previous] **OR** [bottom, next] jump scrolling control surface. Which one is displayed depends on the position on the page and the direction of scrolling. If the user is in the middle of the page and scrolls, the control only displays the jump scroll options in the direction of the scroll. If near the end, turns in the opposite direction. Less vertical space required.  
