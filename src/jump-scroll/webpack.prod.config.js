@@ -40,7 +40,7 @@ export default {
       }
     }),
     new webpack.BannerPlugin({
-      banner: `jump-scroll@${pkgJson.version}, Copyright (c) 2023 Alex Grant (@localnerve), LocalNerve LLC, BSD-3-Clause`,
+      banner: `jump-scroll@${pkgJson.version}, Copyright (c) 2023 Alex Grant (alex@localnerve.com), LocalNerve LLC, BSD-3-Clause`,
       entryOnly: true
     })
   ]
