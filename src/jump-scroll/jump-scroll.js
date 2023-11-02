@@ -823,7 +823,9 @@ class JumpScroll extends HTMLElement {
     if (firstInit) {
       this.#resizeWidth = window.innerWidth;
       this.#setupAriaAttributes();
-      this.enableKeyboard = JumpScroll.#observedAttributeDefaults['enablekeyboard'];
+      /* eslint-disable no-self-assign */
+      this.enableKeyboard = this.enableKeyboard;
+      /* eslint-enable no-self-assign */
     }
 
     this.#installIntersectionObservers();
