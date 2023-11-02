@@ -78,7 +78,12 @@
     <title>Jump Scroll Interactive Demo</title>
   </head>
   <body>
-    <jump-scroll class="jump-scroll" target="article" display="best" colormap=".reverse,article:nth-of-type(even)@--bg-color"></jump-scroll>
+    <jump-scroll
+      class="jump-scroll"
+      target="article"
+      display="best"
+      colormap=".reverse,article:nth-of-type(even)@--bg-color">
+    </jump-scroll>
     <button class="direct-button" onclick="setTarget('.third')">Set CurrentTarget to 3</button>
     <header>
       <h1>This is a demo of jump-scroll</h1>
