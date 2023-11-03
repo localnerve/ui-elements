@@ -59,6 +59,10 @@
         background-color: var(--bg-color);
         color: var(--color);
       }
+      header > h2, footer > h3 {
+        font-size: 1em;
+        font-weight: bold;
+      }
       .reverse, article:nth-of-type(odd).reverse, article:nth-of-type(even) {
         background-color: var(--color);
         color: var(--bg-color);
@@ -78,16 +82,10 @@
     <title>Jump Scroll Interactive Demo</title>
   </head>
   <body>
-    <jump-scroll
-      class="jump-scroll"
-      target="article"
-      display="best"
-      colormap=".reverse,article:nth-of-type(even)@--bg-color">
-    </jump-scroll>
     <button class="direct-button" onclick="setTarget('.third')">Set CurrentTarget to 3</button>
     <header>
       <h1>This is a demo of jump-scroll</h1>
-      <h4>(Not in target or color map)</h4>
+      <h2>(Not in target or color map)</h2>
       <p>
         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
       </p>
@@ -98,198 +96,207 @@
         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
       </p>
     </header>
-    <article class="reverse">
-      <h2>Article 0</h2>
-      <p>
-        1.00000 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        2.00000 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        3.00000 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        4.00000 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        5.00000 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-    </article>
-    <article>
-      <h2>Article 1</h2>
-      <p>
-      1.11111 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        2.11111 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        3.11111 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        4.11111 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        5.11111 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-    </article>
-    <article>
-      <h2>Article 2</h2>
-      <p>
-      1.22222 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        2.22222 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        3.22222 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        4.22222 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        5.22222 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-    </article>
-    <article class="third">
-      <h2>Article 3</h2>
-      <p>
-      1.33333 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        2.33333 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        3.33333 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        4.33333 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        5.33333 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-    </article>
-    <div class="non-element">
-      <h2>Article 3.5 (not in target or color map)</h2>
-      <p>
-      1.35353 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        2.35353 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        3.35353 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        4.35353 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        5.35353 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-    </div>
-    <article>
-      <h2>Article 4</h2>
-      <p>
-      1.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        2.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        3.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        4.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        5.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-      6.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        7.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        8.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        9.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        10.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-      11.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        12.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        13.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        14.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        15.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-      16.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        17.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        18.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        19.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        20.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-    </article>
-    <article>
-      <h2>Article 5</h2>
-      <p>
-      1.55555 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        2.55555 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        3.55555 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        4.55555 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        5.55555 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-    </article>
-    <article class="reverse">
-      <h2>Article 6</h2>
-      <p>
-      1.66666 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        2.66666 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        3.66666 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        4.66666 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-      <p>
-        5.66666 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
-      </p>
-    </article>
+    <main>
+      <jump-scroll
+        class="jump-scroll"
+        target="article"
+        display="best"
+        colormap=".reverse,article:nth-of-type(even)@--bg-color"
+        scrollcontainer="body">
+      </jump-scroll>
+      <article class="reverse">
+        <h2>Article 0</h2>
+        <p>
+          1.00000 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          2.00000 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          3.00000 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          4.00000 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          5.00000 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+      </article>
+      <article>
+        <h2>Article 1</h2>
+        <p>
+        1.11111 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          2.11111 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          3.11111 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          4.11111 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          5.11111 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+      </article>
+      <article>
+        <h2>Article 2</h2>
+        <p>
+        1.22222 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          2.22222 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          3.22222 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          4.22222 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          5.22222 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+      </article>
+      <article class="third">
+        <h2>Article 3</h2>
+        <p>
+        1.33333 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          2.33333 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          3.33333 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          4.33333 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          5.33333 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+      </article>
+      <div class="non-element">
+        <h2>Article 3.5 (not in target or color map)</h2>
+        <p>
+        1.35353 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          2.35353 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          3.35353 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          4.35353 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          5.35353 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+      </div>
+      <article>
+        <h2>Article 4</h2>
+        <p>
+        1.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          2.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          3.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          4.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          5.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+        6.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          7.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          8.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          9.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          10.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+        11.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          12.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          13.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          14.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          15.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+        16.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          17.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          18.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          19.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          20.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+      </article>
+      <article>
+        <h2>Article 5</h2>
+        <p>
+        1.55555 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          2.55555 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          3.55555 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          4.55555 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          5.55555 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+      </article>
+      <article class="reverse">
+        <h2>Article 6</h2>
+        <p>
+        1.66666 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          2.66666 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          3.66666 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          4.66666 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+        <p>
+          5.66666 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
+        </p>
+      </article>
+    </main>
     <footer class="reverse">
       <h2>This is a demo of jump-scroll</h2>
-      <h4>(Not in target or color map)</h4>
+      <h3>(Not in target or color map)</h3>
       <p>
         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
       </p>
