@@ -19,6 +19,9 @@ Non-browser module exports build helpers (for building CSP rules, etc).
 
 * `target` - *Required*. A selector that defines all the target elements to vertically "jump scroll" to in a page. Defaults to `"section"`.  
 
+* `scrollcontainer` - *Optional*. A selector that defines the scroll container. Defaults to the common ancestor of `target` elements.  
+  If the selector provided selects more than one element, only the first element found is used as the scroll container.
+
 * `display` - *Optional*.  Values: `"best" | "both"`. Defaults to `"best"`.  
   **"best"** - *Default*. The control displays **either** [top, previous] **OR** [bottom, next] jump scrolling control surface. Which one is displayed depends on the position on the page and the direction of scrolling. If the user is in the middle of the page and scrolls, the control only displays the jump scroll options in the direction of the scroll. If near the end, turns in the opposite direction. Less vertical space required.  
   **"both"** - The control displays both [top, previous] **AND** [bottom, next] jump scrolling options simulataneously. Larger footprint.  
@@ -28,8 +31,8 @@ Non-browser module exports build helpers (for building CSP rules, etc).
   **selector** - *String*. Must be a selector of DOM element(s). When a selected element crosses the vertical bounds of the `jump-scroll` control, the `js-bg-color` background will be changed to the color (or variable) provided.  
   **color** - *CssColor|CssCustomProperty*. A css color or a custom property (variable) of a color to use for the `js-bg-color` background of the control.  
 
-* `enableKeyboard` - *Optional*. Values: `"true" | "false"`. Defaults to `"true"`.  
-  Enables keyboard scrolling by handling the following keydown events at the common scroll target ancestor:
+* `enablekeyboard` - *Optional*. Values: `"true" | "false"`. Defaults to `"true"`.  
+  Enables keyboard scrolling by handling the following keydown events at the defined `scrollcontainer` or common scroll target ancestor:
 
   + `PageDown | Space` - Jumps to the next scroll target.
   + `PageUp | Shift+Space` - Jumps to the previous scroll target.
