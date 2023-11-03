@@ -45,10 +45,11 @@ class JumpScroll extends HTMLElement {
     target: 'section',
     display: 'best', // or 'both'
     colormap: '',
-    enablekeyboard: true
+    enablekeyboard: true,
+    scrollcontainer: ''
   }
   static get observedAttributes () {
-    return [...JumpScroll.#observedTargetAttributes, 'display', 'colormap', 'enablekeyboard'];
+    return [...JumpScroll.#observedTargetAttributes, 'display', 'colormap', 'enablekeyboard', 'scrollcontainer'];
   }
 
   /**
@@ -74,44 +75,73 @@ class JumpScroll extends HTMLElement {
     this.clickNext = this.clickNext.bind(this);
     this.clickPrev = this.clickPrev.bind(this);
     this.keydownHandler = this.keydownHandler.bind(this);
-    this.#createTargetProperties();
   }
 
   /**
-   * Define all the target properties.
-   */
-  #createTargetProperties () {
-    JumpScroll.#observedTargetAttributes.forEach(propName => {
-      Object.defineProperty(this, propName, {
-        get () {
-          if (this.hasAttribute(propName)) {
-            return this.getAttribute(propName);
-          }
-          return JumpScroll.#observedAttributeDefaults[propName];
-        },
-        set (value) {
-          if (value) {
-            this.setAttribute(propName, value);
-          } else {
-            this.removeAttribute(propName);
-          }
-          this.#updateTargetMap(value);
-        }
-      });
-    });
-  }
-
-  /**
-   * Get the display property.
+   * Get the value for an observed attribute by name.
    * 
-   * @returns {String} The display property setting.
+   * @param {String} attributeName - The attribute name for the property to get
+   * @returns {String|Boolean} the value of the property
    */
-  get display () {
-    const attributeName = 'display';
+  #observedAttributeValue (attributeName) {
     if (this.hasAttribute(attributeName)) {
-      return this.getAttribute(attributeName);
+      const attributeValue = this.getAttribute(attributeName);
+      if (/^\s*(?:true|false)\s*$/i.test(attributeValue)) {
+        return attributeValue !== 'false';
+      }
+      return attributeValue;
     }
     return JumpScroll.#observedAttributeDefaults[attributeName];
+  }
+
+  /**
+   * Get the current target element.
+   */
+  get currentTarget () {
+    return this.#currentTarget;
+  }
+  /**
+   * Set the current target element.
+   *
+   * @param {HTMLElement} targetElement - The new current element.
+   */
+  set currentTarget (targetElement) {
+    if (this.#mapTargets.has(targetElement)) {
+      this.#currentTarget = targetElement;
+      this.#setAriaScrollState();
+    }
+  }
+
+  /**
+   * Get the target property value.
+   * 
+   * @returns {String} The selector for target selection.
+   */
+  get target () {
+    return this.#observedAttributeValue('target');
+  }
+  /**
+   * Set the target property.
+   * 
+   * @param {String} value - A selector to select all the scroll targets.
+   */
+  set target (value) {
+    const attributeName = 'target';
+    if (value) {
+      this.setAttribute(attributeName, value);
+    } else {
+      this.removeAttribute(attributeName);
+    }
+    this.#updateTargetMap(attributeName);
+  }
+
+  /**
+   * Get the display property value.
+   * 
+   * @returns {String} The display option setting value.
+   */
+  get display () {
+    return this.#observedAttributeValue('display');
   }
   /**
    * Set the display property.
@@ -135,16 +165,12 @@ class JumpScroll extends HTMLElement {
   }
 
   /**
-   * Get the colormap property.
-   *
-   * @returns {String} The colormap definition string
+   * Get the colormap property value.
+   * 
+   * @returns {String} The selector to css map for colors.
    */
   get colormap () {
-    const attributeName = 'colormap';
-    if (this.hasAttribute(attributeName)) {
-      return this.getAttribute(attributeName);
-    }
-    return JumpScroll.#observedAttributeDefaults[attributeName];
+    return this.#observedAttributeValue('colormap');
   }
   /**
    * Set the colormap property.
@@ -181,36 +207,6 @@ class JumpScroll extends HTMLElement {
   }
 
   /**
-   * Get the current target element.
-   */
-  get currentTarget () {
-    return this.#currentTarget;
-  }
-  /**
-   * Set the current target element.
-   *
-   * @param {HTMLElement} targetElement - The new current element.
-   */
-  set currentTarget (targetElement) {
-    if (this.#mapTargets.has(targetElement)) {
-      this.#currentTarget = targetElement;
-      this.#setAriaScrollState();
-    }
-  }
-
-  /**
-   * Get the enableKeyboard property.
-   * 
-   * @returns {Boolean}
-   */
-  get enableKeyboard () {
-    const attributeName = 'enablekeyboard';
-    if (this.hasAttribute(attributeName)) {
-      return this.getAttribute(attributeName) !== 'false';
-    }
-    return JumpScroll.#observedAttributeDefaults[attributeName];
-  }
-  /**
    * Handle `keydown` events from #scrollContainer.
    * 
    * @param {Event} - The event object.
@@ -235,6 +231,14 @@ class JumpScroll extends HTMLElement {
     action && action(e);
   }
   /**
+   * Get the enableKeyboard property value.
+   * 
+   * @returns {Boolean} the setting for the enablekeyboard attribute option.
+   */
+  get enableKeyboard () {
+    return this.#observedAttributeValue('enablekeyboard');
+  }
+  /**
    * Setup or teardown keyboard event handling.
    * 
    * @param {Boolean} - true to setup, false to teardown.
@@ -248,6 +252,110 @@ class JumpScroll extends HTMLElement {
     const method = value ? 'addEventListener' : 'removeEventListener';
     this.#scrollContainer[method]('keydown', this.keydownHandler);
     this.setAttribute(attributeName, value);
+  }
+
+  /**
+   * Find the common ancestor of the targets
+   * @returns {HTMLElement} The common ancestor of the targets in targetMap
+   */
+  #findTargetCommonAncestor () {
+    if (!this.#firstTarget || !this.#mapTargets) {
+      return;
+    }
+
+    let parents, el, fewest = 1e6;
+    const fewestParents = [];
+    const targetEls = this.#mapTargets.keys();
+    for (const targetEl of targetEls) {
+      el = targetEl;
+      for (parents = 0; el.parentElement; el = el.parentElement) {
+        parents++;
+      }
+      if (parents <= fewest) {
+        fewest = parents;
+        fewestParents.unshift(targetEl);
+      }
+    }
+
+    let result = fewestParents[0].parentElement ?? fewestParents[0];
+    if (fewestParents.length > 1) {
+      const range = new Range();
+      range.setStart(fewestParents[0], 0);
+      range.setEnd(fewestParents[1], 0);
+      if(range.collapsed) {
+        range.setStart(fewestParents[1], 0);
+        range.setEnd(fewestParents[0], 0);
+      }
+      result = range.commonAncestorContainer ?? result;
+    }
+
+    return result;
+  }
+  /**
+   * Get the scrollContainer property value.
+   * 
+   * @returns {String} The selector of the scroll container.
+   */
+  get scrollContainer () {
+    return this.#observedAttributeValue('scrollcontainer');
+  }
+  /**
+   * Setup the scroll container
+   */
+  set scrollContainer (value) {
+    if (!this.#firstTarget || !this.#mapTargets) {
+      return;
+    }
+
+    const scidPrefix = 'js-';
+
+    if (this.#scrollContainer?.id) {
+      if (this.#scrollContainer.id.startsWith(scidPrefix)) {
+        this.#scrollContainer.id = '';
+      }
+    }
+
+    let scrollContainerElement;
+    if (value) {
+      scrollContainerElement = document.querySelector(value);
+    }
+
+    this.#scrollContainer =
+      scrollContainerElement ?? this.#findTargetCommonAncestor();
+
+    if (this.#scrollContainer) {
+      let scid;
+
+      if (this.#scrollContainer.id) {
+        scid = this.#scrollContainer.id;
+      } else {
+        const bytes = new Uint8Array(10);
+        scid = `${scidPrefix}${btoa(crypto.getRandomValues(bytes))}`;
+        this.#scrollContainer.id = scid;
+      }
+
+      this.setAttribute('role', 'scrollbar');
+      this.setAttribute('aria-controls', scid);
+      this.setAttribute('aria-valuemin', '0');
+      if (this.#mapTargets) {
+        const range = this.#mapTargets.size - 1;
+        this.setAttribute('aria-valuemax', range > 0 ? range : 1);
+      }
+    }
+  }
+
+  /**
+   * Set the `aria-valuenow` value
+   */
+  #setAriaScrollState () {
+    if (!this.#mapTargets) {
+      return;
+    }
+
+    this.setAttribute(
+      'aria-valuenow',
+      this.#mapTargets.get(this.#currentTarget).index
+    );
   }
 
   /**
@@ -350,89 +458,6 @@ class JumpScroll extends HTMLElement {
   clickPrev (e) {
     e && e.preventDefault();
     this.#scrollStep('prev', lastTop => lastTop > 0);
-  }
-
-  /**
-   * Find the common ancestor of the targets
-   * @returns {HTMLElement} The common ancestor of the targets in targetMap
-   */
-  #findTargetCommonAncestor () {
-    if (!this.#firstTarget || !this.#mapTargets) {
-      return;
-    }
-
-    let parents, el, fewest = 1e6;
-    const fewestParents = [];
-    const targetEls = this.#mapTargets.keys();
-    for (const targetEl of targetEls) {
-      el = targetEl;
-      for (parents = 0; el.parentElement; el = el.parentElement) {
-        parents++;
-      }
-      if (parents <= fewest) {
-        fewest = parents;
-        fewestParents.unshift(targetEl);
-      }
-    }
-
-    let result = fewestParents[0].parentElement ?? fewestParents[0];
-    if (fewestParents.length > 1) {
-      const range = new Range();
-      range.setStart(fewestParents[0], 0);
-      range.setEnd(fewestParents[1], 0);
-      if(range.collapsed) {
-        range.setStart(fewestParents[1], 0);
-        range.setEnd(fewestParents[0], 0);
-      }
-      result = range.commonAncestorContainer ?? result;
-    }
-
-    return result;
-  }
-
-  /**
-   * Setup the aria attributes for the control.
-   */
-  #setupAriaAttributes () {
-    if (!this.#firstTarget || !this.#mapTargets) {
-      return;
-    }
-
-    this.#scrollContainer = this.#findTargetCommonAncestor();
-    if (this.#scrollContainer) {
-      let scid;
-
-      if (this.#scrollContainer.id) {
-        scid = this.#scrollContainer.id;
-      } else {
-        const bytes = new Uint8Array(10);
-        scid = `js-${btoa(crypto.getRandomValues(bytes))}`;
-        this.#scrollContainer.id = scid;
-      }
-
-      this.setAttribute('role', 'scrollbar');
-      this.setAttribute('aria-controls', scid);
-      this.setAttribute('aria-valuemin', '0');
-      this.setAttribute('aria-label', 'Alternate scroller, jump directly to author\'s sections');
-      if (this.#mapTargets) {
-        const range = this.#mapTargets.size - 1;
-        this.setAttribute('aria-valuemax', range > 0 ? range : 1);
-      }
-    }
-  }
-
-  /**
-   * Set the `aria-valuenow` value
-   */
-  #setAriaScrollState () {
-    if (!this.#mapTargets) {
-      return;
-    }
-
-    this.setAttribute(
-      'aria-valuenow',
-      this.#mapTargets.get(this.#currentTarget).index
-    );
   }
 
   /**
@@ -822,8 +847,9 @@ class JumpScroll extends HTMLElement {
 
     if (firstInit) {
       this.#resizeWidth = window.innerWidth;
-      this.#setupAriaAttributes();
+      this.setAttribute('aria-label', 'Alternate scroller, jump directly to author\'s sections');
       /* eslint-disable no-self-assign */
+      this.scrollContainer = this.scrollContainer;
       this.enableKeyboard = this.enableKeyboard;
       /* eslint-enable no-self-assign */
     }
