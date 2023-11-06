@@ -59,6 +59,10 @@
   transform: translateY(102%);
 }
 
+button:hover {
+  cursor: pointer;
+}
+
 .top,
 .bot {
   position: absolute;
