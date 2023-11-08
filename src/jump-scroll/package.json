@@ -1,12 +1,12 @@
 {
   "name": "@localnerve/jump-scroll",
-  "version": "0.8.1",
+  "version": "0.9.0-rc.1",
   "description": "A small, fast, no-dep, jump-scroll web component",
   "main": "dist/index.js",
   "browser": "dist/jump-scroll.js",
   "type": "module",
   "scripts": {
-    "a11y": "axe http://localhost:3010/dist/jump-scroll",
+    "a11y": "axe http://localhost:3010/dist/jump-scroll --load-delay 2000",
     "build": "node build.js && webpack-cli --config webpack.prod.config.js",
     "prepublishOnly": "npm run build"
   },

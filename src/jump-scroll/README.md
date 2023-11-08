@@ -44,8 +44,10 @@ Non-browser module exports build helpers (for building CSP rules, etc).
 * `--js-width` - The overall width of the control. Defaults to 3rem.
 * `--js-aspect-ratio` - The aspect ratio of the control. Defaults to 1/5.
 * `--js-bg-color` - The color of the control arrows. Defaults to black.
-* `--js-opacity-full` - The opacity of the control arrows at attention. Defaults to 0.7.
-* `--js-opacity-rest` - The opacity of the control arrows at rest. Defaults to 0.3.
+* `--js-bg-focus-color` - The color of the arrow on focus. Defaults to `darkorange`.
+* `--js-bg-focus-spread` - The spread of the focus glow indicator. Defaults to 8px.
+* `--js-opacity-full` - The opacity of the control arrows at attention. Defaults to 0.8.
+* `--js-opacity-rest` - The opacity of the control arrows at rest. Defaults to 0.5.
 * `--js-attach-right` - The distance from the fixed, right-edge attachment. Defaults to 1rem;
 * `--js-attach-bottom` - The distance form the fixed, bottom-edge attachment. Defaults to 1rem;
 

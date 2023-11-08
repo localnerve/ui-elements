@@ -3,9 +3,11 @@
   --js-aspect-ratio: 0.2;
   --js-height: calc(var(--js-width) * (1 / var(--js-aspect-ratio)));
   --js-bg-color: black;
+  --js-bg-focus-color: darkorange;
+  --js-bg-focus-spread: 8px;
   --js-color: white;
-  --js-opacity-full: 0.7;
-  --js-opacity-rest: 0.3;
+  --js-opacity-full: 0.8;
+  --js-opacity-rest: 0.5;
   --js-attach-right: 1rem;
   --js-attach-bottom: 1rem;
 
@@ -79,11 +81,38 @@ button:hover {
   bottom: 0;
 }
 
+.bc:focus-within {
+  filter: drop-shadow(0px 0px var(--js-bg-focus-spread) var(--js-bg-focus-color));
+}
+.bc {
+  position: absolute;
+  width: var(--js-width);
+}
+.bc-start,
+.bc-end {
+  height: calc(var(--js-height) / 6);
+}
+.bc-prev,
+.bc-next {
+  height: calc(var(--js-height) / 4);
+}
+.bc-start {
+  top: 0;
+}
+.bc-end {
+  bottom: 0;
+}
+.bc-prev {
+  top: calc((var(--js-height) / 6) + 10%);
+}
+.bc-next {
+  bottom: calc((var(--js-height) / 6) + 10%);
+}
+
 .top .start,
 .top .prev,
 .bot .next,
 .bot .end {
-  content: '';
   position: absolute;
   left: 50%;
   width: 100%;
@@ -108,16 +137,4 @@ button:hover {
 .bot .next,
 .bot .end {
   transform: translateX(-50%) rotateX(180deg);
-}
-.top .start {
-  top: 0;
-}
-.top .prev {
-  top: calc((var(--js-height) / 6) + 10%);
-}
-.bot .next {
-  bottom: calc((var(--js-height) / 6) + 10%);
-}
-.bot .end {
-  bottom: 0;
 }
