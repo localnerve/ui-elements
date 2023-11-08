@@ -65,7 +65,7 @@ class JumpScroll extends HTMLElement {
 
   constructor () {
     super();
-    this.attachShadow({ mode: 'open' });
+    this.attachShadow({ mode: 'open', delegatesFocus: true });
     this.targetIntersection = this.targetIntersection.bind(this);
     this.controlIntersection = this.controlIntersection.bind(this);
     this.resizeHandler = this.resizeHandler.bind(this);
@@ -334,7 +334,8 @@ class JumpScroll extends HTMLElement {
         this.#scrollContainer.id = scid;
       }
 
-      this.setAttribute('role', 'scrollbar');
+      // I thought role=scrollbar was correct, but axe says "no"... doc contradiction
+      // this.setAttribute('role', 'scrollbar');
       this.setAttribute('aria-controls', scid);
       this.setAttribute('aria-valuemin', '0');
       if (this.#mapTargets) {
@@ -359,6 +360,59 @@ class JumpScroll extends HTMLElement {
   }
 
   /**
+   * Sets the tabindex and focus state of the buttons.
+   * Hides one of the sets of buttons from focus by tabindex.
+   * States:
+   *   1. 'start' - always hide 'top' buttons
+   *   2. 'end' - always hide 'bot' buttons
+   *   3. 'best' and 'mid'
+   *     a. 'up' - hide 'bot' buttons
+   *     b. 'down' - hide 'top' buttons
+   *   4. 'both' and 'mid' - hide nothing
+   * @param {String} pos - 'mid', 'start', or 'end'
+   * @param {String} dir = 'up' or 'down'
+   */
+  #setFocusability (pos, dir) {
+    const hide = tob => {
+      Array.from(this.#container.querySelectorAll(`.${tob} button`)).forEach(
+        el => {
+          el.blur();
+          el.setAttribute('disabled', 'true');
+          el.setAttribute('aria-hidden', 'true');
+        }
+      );
+    }
+    const show = tob => {
+      Array.from(this.#container.querySelectorAll(`.${tob} button`)).forEach(
+        el => {
+          el.removeAttribute('disabled');
+          el.setAttribute('aria-hidden', 'false');
+        }
+      );
+    }
+    
+    if (pos === 'mid') {
+      if (this.display === 'both') {
+        ['top', 'bot'].forEach(tob => show(tob));
+      } else {
+        if (dir === 'down') {
+          show('bot');
+          hide('top');
+        } else {
+          show('top');
+          hide('bot');
+        }
+      }
+    } else if (pos === 'start') {
+      show('bot');
+      hide('top');
+    } else {
+      show('top');
+      hide('bot');
+    }
+  }
+
+  /**
    * Update the UI.
    * 
    * @param {String} pos - 'mid', 'start', or 'end' 
@@ -377,6 +431,8 @@ class JumpScroll extends HTMLElement {
         newClasses.push('up');
       }
     }
+
+    this.#setFocusability(pos, newClasses[newClasses.length - 1]);
 
     this.#container.classList.remove(...resetClasses);
     this.#container.classList.add(...newClasses);
@@ -902,12 +958,20 @@ class JumpScroll extends HTMLElement {
     shadowRoot.innerHTML = `<style>${JumpScrollCss}</style>\
 <div class="container none">\
 <div class="top">\
-<button type="button" tabindex="-1" class="start">Scroll to start</button>\
-<button type="button" tabindex="-1" class="prev">Scroll to previous</button>\
+<div class="bc bc-start">\
+<button type="button" class="start">Scroll to start</button>\
+</div>\
+<div class="bc bc-prev">\
+<button type="button" class="prev">Scroll to previous</button>\
+</div>\
 </div>\
 <div class="bot">\
-<button type="button" tabindex="-1" class="next">Scroll to next</button>\
-<button type="button" tabindex="-1" class="end">Scroll to end</button>\
+<div class="bc bc-next">\
+<button type="button" class="next">Scroll to next</button>\
+</div>\
+<div class="bc bc-end">\
+<button type="button" class="end">Scroll to end</button>\
+<div>\
 </div>\
 </div>`;
 
@@ -917,32 +981,32 @@ class JumpScroll extends HTMLElement {
     this.colormap = this.colormap;
     /* eslint-enable no-self-assign */
 
-    shadowRoot.querySelector('.top .start').addEventListener(
+    shadowRoot.querySelector('.bc-start').addEventListener(
       'click', this.clickTop
     );
-    shadowRoot.querySelector('.bot .end').addEventListener(
+    shadowRoot.querySelector('.bc-end').addEventListener(
       'click', this.clickBottom
     );
-    shadowRoot.querySelector('.top .prev').addEventListener(
+    shadowRoot.querySelector('.bc-prev').addEventListener(
       'click', this.clickPrev
     );
-    shadowRoot.querySelector('.bot .next').addEventListener(
+    shadowRoot.querySelector('.bc-next').addEventListener(
       'click', this.clickNext
     );
   }
 
   disconnectedCallback () {
     this.#container = null;
-    this.shadowRoot.querySelector('.top .start').removeEventListener(
+    this.shadowRoot.querySelector('.bc-start').removeEventListener(
       'click', this.clickTop
     );
-    this.shadowRoot.querySelector('.bot .end').removeEventListener(
+    this.shadowRoot.querySelector('.bc-end').removeEventListener(
       'click', this.clickBottom
     );
-    this.shadowRoot.querySelector('.top. .prev').removeEventListener(
+    this.shadowRoot.querySelector('.bc-prev').removeEventListener(
       'click', this.clickPrev
     );
-    this.shadowRoot.querySelector('.bot .next').removeEventListener(
+    this.shadowRoot.querySelector('.bc-next').removeEventListener(
       'click', this.clickNext
     )
     this.teardown();
