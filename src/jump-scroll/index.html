@@ -12,9 +12,14 @@
       :root {
         --dark: #2a2a2a;
         --light: #fafafa;
+        --highlight-dark: yellow;
+        --highlight-light: limegreen;
 
         --color: var(--dark);
         --bg-color: var(--light);
+
+        --color-focus: var(--highlight-dark);
+        --color-focus-alt: var(--highlight-light);
 
         font-size: 16px;
         --rem-base: 16px;
@@ -25,6 +30,8 @@
         :root {
           --color: var(--light);
           --bg-color: var(--dark);
+          --color-focus: var(--highlight-light);
+          --color-focus-alt: var(--highlight-dark);
         }
       }
       body {
@@ -69,6 +76,7 @@
       }
       .jump-scroll {
         --js-bg-color: var(--color);
+        --js-bg-color-focus: var(--color-focus-alt);
         --js-width: 3.5rem;
       }
     </style>
@@ -101,7 +109,7 @@
         class="jump-scroll"
         target="article"
         display="best"
-        colormap=".reverse,article:nth-of-type(even)@--bg-color"
+        colormap=".reverse,article:nth-of-type(even)@--bg-color/--color-focus"
         scrollcontainer="body">
       </jump-scroll>
       <article class="reverse">
