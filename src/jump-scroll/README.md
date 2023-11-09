@@ -13,7 +13,7 @@ Navigation options: [next, previous, first, last].
 Non-browser module exports build helpers (for building CSP rules, etc).
 
 ## Web Size
-  + ~11.8k full, ~4k gzip
+  + ~12.7k full, ~4.3k gzip
 
 ## Attributes
 
@@ -27,9 +27,10 @@ Non-browser module exports build helpers (for building CSP rules, etc).
   **"both"** - The control displays both [top, previous] **AND** [bottom, next] jump scrolling options simulataneously. Larger footprint.  
   
 * `colormap` - *Optional*. A map of targets to colors. Changes the color of the jump-scroll control over specific elements. Defaults to nothing.  
-  **Format:** `selector@color[;selector@color]*`  
+  **Format:** `selector@color[/focus-color][;selector@color[/focus-color]]*`  
   **selector** - *String*. Must be a selector of DOM element(s). When a selected element crosses the vertical bounds of the `jump-scroll` control, the `js-bg-color` background will be changed to the color (or variable) provided.  
   **color** - *CssColor|CssCustomProperty*. A css color or a custom property (variable) of a color to use for the `js-bg-color` background of the control.  
+  **focus-color** - *CssColor|CssCustomProperty*. Optional. A css color or a custom property (variable) of a color to use for the `js-bg-color-focus` of the control. If missing, defaults to `js-bg-color-focus`.
 
 * `enablekeyboard` - *Optional*. Values: `"true" | "false"`. Defaults to `"true"`.  
   Enables keyboard scrolling by handling the following keydown events at the defined `scrollcontainer` or common scroll target ancestor:
@@ -44,8 +45,8 @@ Non-browser module exports build helpers (for building CSP rules, etc).
 * `--js-width` - The overall width of the control. Defaults to 3rem.
 * `--js-aspect-ratio` - The aspect ratio of the control. Defaults to 1/5.
 * `--js-bg-color` - The color of the control arrows. Defaults to black.
-* `--js-bg-focus-color` - The color of the arrow on focus. Defaults to `darkorange`.
-* `--js-bg-focus-spread` - The spread of the focus glow indicator. Defaults to 8px.
+* `--js-bg-color-focus` - The color of the arrow on focus. Defaults to `darkorange`.
+* `--js-bg-spread-focus` - The spread of the focus glow indicator. Defaults to 8px.
 * `--js-opacity-full` - The opacity of the control arrows at attention. Defaults to 0.8.
 * `--js-opacity-rest` - The opacity of the control arrows at rest. Defaults to 0.5.
 * `--js-attach-right` - The distance from the fixed, right-edge attachment. Defaults to 1rem;
