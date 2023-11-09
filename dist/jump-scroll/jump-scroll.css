@@ -3,8 +3,8 @@
   --js-aspect-ratio: 0.2;
   --js-height: calc(var(--js-width) * (1 / var(--js-aspect-ratio)));
   --js-bg-color: black;
-  --js-bg-focus-color: darkorange;
-  --js-bg-focus-spread: 8px;
+  --js-bg-color-focus: darkorange;
+  --js-bg-spread-focus: 8px;
   --js-color: white;
   --js-opacity-full: 0.8;
   --js-opacity-rest: 0.5;
@@ -82,7 +82,7 @@ button:hover {
 }
 
 .bc:focus-within {
-  filter: drop-shadow(0px 0px var(--js-bg-focus-spread) var(--js-bg-focus-color));
+  filter: drop-shadow(0px 0px var(--js-bg-spread-focus) var(--js-bg-color-focus));
 }
 .bc {
   position: absolute;
