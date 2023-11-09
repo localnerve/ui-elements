@@ -69,7 +69,6 @@ class JumpScroll extends HTMLElement {
     this.targetIntersection = this.targetIntersection.bind(this);
     this.controlIntersection = this.controlIntersection.bind(this);
     this.resizeHandler = this.resizeHandler.bind(this);
-    this.setup = this.setup.bind(this);
     this.clickTop = this.clickTop.bind(this);
     this.clickBottom = this.clickBottom.bind(this);
     this.clickNext = this.clickNext.bind(this);
@@ -877,7 +876,7 @@ class JumpScroll extends HTMLElement {
           }
           this.#resizeWidth = width;
         }
-        this.setup(false, fullSetup);
+        this.#setup(false, fullSetup);
         this.#resizeTick = false;
       }, JumpScroll.#resizeWait);
     }
@@ -901,10 +900,10 @@ class JumpScroll extends HTMLElement {
    * @param {Boolean} resize - true to setup resize, false otherwise.
    * @param {Boolean} fullSetup - true to do a full setup, false otherwise.
    */
-  setup (resize = true, fullSetup = true) {
+  #setup (resize = true, fullSetup = true) {
     let firstInit = false;
     if (this.#setupInit) {
-      this.teardown(resize, fullSetup);
+      this.#teardown(resize, fullSetup);
     } else {
       firstInit = true;
     }
@@ -937,7 +936,7 @@ class JumpScroll extends HTMLElement {
    * @param {Boolean} resize - true to teardown resize, false otherwise.
    * @param {Boolean} fullTeardown - true to do a full teardown, false otherwise.
    */
-  teardown (resize = true, fullTeardown = true) {
+  #teardown (resize = true, fullTeardown = true) {
     if (resize) {
       this.#uninstallResizeObserver();
     }
@@ -963,10 +962,10 @@ class JumpScroll extends HTMLElement {
   connectedCallback () {
     if (document.readyState !== 'complete') {
       window.addEventListener('load', () => {
-        this.setup();
+        this.#setup();
       }, { once: true });
     } else {
-      this.setup();
+      this.#setup();
     }
 
     const { shadowRoot } = this;
@@ -1024,7 +1023,7 @@ class JumpScroll extends HTMLElement {
     this.shadowRoot.querySelector('.bc-next').removeEventListener(
       'click', this.clickNext
     )
-    this.teardown();
+    this.#teardown();
   }
 
   attributeChangedCallback (attrName, oldValue, newValue) {
