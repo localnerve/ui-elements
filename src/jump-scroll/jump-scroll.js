@@ -194,11 +194,18 @@ class JumpScroll extends HTMLElement {
       this.#mapColors = new Map();
       for (const item of mapItems) {
         let [selector, color] = item.replace(/\s/, '').split('@');
-        if (color.startsWith('--')) {
-          color = `var(${color})`;
+        let [bgColor, bgColorFocus = undefined] = 
+          color.replace(/\s/, '').split('/');
+
+        if (bgColor.startsWith('--')) {
+          bgColor = `var(${bgColor})`;
         }
+        if (bgColorFocus?.startsWith('--')) {
+          bgColorFocus = `var(${bgColorFocus})`;
+        }
+
         document.querySelectorAll(selector).forEach(el => {
-          this.#mapColors.set(el, color);
+          this.#mapColors.set(el, { bgColor, bgColorFocus });
         });
       }
     } else {
@@ -759,7 +766,8 @@ class JumpScroll extends HTMLElement {
 
       if (intersectors.length > 0) {
         const entry = intersectors[0];
-        const newColor = this.#mapColors.get(entry.target);
+        const { bgColor: newColor, bgColorFocus: newColorFocus } 
+          = this.#mapColors.get(entry.target);
         this.#controlIntersectionCount++;
         this.#controlIntersection = side;
 
@@ -768,6 +776,12 @@ class JumpScroll extends HTMLElement {
         } else {
           this.#container.style.removeProperty('--js-bg-color');
           this.#controlIntersectionCount = 0;
+        }
+
+        if (newColorFocus) {
+          this.#container.style.setProperty('--js-bg-color-focus', newColorFocus);
+        } else {
+          this.#container.style.removeProperty('--js-bg-color-focus');
         }
       } else {
         this.#controlIntersectionCount--;
@@ -778,6 +792,7 @@ class JumpScroll extends HTMLElement {
 
         if (control || specialCase) {
           this.#container.style.removeProperty('--js-bg-color');
+          this.#container.style.removeProperty('--js-bg-color-focus');
           this.#controlIntersectionCount = 0;
         }
       }
