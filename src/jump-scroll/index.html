@@ -49,10 +49,14 @@
         }
       }
 
-      .direct-button {
+      .api-buttons {
         position: fixed;
         top: 1rem;
-        right: 1rem;
+        right: 1rem;        
+      }
+      .direct-button {
+        position: relative;
+        margin: 0 0.5em;
         padding: 1em;
         border-radius: 0.5em;
         border: 1px solid var(--bg-color);
@@ -86,11 +90,23 @@
         const target = document.querySelector(selector);
         jumpScroll.currentTarget = target;
       }
+      function jumpScroll (selector) {
+        const jumpScroll = document.querySelector('jump-scroll');
+        const target = document.querySelector(selector);
+        jumpScroll.jumpScroll(target);
+      }
     </script>
     <title>Jump Scroll Interactive Demo</title>
   </head>
   <body>
-    <button class="direct-button" onclick="setTarget('.third')">Set CurrentTarget to 3</button>
+    <div class="api-buttons">
+      <button class="direct-button" onclick="setTarget('.third')">
+        Set CurrentTarget to 3
+      </button>
+      <button class="direct-button" onclick="jumpScroll('.fifth')">
+        Jump scroll to 5
+      </button>
+    </div>
     <header>
       <h1>This is a demo of jump-scroll</h1>
       <h2>(Not in target or color map)</h2>
@@ -265,7 +281,7 @@
           20.44444 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!
         </p>
       </article>
-      <article>
+      <article class="fifth">
         <h2>Article 5</h2>
         <p>
         1.55555 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero molestiae at, aspernatur laborum repellat provident doloribus eaque voluptas voluptatibus, alias dolore ut velit ab est, autem praesentium eligendi rem quia!

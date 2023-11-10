@@ -10,17 +10,20 @@
 
 A native web component scrolling assistant that allows a user to jump to author defined page target sections.  
 Navigation options: [next, previous, first, last].  
-Non-browser module exports build helpers (for building CSP rules, etc).
+Non-browser module exports build helpers (for building CSP rules, etc).  
 
-## Web Size
-  + ~12.7k full, ~4.3k gzip
+## Web Details
+  + ~13k full, ~4.4k gzip
+  + Axe core 4.8.2 pass
 
-## Attributes
+## Attributes and Properties
 
 * `target` - *Required*. A selector that defines all the target elements to vertically "jump scroll" to in a page. Defaults to `"section"`.  
 
 * `scrollcontainer` - *Optional*. A selector that defines the scroll container. Defaults to the common ancestor of `target` elements.  
   If the selector provided selects more than one element, only the first element found is used as the scroll container.
+
+  > Property name is `scrollContainer` (camel case).
 
 * `display` - *Optional*.  Values: `"best" | "both"`. Defaults to `"best"`.  
   **"best"** - *Default*. The control displays **either** [top, previous] **OR** [bottom, next] jump scrolling control surface. Which one is displayed depends on the position on the page and the direction of scrolling. If the user is in the middle of the page and scrolls, the control only displays the jump scroll options in the direction of the scroll. If near the end, turns in the opposite direction. Less vertical space required.  
@@ -40,6 +43,8 @@ Non-browser module exports build helpers (for building CSP rules, etc).
   + `Shift+PageDown` - Jumps to the bottom scroll target.
   + `Shift+PageUp` - Jumps to the top scroll target.  
 
+  > Property name is `enableKeyboard` (camel case).  
+
 ## Overridable CSS Variables
 
 * `--js-width` - The overall width of the control. Defaults to 3rem.
@@ -51,6 +56,12 @@ Non-browser module exports build helpers (for building CSP rules, etc).
 * `--js-opacity-rest` - The opacity of the control arrows at rest. Defaults to 0.5.
 * `--js-attach-right` - The distance from the fixed, right-edge attachment. Defaults to 1rem;
 * `--js-attach-bottom` - The distance form the fixed, bottom-edge attachment. Defaults to 1rem;
+
+## Javascript Properties and Methods
+
+* `currentTarget` **Property** - Assign an `HTMLElement` to set the component's internal currentTarget. The supplied `HTMLElement` must be known to the internal component target map of elements (found with the supplied `target` selector). Get this property to audit the component's internal currentTarget.  
+
+* `jumpScroll(HTMLElement)` **Method** - Jump directly to the given `HTMLElement`. The supplied `HTMLElement` must be known to the internal component target map of elements (found with the supplied `target` selector).  
 
 ## Usage Example
 

@@ -112,6 +112,19 @@ class JumpScroll extends HTMLElement {
   }
 
   /**
+   * jump scroll directly to an element in the target map.
+   * 
+   * @param {HTMLElement} targetElement - The element to scroll to.
+   */
+  jumpScroll (targetElement) {
+    const target = this.#mapTargets.get(targetElement);
+    if (target) {
+      this.currentTarget = target.prev;
+      this.#scrollStep('next', lastTop => lastTop < window.innerHeight);
+    }
+  }
+
+  /**
    * Get the target property value.
    * 
    * @returns {String} The selector for target selection.
@@ -521,6 +534,7 @@ class JumpScroll extends HTMLElement {
     e && e.preventDefault();
     this.#scrollStep('prev', lastTop => lastTop > 0);
   }
+  /// ----------------------------------------------
 
   /**
    * Creates HTMLElement orders of elements selected by the `target` property.
