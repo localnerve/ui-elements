@@ -33,6 +33,10 @@ class JumpScroll extends HTMLElement {
   #mapColors = null;
 
   #container = null;
+  #mapButtonFocusSwap = null;
+  #arrayButtons = null;
+  #arrayButtonFocusHandlers = null;
+  #focusedElement = null;
   #scrollContainer = null;
   #setupInit = false;
 
@@ -73,6 +77,7 @@ class JumpScroll extends HTMLElement {
     this.clickBottom = this.clickBottom.bind(this);
     this.clickNext = this.clickNext.bind(this);
     this.clickPrev = this.clickPrev.bind(this);
+    this.controlBlur = this.controlBlur.bind(this);
     this.keydownHandler = this.keydownHandler.bind(this);
   }
 
@@ -393,6 +398,7 @@ class JumpScroll extends HTMLElement {
    */
   #setFocusability (pos, dir) {
     const hide = tob => {
+      const focusedElement = this.#focusedElement;
       Array.from(this.#container.querySelectorAll(`.${tob} button`)).forEach(
         el => {
           el.blur();
@@ -400,34 +406,34 @@ class JumpScroll extends HTMLElement {
           el.setAttribute('aria-hidden', 'true');
         }
       );
-    }
-    const show = tob => {
+      return this.#mapButtonFocusSwap.get(focusedElement);
+    };
+    const show = (tob, nextFocusElement) => {
       Array.from(this.#container.querySelectorAll(`.${tob} button`)).forEach(
         el => {
           el.removeAttribute('disabled');
           el.setAttribute('aria-hidden', 'false');
+          if (el === nextFocusElement) {
+            el.focus();
+          }
         }
       );
-    }
+    };
     
     if (pos === 'mid') {
       if (this.display === 'both') {
         ['top', 'bot'].forEach(tob => show(tob));
       } else {
         if (dir === 'down') {
-          show('bot');
-          hide('top');
+          show('bot', hide('top'));
         } else {
-          show('top');
-          hide('bot');
+          show('top', hide('bot'));
         }
       }
     } else if (pos === 'start') {
-      show('bot');
-      hide('top');
+      show('bot', hide('top'));
     } else {
-      show('top');
-      hide('bot');
+      show('top', hide('bot'));
     }
   }
 
@@ -535,6 +541,12 @@ class JumpScroll extends HTMLElement {
     this.#scrollStep('prev', lastTop => lastTop > 0);
   }
   /// ----------------------------------------------
+  saveFocus (el) {
+    this.#focusedElement = el;
+  }
+  controlBlur () {
+    this.#focusedElement = null;
+  }
 
   /**
    * Creates HTMLElement orders of elements selected by the `target` property.
@@ -1009,6 +1021,27 @@ class JumpScroll extends HTMLElement {
     this.colormap = this.colormap;
     /* eslint-enable no-self-assign */
 
+    this.addEventListener('blur', this.controlBlur);
+
+    this.#arrayButtons = [
+      this.#container.querySelector('button[class*="next"]'),
+      this.#container.querySelector('button[class*="prev"]'),
+      this.#container.querySelector('button[class*="start"]'),
+      this.#container.querySelector('button[class*="end"]')
+    ];
+    this.#arrayButtonFocusHandlers = this.#arrayButtons.map(
+      el => this.saveFocus.bind(this, el)
+    );
+    this.#arrayButtons.forEach((el, index) => {
+      el.addEventListener('focus', this.#arrayButtonFocusHandlers[index]);
+    });
+    this.#mapButtonFocusSwap = new WeakMap([
+      [this.#arrayButtons[0], this.#arrayButtons[1]],
+      [this.#arrayButtons[1], this.#arrayButtons[0]],
+      [this.#arrayButtons[2], this.#arrayButtons[3]],
+      [this.#arrayButtons[3], this.#arrayButtons[2]]
+    ]);
+
     shadowRoot.querySelector('.bc-start').addEventListener(
       'click', this.clickTop
     );
@@ -1025,6 +1058,17 @@ class JumpScroll extends HTMLElement {
 
   disconnectedCallback () {
     this.#container = null;
+    this.#focusedElement = null;
+    this.#mapButtonFocusSwap = null;
+
+    this.removeEventListener('blur', this.controlBlur);
+    
+    this.#arrayButtons.forEach((el, index) => {
+      el.removeEventListener('focus', this.#arrayButtonFocusHandlers[index]);
+    })
+    this.#arrayButtons = null;
+    this.#arrayButtonFocusHandlers = null;
+    
     this.shadowRoot.querySelector('.bc-start').removeEventListener(
       'click', this.clickTop
     );
