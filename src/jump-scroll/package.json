@@ -1,6 +1,6 @@
 {
   "name": "@localnerve/jump-scroll",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "description": "A small, fast, no-dep, jump-scroll web component",
   "main": "dist/index.js",
   "browser": "dist/jump-scroll.js",
@@ -13,8 +13,8 @@
   "devDependencies": {
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4",
-    "@axe-core/cli": "^4.8.1",
-    "clean-css": "^5.3.2"
+    "@axe-core/cli": "^4.8.2",
+    "clean-css": "^5.3.3"
   },
   "repository": {
     "type": "git",
