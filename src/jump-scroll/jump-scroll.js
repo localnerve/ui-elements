@@ -6,8 +6,6 @@
  */
 /* eslint-env browser */
 
-const JumpScrollCss = `__CSS_REPLACEMENT__`;
-
 /**
  * JumpScroll component
  * 
@@ -997,25 +995,7 @@ class JumpScroll extends HTMLElement {
     }
 
     const { shadowRoot } = this;
-    shadowRoot.innerHTML = `<style>${JumpScrollCss}</style>\
-<div class="container none">\
-<div class="top">\
-<div class="bc bc-start">\
-<button type="button" class="start">Scroll to start</button>\
-</div>\
-<div class="bc bc-prev">\
-<button type="button" class="prev">Scroll to previous</button>\
-</div>\
-</div>\
-<div class="bot">\
-<div class="bc bc-next">\
-<button type="button" class="next">Scroll to next</button>\
-</div>\
-<div class="bc bc-end">\
-<button type="button" class="end">Scroll to end</button>\
-<div>\
-</div>\
-</div>`;
+    shadowRoot.innerHTML = '__JS_REPLACEMENT__';
 
     this.#container = shadowRoot.querySelector('.container');
     /* eslint-disable no-self-assign */
