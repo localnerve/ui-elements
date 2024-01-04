@@ -1,7 +1,7 @@
 /*
  * Start mocha browser-tests.
  *
- * Copyright (c) 2017-2023 Alex Grant (@localnerve), LocalNerve LLC
+ * Copyright (c) 2017-2024 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
 /* global describe, before, after, it */
@@ -41,9 +41,6 @@ const browserDirections = {
     ignoreReleases: ['unstable']
   }
 };
-
-// Init chai in this process.
-require('chai').should();
 
 // Sub paths to project tests by convention
 const pathDemo = 'index.html';
@@ -147,7 +144,11 @@ describe('Perform Browser Tests', function () {
   /**
    * Start instance of local test server.
    */
-  before('Before Browser Tests', function () {
+  before('Before Browser Tests', async function () {
+    // Init chai in this process.
+    const chai = await import('chai');
+    chai.should();
+
     testServer = createLocalServer();
     return testServer.start(serverPath)
       .then((portNumber) => {
