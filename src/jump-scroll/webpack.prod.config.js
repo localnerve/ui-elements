@@ -2,7 +2,7 @@
  * webpack config to build the public module.
  * Devdeps in outer repo.
  *
- * Copyright (c) 2017-2023 Alex Grant (@localnerve), LocalNerve LLC
+ * Copyright (c) 2024 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
 import * as path from 'node:path';
@@ -40,7 +40,7 @@ export default {
       }
     }),
     new webpack.BannerPlugin({
-      banner: `jump-scroll@${pkgJson.version}, Copyright (c) 2023 Alex Grant (alex@localnerve.com), LocalNerve LLC, BSD-3-Clause`,
+      banner: `jump-scroll@${pkgJson.version}, Copyright (c) 2023-${(new Date()).getFullYear()} Alex Grant (alex@localnerve.com), LocalNerve LLC, BSD-3-Clause`,
       entryOnly: true
     })
   ]

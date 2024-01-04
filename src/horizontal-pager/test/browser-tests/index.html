@@ -1,6 +1,6 @@
 <!doctype html>
 <!--
-  Copyright (c) 2017-2023 Alex Grant (@localnerve), LocalNerve LLC
+  Copyright (c) 2017-2024 Alex Grant (@localnerve), LocalNerve LLC
   Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
 -->
 <html>
@@ -34,7 +34,7 @@
   <iframe id="demo-main" src="/dist/horizontal-pager/index.html"></iframe>
   <iframe id="demo-two" src="/dist/horizontal-pager/two.html"></iframe>
 
-  <script src="/node_modules/chai/chai.js"></script>
+  <script type="module" src="/node_modules/chai/chai.js"></script>
   <script src="/node_modules/mocha/mocha.js"></script>
 
   <script src="/test/helpers/browser.js"></script>
@@ -49,17 +49,12 @@
   <script src="get-horizontal-pager.js"></script>
   <script src="animations.js"></script>
 
-  <script>
-    (function() {
-      // should adds objects to prototypes which requires this call to be made
-      // before any tests are run.
-      window.chai.should();
-
-      window.__testUtils.startInBrowserMochaTests()
-      .then(results => {
-        window.testsuite = results;
-      });
-    }());
+  <script type="module">
+    import * as chai from '/node_modules/chai/chai.js';
+    // should adds objects to prototypes which requires this call to be made
+    // before any tests are run.
+    await chai.should();
+    window.testsuite = await window.__testUtils.startInBrowserMochaTests();
   </script>
 </body>
 </html>
