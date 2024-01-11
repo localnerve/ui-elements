@@ -16,6 +16,9 @@
     "@axe-core/cli": "^4.8.2",
     "@localnerve/web-component-build": "^0.3.4"
   },
+  "overrides": {
+    "follow-redirects": "latest"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/localnerve/ui-elements.git"

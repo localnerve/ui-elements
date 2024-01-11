@@ -1,6 +1,6 @@
 {
   "name": "ui-elements",
-  "version": "6.5.2",
+  "version": "6.5.3",
   "description": "A repo of ui elements",
   "main": "index.js",
   "repository": {
@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.23.7",
-    "@babel/preset-env": "^7.23.7",
+    "@babel/preset-env": "^7.23.8",
     "babel-loader": "^9.1.3",
     "chai": "^5.0.0",
     "eslint": "^8.56.0",
