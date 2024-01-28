@@ -36,7 +36,7 @@ module.exports = {
       }
     }),
     new webpack.BannerPlugin({
-      banner: `horizontal-pager@${pkg.version}, Copyright (c) 2017-${(new Date()).getFullYear()} Alex Grant (alex@localnerve.com), LocalNerve LLC, BSD-3-Clause`,
+      banner: `horizontal-pager@${pkg.version}, Copyright (c) 2017-${(new Date()).getFullYear()} Alex Grant <alex@localnerve.com> (https://www.localnerve.com), LocalNerve LLC, BSD-3-Clause`,
       entryOnly: true
     })
   ]
