@@ -1,6 +1,6 @@
 {
   "name": "ui-elements",
-  "version": "6.9.0",
+  "version": "6.9.1",
   "description": "A repo of ui elements",
   "main": "index.js",
   "repository": {
@@ -27,7 +27,7 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "chromedriver": "^123.0.0",
-    "express": "^4.19.1",
+    "express": "^4.19.2",
     "geckodriver": "^4.3.3",
     "selenium-assistant": "^6.1.1"
   },
@@ -38,7 +38,7 @@
     "chai": "^5.1.0",
     "eslint": "^8.57.0",
     "gulp": "^4.0.2",
-    "mocha": "^10.3.0",
+    "mocha": "^10.4.0",
     "picklr": "latest",
     "rimraf": "^5.0.5",
     "terser-webpack-plugin": "^5.3.10",
