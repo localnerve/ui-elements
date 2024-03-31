@@ -167,7 +167,9 @@ gulp.task(
     `!${srcRoot}/jump-scroll/node_modules/**`,
     `!${srcRoot}/**/test`,
     `!${srcRoot}/**/test/**`,
-  ]).pipe(gulp.dest('dist'))
+  ], {
+    encoding: false
+  }).pipe(gulp.dest('dist'))
 );
 
 gulp.task('webpack', () => createBundle('production'));
