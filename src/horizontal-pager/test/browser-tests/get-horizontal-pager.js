@@ -4,8 +4,6 @@
  * Copyright (c) 2017-2024 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
-/* global window, document */
-/* eslint-disable func-names, no-underscore-dangle */
 (function () {
   const mainFrameId = '#demo-main';
   const twoFrameId = '#demo-two';

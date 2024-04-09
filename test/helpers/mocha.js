@@ -16,9 +16,6 @@
  *
  * 4/2017, agrant modified
  */
-/* global */
-
-/* eslint-env node, browser, worker, mocha */
 
 /**
  * The results from a set of Mocha tests
@@ -136,7 +133,6 @@ class MochaUtils {
    * @return {Promise<MochaTestResults>}   Returns the results from the
    * browsers tests
    */
-  /* eslint-disable arrow-body-style, prefer-arrow-callback, func-names */
   static startWebDriverMochaTests (browserName, driver, url) {
     return driver.get(url)
       .then(() => {
@@ -157,7 +153,6 @@ class MochaUtils {
         });
       });
   }
-  /* eslint-enable arrow-body-style, prefer-arrow-callback, func-names */
 
   /**
    * @private

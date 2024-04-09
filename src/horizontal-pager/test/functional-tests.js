@@ -24,7 +24,7 @@ function swipeLeft (driver) {
 }
 
 function touchTests (driver) {
-  console.log('Executing touch tests...'); // eslint-disable-line
+  console.log('Executing touch tests...');
   return swipeLeft(driver)
     .then(checkExpectedPage.bind(null, driver, 'page-2'));
 }
@@ -48,9 +48,7 @@ function startWebDriverFunctionalTests (driver, url) {
       */
       return false;
     })
-    .catch((err) => {
-      console.error(err); // eslint-disable-line
-    });
+    .catch(console.error);
 }
 
 module.exports = {
