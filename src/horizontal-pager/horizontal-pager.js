@@ -5,7 +5,6 @@
  * Copyright (c) 2017-2024 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
-/* global document, requestAnimationFrame, cancelAnimationFrame */
 import { createPassiveEventHandlerOption } from '../utils/passive-event';
 
 class HorizontalPager {
@@ -138,11 +137,9 @@ class HorizontalPager {
     if (parents.length === 1) {
       Object.assign(parents[0].style, parentStyle);
     } else if (parents.length > 1) {
-      /* eslint-disable no-console */
       console.error(
         `horizontal-pager: '.${targetClass}' elements MUST be siblings.`
       );
-      /* eslint-enable no-console */
     }
 
     return this.targets.length;
@@ -281,9 +278,7 @@ class HorizontalPager {
     let nextOk = nextSib && nextSib.classList.contains(targetClass);
 
     if (!nextOk && this.opts.continuous) {
-      /* eslint-disable prefer-destructuring */
       nextSib = this.targets[0];
-      /* eslint-enable prefer-destructuring */
       nextOk = true;
     }
 

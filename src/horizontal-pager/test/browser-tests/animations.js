@@ -4,8 +4,6 @@
  * Copyright (c) 2017-2024 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
-/* global window, document, before, describe, it */
-/* eslint-disable no-console, prefer-arrow-callback, func-names, no-underscore-dangle */
 
 describe('Animation Tests', function () {
   const targetClass = 'page-item';
@@ -101,10 +99,8 @@ describe('Animation Tests', function () {
 
     before('main demo tests', function () {
       return getDemoSubjects(mainFrameId).then((subjects) => {
-        /* eslint-disable prefer-destructuring */
         horizontalPager = subjects.horizontalPager;
         verify = subjects.verify;
-        /* eslint-enable prefer-destructuring */
       });
     });
 
@@ -179,10 +175,8 @@ describe('Animation Tests', function () {
 
     before('two demo tests', function () {
       return getDemoSubjects(twoFrameId).then((subjects) => {
-        /* eslint-disable prefer-destructuring */
         horizontalPager = subjects.horizontalPager;
         verify = subjects.verify;
-        /* eslint-enable prefer-destructuring */
       });
     });
 

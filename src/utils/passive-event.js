@@ -4,7 +4,6 @@
  * Copyright (c) 2017-2024 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
-/* global window */
 
 /**
  * @returns {Object|Boolean} A support-sensitive passive event handler option.
@@ -20,7 +19,9 @@ export function createPassiveEventHandlerOption () {
       }
     };
     window.addEventListener('test', null, testOpts);
-  } catch (err) {} // eslint-disable-line
+  } catch (err) {
+    console.error(err);
+  }
 
   return passiveSupported ? {
     passive: true

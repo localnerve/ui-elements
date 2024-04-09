@@ -7,7 +7,7 @@
  * Copyright (c) 2017-2024 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
-/* global document, window */
+
 import { createPassiveEventHandlerOption } from '../utils/passive-event';
 import { createIntersectionObserver } from './intersection-observer';
 
@@ -65,18 +65,18 @@ class CustomSticky {
 
     this.scrollSource = document.querySelector(this.opts.scrollSelector);
     if (!this.scrollSource) {
-      console.warn(`failed to identify a scroll source with "${this.opts.scrollSelector}"`); // eslint-disable-line
+      console.warn(`failed to identify a scroll source with "${this.opts.scrollSelector}"`);
     }
 
     let targetRectFn = CustomSticky.optionRectFn(this.opts.target);
     if (!targetRectFn) {
       targetRectFn = () => ({});
-      console.warn(`failed to identify targetElement with "${this.opts.target}"`); // eslint-disable-line
+      console.warn(`failed to identify targetElement with "${this.opts.target}"`);
     }
 
     this.movingElement = document.querySelector(this.opts.movingSelector);
     if (!this.movingElement) {
-      console.warn(`failed to identify moving element with "${this.opts.movingSelector}"`); // eslint-disable-line
+      console.warn(`failed to identify moving element with "${this.opts.movingSelector}"`);
     }
 
     this.notify = this.opts.notify ? setTimeout.bind(null, this.opts.notify, 0) : () => false;
@@ -120,7 +120,7 @@ class CustomSticky {
     this.uBoundAccurate = false;
     this.uBound = this.traverseLength();
     if (Number.isNaN(this.uBound) || this.uBound <= 0) {
-      console.warn('traverseLength must return a positive number'); // eslint-disable-line
+      console.warn('traverseLength must return a positive number');
     }
 
     this.animationLength = this.opts.animationLength();
@@ -231,7 +231,7 @@ class CustomSticky {
 
       const viewportHeight = window.innerHeight;
       const viewportWidth = window.innerWidth;
-      const scrollTop = this.scrollSource.scrollTop; // eslint-disable-line
+      const scrollTop = this.scrollSource.scrollTop;
       const mustInitOrigin = !this.yBasisOrigins[viewportHeight];
 
       if (mustInitOrigin) {
@@ -243,11 +243,10 @@ class CustomSticky {
 
       if (intersected) {
         const fromTop = entry.intersectionRect.top < (viewportHeight / 2);
-        /* eslint-disable operator-linebreak */
+
         const fromSide =
           Math.abs(viewportWidth - entry.intersectionRect.right) < (viewportWidth / 10)
             || entry.intersectionRect.left < (viewportWidth / 10);
-        /* eslint-enable operator-linebreak */
 
         if (!this.yBasisOrigins[viewportHeight].intersected && !fromTop) {
           this.yBasisOrigins[viewportHeight].intersected = true;
@@ -273,10 +272,9 @@ class CustomSticky {
   updateResize (y) {
     const previousTransform = this.movingElement.style.transform;
     this.movingElement.style.transform = this.transform(0);
-    /* eslint-disable no-unused-expressions */
+
     // Force any incidental changes to take hold right now
     window.getComputedStyle(this.movingElement).transform;
-    /* eslint-enable no-unused-expressions */
 
     this.uBound = this.traverseLength();
     this.animationLength = this.opts.animationLength();

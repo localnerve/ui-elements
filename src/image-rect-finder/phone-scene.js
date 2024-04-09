@@ -4,7 +4,6 @@
  * Copyright (c) 2017-2024 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
-/* global window, document, Image, Worker */
 import findRect from './find-rect';
 
 /**
@@ -89,7 +88,7 @@ function drawPhone (worker, image, imageUrl) {
         edgeDiffMin: 38
       }
     }).then((rect) => {
-      console.log('foundRect', rect); // eslint-disable-line
+      console.log('foundRect', rect);
 
       // Replace the color rect with "alpha"
       ctx.clearRect(
@@ -132,7 +131,7 @@ export default function createScene ({ image, resizeWait = 100 }) {
             resizeTick = false;
           })
           .catch((e) => {
-            console.error('drawPhone failed', e); // eslint-disable-line
+            console.error('drawPhone failed', e);
             resizeTick = false;
           });
       }, resizeWait);
