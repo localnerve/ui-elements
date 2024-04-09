@@ -19,9 +19,7 @@ export function createPassiveEventHandlerOption () {
       }
     };
     window.addEventListener('test', null, testOpts);
-  } catch (err) {
-    console.error(err);
-  }
+  } catch {} // eslint-disable-line
 
   return passiveSupported ? {
     passive: true
