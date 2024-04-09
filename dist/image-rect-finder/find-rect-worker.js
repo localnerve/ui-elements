@@ -4,8 +4,6 @@
  * Copyright (c) 2017-2024 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
-/* eslint-env worker */
-/* global */
 
 /**
  * Get average color value from r, g, b at data[i].
@@ -269,7 +267,6 @@ function findFirstRect (imageData, options) {
  * @param {Object} e - message event.
  * @param {Object} e.data - message event data.
  */
-/* eslint-disable no-restricted-globals */
 addEventListener('message', (e) => {
   const { imageData, options } = e.data;
 
@@ -277,4 +274,3 @@ addEventListener('message', (e) => {
 
   postMessage(rect, [imageData.data.buffer]);
 });
-/* eslint-enable no-restricted-globals */
