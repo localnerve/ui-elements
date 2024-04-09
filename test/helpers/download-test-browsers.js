@@ -2,7 +2,6 @@
  * Copyright (c) 2017-2024 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
-/* eslint-disable no-console */
 const fs = require('fs');
 const seleniumAssistant = require('selenium-assistant');
 
@@ -10,7 +9,7 @@ const seleniumAssistant = require('selenium-assistant');
 // as the source of truth.
 const installDir = seleniumAssistant.getBrowserInstallDir();
 
-console.log('installDir', installDir); // eslint-disable-line
+console.log('installDir', installDir);
 
 if (!fs.existsSync(installDir)) {
   const promises = [

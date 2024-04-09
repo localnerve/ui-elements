@@ -14,9 +14,7 @@
  * limitations under the License.
  *
  */
-/* global window, document, getComputedStyle */
-/* eslint-disable */
-export function initializeParallax(clip) {
+export function initializeParallax (clip) {
   var parallax = clip.querySelectorAll('*[parallax]');
   var parallaxDetails = [];
   var sticky = false;
@@ -44,7 +42,7 @@ export function initializeParallax(clip) {
     if (clip && container.parentNode != clip) {
       console.warn('Currently we only track a single overflow clip, but elements from multiple clips found.', elem);
     }
-    var clip = container.parentNode;
+    clip = container.parentNode;
     if (getComputedStyle(clip).overflow == 'visible') {
       console.error('Parent of sticky container should be scrollable element', elem);
     }
@@ -82,8 +80,10 @@ export function initializeParallax(clip) {
 
   // Add a scroll listener to hide perspective elements when they should no
   // longer be visible.
-  clip.addEventListener('scroll', function() {
-    for (var i = 0; i < parallaxDetails.length; i++) {
+  clip.addEventListener('scroll', function () {
+    let i;
+    for (i = 0; i < parallaxDetails.length; i++) {
+      /*
       var container = parallaxDetails[i].node.parentNode;
       var previousCover = parallaxDetails[i].previousCover;
       var nextCover = parallaxDetails[i].nextCover;
@@ -92,6 +92,7 @@ export function initializeParallax(clip) {
       var threshold = 200;
       var visible = parallaxStart - threshold - clip.clientHeight < clip.scrollTop &&
                     parallaxEnd + threshold > clip.scrollTop;
+      */
       // FIXME: Repainting the images while scrolling can cause jank.
       // For now, keep them all.
       // var display = visible ? 'block' : 'none'
@@ -102,12 +103,12 @@ export function initializeParallax(clip) {
   });
   window.addEventListener('resize', onResize.bind(null, parallaxDetails));
   onResize(parallaxDetails);
-  for (var i = 0; i < parallax.length; i++) {
+  for (i = 0; i < parallax.length; i++) {
     parallax[i].parentNode.insertBefore(parallax[i], parallax[i].parentNode.firstChild);
   }
 }
 
-export function onResize(details) {
+export function onResize (details) {
   for (var i = 0; i < details.length; i++) {
     var container = details[i].node.parentNode;
 
@@ -118,7 +119,7 @@ export function onResize(details) {
 
     var parallaxStart = previousCover ? (previousCover.offsetTop + previousCover.offsetHeight) : 0;
     var scrollbarWidth = details[i].sticky ? 0 : clip.offsetWidth - clip.clientWidth;
-    var parallaxElem = details[i].sticky ? container : clip;
+    // var parallaxElem = details[i].sticky ? container : clip;
     var height = details[i].node.offsetHeight;
     var depth = 0;
     if (rate) {

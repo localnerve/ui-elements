@@ -4,7 +4,6 @@
  * Copyright (c) 2017-2024 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
-/* global document */
 import { startScrollCollapse, SCConstants } from './scroll-collapse';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -16,19 +15,19 @@ document.addEventListener('DOMContentLoaded', () => {
     notify: (event) => {
       switch (event) {
         case SCConstants.START_COLLAPSE:
-          console.log('@@@ collapse starting'); // eslint-disable-line
+          console.log('@@@ collapse starting');
           break;
         case SCConstants.END_COLLAPSE:
-          console.log('@@@ collapse ended'); // eslint-disable-line
+          console.log('@@@ collapse ended');
           break;
         case SCConstants.START_EXPAND:
-          console.log('@@@ expand starting'); // eslint-disable-line
+          console.log('@@@ expand starting');
           break;
         case SCConstants.END_EXPAND:
-          console.log('@@@ expand ended'); // eslint-disable-line
+          console.log('@@@ expand ended');
           break;
         default:
-          console.log('@@@ unknown event'); // eslint-disable-line
+          console.log('@@@ unknown event');
           break;
       }
     }

@@ -4,7 +4,6 @@
  * Copyright (c) 2017-2024 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
-/* global */
 
 /**
  * Transfer the imageData to the worker and invoke the worker algo.
@@ -20,12 +19,10 @@ export default function findRect (worker, ctx, width, height, options) {
   const imageData = ctx.getImageData(0, 0, width, height);
 
   const result = new Promise((resolve, reject) => {
-    /* eslint-disable no-param-reassign */
     worker.onmessage = (e) => {
       resolve(e.data);
     };
     worker.onerror = reject;
-    /* eslint-enable no-param-reassign */
   });
 
   worker.postMessage({

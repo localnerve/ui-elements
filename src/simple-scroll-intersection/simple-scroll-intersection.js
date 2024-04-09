@@ -6,7 +6,6 @@
  * Copyright (c) 2017-2024 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
-/* global window, document */
 import { createPassiveEventHandlerOption } from '../utils/passive-event';
 
 export class SSIConst {
@@ -54,22 +53,22 @@ class SimpleScrollIntersection {
 
     this.notify = setTimeout.bind(null, this.opts.notify, 0);
     if (this.opts.notify === noop) {
-      console.warn('notify option must be supplied to get results'); // eslint-disable-line
+      console.warn('notify option must be supplied to get results');
     }
 
     this.scrollSource = document.querySelector(this.opts.scrollSelector);
     if (!this.scrollSource) {
-      console.warn(`failed to identify a scroll source with "${this.opts.scrollSelector}"`); // eslint-disable-line
+      console.warn(`failed to identify a scroll source with "${this.opts.scrollSelector}"`);
     }
 
     this.targetRectFn = SimpleScrollIntersection.optionRectFn(this.opts.target);
     if (!this.targetRectFn) {
-      console.warn(`failed to compute target rect on "${this.opts.target}"`); // eslint-disable-line
+      console.warn(`failed to compute target rect on "${this.opts.target}"`);
     }
 
     this.moving = document.querySelector(this.opts.movingSelector) || badEl;
     if (!this.moving.getBoundingClientRect()) {
-      console.warn(`failed to compute moving rect on "${this.opts.movingSelector}"`); // eslint-disable-line
+      console.warn(`failed to compute moving rect on "${this.opts.movingSelector}"`);
     }
 
     this.tickScroll = false;
