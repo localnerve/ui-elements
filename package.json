@@ -1,6 +1,6 @@
 {
   "name": "ui-elements",
-  "version": "7.3.4",
+  "version": "7.3.5",
   "description": "A repo of ui elements",
   "main": "index.js",
   "repository": {
@@ -26,7 +26,7 @@
   "author": "Alex Grant <alex@localnerve.com> (https://www.localnerve.com)",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "chromedriver": "^126.0.3",
+    "chromedriver": "^126.0.4",
     "express": "^4.19.2",
     "geckodriver": "^4.4.1",
     "selenium-assistant": "^6.1.1"
@@ -40,7 +40,7 @@
     "eslint": "^9.5.0",
     "globals": "^15.6.0",
     "gulp": "^5.0.0",
-    "mocha": "^10.4.0",
+    "mocha": "^10.5.2",
     "picklr": "latest",
     "rimraf": "^5.0.7",
     "terser-webpack-plugin": "^5.3.10",
