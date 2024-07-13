@@ -8,7 +8,7 @@
 import * as path from 'node:path';
 import webpack from 'webpack';
 import TerserPlugin from 'terser-webpack-plugin';
-import pkgJson from './package.json' assert { type: 'json' };
+import pkgJson from './package.json' with { type: 'json' };
 import { stageDir, distDir } from './build-settings.js';
 
 export default {
