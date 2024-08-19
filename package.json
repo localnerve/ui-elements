@@ -28,7 +28,7 @@
   "dependencies": {
     "chromedriver": "^127.0.3",
     "express": "^4.19.2",
-    "geckodriver": "^4.4.2",
+    "geckodriver": "^4.4.3",
     "selenium-assistant": "^6.1.1"
   },
   "devDependencies": {
