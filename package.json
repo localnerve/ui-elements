@@ -27,7 +27,7 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "chromedriver": "^128.0.1",
-    "express": "^4.20.0",
+    "express": "^5.0.0",
     "geckodriver": "^4.4.4",
     "selenium-assistant": "^6.1.1"
   },
