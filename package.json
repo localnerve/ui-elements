@@ -1,6 +1,6 @@
 {
   "name": "ui-elements",
-  "version": "8.3.0",
+  "version": "8.4.0",
   "description": "A repo of ui elements",
   "main": "index.js",
   "repository": {
@@ -27,7 +27,7 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "chromedriver": "^128.0.1",
-    "express": "^4.20.0",
+    "express": "^4.21.0",
     "geckodriver": "^4.4.4",
     "selenium-assistant": "^6.1.1"
   },
