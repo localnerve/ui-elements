@@ -1,0 +1,26 @@
+name: Deploy jump-scroll
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy-jump-scroll:
+    if: contains(github.event.comment.body, 'jump-scroll@')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm ci
+      - name: Publish jump-scroll
+        run: |
+          npm run build
+          cd src/jump-scroll
+          npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_JUMPSCROLL_TOKEN }}
