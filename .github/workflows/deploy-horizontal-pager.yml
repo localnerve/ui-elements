@@ -1,0 +1,26 @@
+name: Deploy horizontal-pager
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy-horizontal-pager:
+    if: contains(github.event.comment.body, 'horizontal-pager@')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm ci
+      - name: Publish horizontal-pager
+        run: |
+          npm run build
+          cd src/horizontal-pager
+          npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_HORIZONTALPAGER_TOKEN }}
