@@ -5,19 +5,36 @@ on:
 
 jobs:
   deploy-horizontal-pager:
-    if: contains(github.event.comment.body, 'horizontal-pager@')
     runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write
     steps:
+      - name: Find Commit Message # skip === deploy (not skip)
+        id: skip-means-deploy
+        uses: saulmaldonado/skip-workflow@v1.1.1
+        with:
+          phrase: 'horizontal-pager@'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Echo Status
+        shell: bash
+        run: |
+          test ${{ steps.skip-means-deploy.outputs.skip }}
+          if [ $? -eq 0 ]; then
+            echo "DEPLOY HORIZONTAL-PAGER"
+          else
+            echo "SKIP DEPLOY HORIZONTAL-PAGER"
+          fi
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
-      - run: npm ci
+      - name: Install
+        if: ${{ steps.skip-means-deploy.outputs.skip }}
+        run: npm ci
       - name: Publish horizontal-pager
+        if: ${{ steps.skip-means-deploy.outputs.skip }}
         run: |
           npm run build
           cd src/horizontal-pager
