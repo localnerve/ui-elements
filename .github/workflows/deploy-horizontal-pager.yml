@@ -19,12 +19,12 @@ jobs:
       - name: Echo Status
         shell: bash
         run: |
-          test ${{ steps.skip-means-deploy.outputs.skip }}
-          if [ $? -eq 0 ]; then
+          if [ ${{ steps.skip-means-deploy.outputs.skip }} ]; then
             echo "DEPLOY HORIZONTAL-PAGER"
           else
             echo "SKIP DEPLOY HORIZONTAL-PAGER"
           fi
+
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
