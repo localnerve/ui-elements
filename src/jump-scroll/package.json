@@ -1,6 +1,6 @@
 {
   "name": "@localnerve/jump-scroll",
-  "version": "0.9.20",
+  "version": "0.9.21",
   "description": "A small, fast, no-dep, jump-scroll web component",
   "main": "dist/index.js",
   "browser": "dist/jump-scroll.js",
@@ -11,8 +11,8 @@
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "@axe-core/cli": "^4.10.0",
-    "@localnerve/web-component-build": "^1.5.0"
+    "@axe-core/cli": "^4.10.1",
+    "@localnerve/web-component-build": "^1.5.1"
   },
   "overrides": {
     "follow-redirects": "latest"
