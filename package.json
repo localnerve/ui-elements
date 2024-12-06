@@ -1,6 +1,6 @@
 {
   "name": "ui-elements",
-  "version": "8.10.4",
+  "version": "8.10.5",
   "description": "A repo of ui elements",
   "main": "index.js",
   "repository": {
@@ -27,7 +27,7 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "chromedriver": "^131.0.2",
-    "express": "^4.21.1",
+    "express": "^4.21.2",
     "geckodriver": "^5.0.0",
     "selenium-assistant": "^6.1.1"
   },
@@ -44,7 +44,7 @@
     "picklr": "latest",
     "rimraf": "^6.0.1",
     "terser-webpack-plugin": "^5.3.10",
-    "webpack": "^5.97.0",
+    "webpack": "^5.97.1",
     "webpack-cli": "^5.1.4"
   },
   "overrides": {
