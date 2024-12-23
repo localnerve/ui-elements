@@ -1,6 +1,6 @@
 {
   "name": "ui-elements",
-  "version": "8.10.7",
+  "version": "8.10.8",
   "description": "A repo of ui elements",
   "main": "index.js",
   "repository": {
@@ -45,7 +45,7 @@
     "rimraf": "^6.0.1",
     "terser-webpack-plugin": "^5.3.11",
     "webpack": "^5.97.1",
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "^6.0.1"
   },
   "overrides": {
     "request": "npm:@cypress/request@3.0.7"
