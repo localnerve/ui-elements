@@ -1,4 +1,4 @@
-Copyright (c) 2017-2024 Alex Grant <alex@localnerve.com> (https://www.localnerve.com), LocalNerve LLC
+Copyright (c) 2017-2025 Alex Grant <alex@localnerve.com> (https://www.localnerve.com), LocalNerve LLC
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
