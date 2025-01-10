@@ -3,7 +3,7 @@
  * Use when you have a simple situation/animation where IntersectionObserver
  * doesn't make sense.
  *
- * Copyright (c) 2017-2024 Alex Grant (@localnerve), LocalNerve LLC
+ * Copyright (c) 2017-2025 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
 import { createPassiveEventHandlerOption } from '../utils/passive-event';
