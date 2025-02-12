@@ -1,6 +1,6 @@
 {
   "name": "ui-elements",
-  "version": "8.12.1",
+  "version": "8.12.2",
   "description": "A repo of ui elements",
   "main": "index.js",
   "repository": {
@@ -32,12 +32,12 @@
     "selenium-assistant": "^6.1.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.26.7",
-    "@babel/preset-env": "^7.26.7",
-    "@eslint/js": "^9.19.0",
+    "@babel/core": "^7.26.8",
+    "@babel/preset-env": "^7.26.8",
+    "@eslint/js": "^9.20.0",
     "babel-loader": "^9.2.1",
     "chai": "^5.1.2",
-    "eslint": "^9.19.0",
+    "eslint": "^9.20.1",
     "globals": "^15.14.0",
     "gulp": "^5.0.0",
     "mocha": "^11.1.0",
