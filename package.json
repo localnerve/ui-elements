@@ -1,6 +1,6 @@
 {
   "name": "ui-elements",
-  "version": "8.13.1",
+  "version": "8.13.2",
   "description": "A repo of ui elements",
   "main": "index.js",
   "repository": {
@@ -26,7 +26,7 @@
   "author": "Alex Grant <alex@localnerve.com> (https://www.localnerve.com)",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "chromedriver": "^134.0.2",
+    "chromedriver": "^134.0.3",
     "express": "^4.21.2",
     "geckodriver": "^5.0.0",
     "selenium-assistant": "^6.1.1"
