@@ -12,7 +12,7 @@
   },
   "devDependencies": {
     "@axe-core/cli": "^4.10.1",
-    "@localnerve/web-component-build": "^1.8.0"
+    "@localnerve/web-component-build": "^1.8.2"
   },
   "overrides": {
     "follow-redirects": "latest"
