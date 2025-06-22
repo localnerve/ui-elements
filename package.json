@@ -26,7 +26,7 @@
   "author": "Alex Grant <alex@localnerve.com> (https://www.localnerve.com)",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "chromedriver": "^137.0.1",
+    "chromedriver": "^137.0.4",
     "express": "^5.1.0",
     "geckodriver": "^5.0.0",
     "selenium-assistant": "^6.1.1"
