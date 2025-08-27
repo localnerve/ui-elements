@@ -6,3 +6,4 @@ tmp
 dist
 npm-debug.log
 *tgz
+test-results/
