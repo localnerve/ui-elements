@@ -25,11 +25,13 @@ jobs:
             echo "SKIP DEPLOY JUMP-SCROLL"
           fi
 
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # 6.0.1
+      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # 6.1.0
         with:
-          node-version: '22.x'
+          node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
+      - name: Update npm
+        run: npm install -g npm@latest # ensure npm 11.5.1 or later
       - name: Install
         if: ${{ steps.skip-means-deploy.outputs.skip }}
         run: npm ci
@@ -38,6 +40,4 @@ jobs:
         run: |
           npm run build
           cd src/jump-scroll
-          npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_JUMPSCROLL_TOKEN }}
+          npm publish --access public
