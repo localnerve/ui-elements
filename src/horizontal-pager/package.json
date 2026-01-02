@@ -1,6 +1,6 @@
 {
   "name": "horizontal-pager",
-  "version": "4.2.12",
+  "version": "4.2.13",
   "description": "A small, fast, no-dep, horizontal scroll behavior",
   "main": "dist/index.js",
   "scripts": {
