@@ -1,6 +1,6 @@
 {
   "name": "ui-elements",
-  "version": "9.2.6",
+  "version": "9.2.7",
   "description": "A repo of ui elements",
   "main": "index.js",
   "repository": {
@@ -33,12 +33,12 @@
     "babel-loader": "^10.0.0",
     "eslint": "^9.39.2",
     "express": "^5.2.1",
-    "globals": "^16.5.0",
+    "globals": "^17.0.0",
     "gulp": "^5.0.1",
     "picklr": "latest",
     "rimraf": "^6.1.2",
     "terser-webpack-plugin": "^5.3.16",
-    "webpack": "^5.104.0",
+    "webpack": "^5.104.1",
     "webpack-cli": "^6.0.1"
   },
   "overrides": {
