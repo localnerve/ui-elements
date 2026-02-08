@@ -121,7 +121,7 @@ export function onResize (details) {
     var scrollbarWidth = details[i].sticky ? 0 : clip.offsetWidth - clip.clientWidth;
     // var parallaxElem = details[i].sticky ? container : clip;
     var height = details[i].node.offsetHeight;
-    var depth = 0;
+    var depth;
     if (rate) {
       depth = 1 - (1 / rate);
     } else {
