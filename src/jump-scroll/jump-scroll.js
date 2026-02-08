@@ -608,7 +608,7 @@ class JumpScroll extends HTMLElement {
         [this.#lastTarget, { pos: 'end', down: false }]
       ])
 
-      let currentIndex = 0, n = 0;
+      let currentIndex = 0, n;
       const windowHeight = window.innerHeight;
       for (i = 0; i < order.length; i++) {
         if (0 > order[i].top) {
