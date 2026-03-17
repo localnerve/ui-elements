@@ -10,33 +10,40 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - name: Find Commit Message # skip === deploy (not skip)
-        id: skip-means-deploy
-        uses: saulmaldonado/skip-workflow@v1.1.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # 6.0.2
         with:
-          phrase: 'horizontal-pager@'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+      - name: Find Commit Message # PHRASE_FOUND == deploy
+        run: |
+          BEFORE="${{ github.event.before }}"
+          AFTER="${{ github.event.after }}"
+          FOUND="false"
+          if [[ "$BEFORE" == "0000000000000000000000000000000000000000" ]]; then
+            echo "Initial push, skipping commit scan"
+          elif git log ${BEFORE}..${AFTER} --format="%s %b" | grep -qi "horizontal-pager@"; then
+            FOUND="true"
+          fi
+          echo "PHRASE_FOUND=$FOUND" >> $GITHUB_ENV
       - name: Echo Status
         shell: bash
         run: |
-          if [ ${{ steps.skip-means-deploy.outputs.skip }} ]; then
+          if [ "$PHRASE_FOUND" == "true" ]; then
             echo "DEPLOY HORIZONTAL-PAGER"
           else
             echo "SKIP DEPLOY HORIZONTAL-PAGER"
           fi
-
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # 6.0.1
       - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # 6.1.0
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
       - name: Update npm
+        if: env.PHRASE_FOUND == 'true'
         run: npm install -g npm@latest # ensure npm 11.5.1 or later
       - name: Install
-        if: ${{ steps.skip-means-deploy.outputs.skip }}
+        if: env.PHRASE_FOUND == 'true'
         run: npm ci
       - name: Publish horizontal-pager
-        if: ${{ steps.skip-means-deploy.outputs.skip }}
+        if: env.PHRASE_FOUND == 'true'
         run: |
           npm run build
           cd src/horizontal-pager
