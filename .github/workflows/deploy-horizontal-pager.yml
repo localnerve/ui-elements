@@ -15,7 +15,7 @@ jobs:
           fetch-depth: 0
       - name: Find Commit Message # PHRASE_FOUND == deploy
         run: |
-          if git log origin/${{ github.base_ref }}..HEAD --format="%s %b" | grep -qi "horizontal-pager@"; then
+          if git log origin/$GITHUB_REF_NAME..HEAD --format="%s %b" | grep -qi "horizontal-pager@"; then
             echo "PHRASE_FOUND=true" >> $GITHUB_ENV
           else
             echo "PHRASE_FOUND=false" >> $GITHUB_ENV
