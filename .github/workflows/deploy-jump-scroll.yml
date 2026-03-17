@@ -15,11 +15,15 @@ jobs:
           fetch-depth: 0
       - name: Find Commit Message # PHRASE_FOUND == deploy
         run: |
-          if git log origin/$GITHUB_REF_NAME..HEAD --format="%s %b" | grep -qi "jump-scroll@"; then
-            echo "PHRASE_FOUND=true" >> $GITHUB_ENV
-          else
-            echo "PHRASE_FOUND=false" >> $GITHUB_ENV
+          BEFORE="${{ github.event.before }}"
+          AFTER="${{ github.event.after }}"
+          FOUND="false"
+          if [[ "$BEFORE" == "0000000000000000000000000000000000000000" ]]; then
+            echo "Initial push, skipping commit scan"
+          elif git log ${BEFORE}..${AFTER} --format="%s %b" | grep -qi "jump-scroll@"; then
+            FOUND="true"
           fi
+          echo "PHRASE_FOUND=$FOUND" >> $GITHUB_ENV
       - name: Echo Status
         shell: bash
         run: |
