@@ -1,6 +1,6 @@
 {
   "name": "ui-elements",
-  "version": "9.3.7",
+  "version": "9.3.8",
   "description": "A repo of ui elements",
   "main": "index.js",
   "repository": {
@@ -31,7 +31,7 @@
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.58.2",
     "babel-loader": "^10.1.1",
-    "eslint": "^10.0.3",
+    "eslint": "^10.1.0",
     "express": "^5.2.1",
     "globals": "^17.4.0",
     "gulp": "^5.0.1",
