@@ -1,6 +1,6 @@
 {
   "name": "ui-elements",
-  "version": "9.3.8",
+  "version": "9.3.9",
   "description": "A repo of ui elements",
   "main": "index.js",
   "repository": {
@@ -43,7 +43,7 @@
   },
   "overrides": {
     "request": "npm:@cypress/request@3.0.10",
-    "serialize-javascript": "^7.0.4"
+    "serialize-javascript": "^7.0.5"
   },
   "engines": {
     "node": ">=20"
