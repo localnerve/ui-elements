@@ -1,6 +1,6 @@
 {
   "name": "ui-elements",
-  "version": "9.3.9",
+  "version": "9.3.10",
   "description": "A repo of ui elements",
   "main": "index.js",
   "repository": {
@@ -29,7 +29,7 @@
     "@babel/core": "^7.29.0",
     "@babel/preset-env": "^7.29.2",
     "@eslint/js": "^10.0.1",
-    "@playwright/test": "^1.58.2",
+    "@playwright/test": "^1.59.1",
     "babel-loader": "^10.1.1",
     "eslint": "^10.1.0",
     "express": "^5.2.1",
