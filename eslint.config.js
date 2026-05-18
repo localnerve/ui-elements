@@ -1,5 +1,8 @@
 const js = require('@eslint/js');
 const globals = require('globals');
+const n = require('eslint-plugin-n');
+
+const nodeRules = n['flat/recommended-script'];
 
 module.exports = [{
   ignores: [
@@ -37,9 +40,28 @@ module.exports = [{
     'src/horizontal-pager/test/functional-tests.js',
     'src/utils/{dirs,local-server}.js'
   ],
+  plugins: {
+    n
+  },
   languageOptions: {
     globals: {
       ...globals.node
+    }
+  },
+  rules: {
+    ...js.configs.recommended.rules,
+    ...nodeRules
+  }
+}, {
+  name: 'test-playwright',
+  files: [
+    'test/horizontal-pager/*.test.js',
+    'test/jump-scroll/*.test.js'
+  ],
+  languageOptions: {
+    globals: {
+      ...globals.node,
+      ...globals.browser,
     }
   }
 }, {
