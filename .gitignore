@@ -10,3 +10,4 @@ npm-debug.log
 dist/jump-scroll/node_modules
 dist/jump-scroll/dist
 test-results/
+.DS_Store
