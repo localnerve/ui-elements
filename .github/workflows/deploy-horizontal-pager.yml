@@ -36,9 +36,9 @@ jobs:
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
-      - name: Update npm
-        if: env.PHRASE_FOUND == 'true'
-        run: npm install -g npm@latest # ensure npm 11.5.1 or later
+      #- name: Update npm
+      #  if: env.PHRASE_FOUND == 'true'
+      #  run: npm install -g npm@latest # ensure npm 11.5.1 or later
       - name: Install
         if: env.PHRASE_FOUND == 'true'
         run: npm ci
