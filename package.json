@@ -1,6 +1,6 @@
 {
   "name": "ui-elements",
-  "version": "10.1.0",
+  "version": "10.1.1",
   "description": "A repo of ui elements",
   "main": "index.js",
   "repository": {
@@ -32,12 +32,12 @@
     "@babel/core": "^8.0.1",
     "@babel/preset-env": "^8.0.2",
     "@eslint/js": "^10.0.1",
-    "@playwright/test": "^1.62.0",
+    "@playwright/test": "^1.62.1",
     "babel-loader": "^10.1.1",
     "eslint": "^10.8.0",
     "eslint-plugin-n": "18.2.2",
     "express": "^5.2.1",
-    "globals": "^17.8.0",
+    "globals": "^17.9.0",
     "gulp": "^5.0.1",
     "picklr": "latest",
     "terser-webpack-plugin": "^5.6.1",
