@@ -24,9 +24,12 @@ async function buildwc () {
   
   const result = await build(stageDir, {
     cssPath: cssFilePath,
-    htmlPath: htmlFilePath,
     jsPath: jsFilePath,
-    jsReplacement
+    templates: [{
+      name: path.basename(htmlFilePath, '.html'),
+      htmlPath: htmlFilePath,
+      token: jsReplacement
+    }]
   });
   // webpack creates the dist bundle from stageDir
 
