@@ -5,11 +5,11 @@
  * Copyrights licensed under the BSD License. See the accompanying LICENSE file for terms.
  */
 
-const fs = require('fs');
-const path = require('path');
-const util = require('util');
-const { spawn } = require('child_process');
-const gulp = require('gulp');
+const fs = require('node:fs');
+const path = require('node:path');
+const util = require('node:util');
+const { spawn } = require('node:child_process');
+const nbs = require('node-build-stream');
 const webpack = require('webpack');
 const TerserPlugin = require('terser-webpack-plugin');
 const { getSourceDirs, srcRoot } = require('./src/utils/dirs');
@@ -152,8 +152,8 @@ function runPackageInstalls () {
 
 // Define the build tasks:
 
-gulp.task(
-  'copy', () => gulp.src([
+nbs.task(
+  'copy', () => nbs.src([
     `${srcRoot}/**/*.html`,
     `${srcRoot}/**/*.css`,
     `${srcRoot}/**/*.jpg`,
@@ -168,9 +168,9 @@ gulp.task(
     `!${srcRoot}/**/test/**`,
   ], {
     encoding: false
-  }).pipe(gulp.dest('dist'))
+  }).pipe(nbs.dest('dist'))
 );
 
-gulp.task('webpack', () => createBundle('production'));
-gulp.task('webpack-dev', () => createBundle('development'));
-gulp.task('installs', runPackageInstalls);
+nbs.task('webpack', () => createBundle('production'));
+nbs.task('webpack-dev', () => createBundle('development'));
+nbs.task('installs', runPackageInstalls);
