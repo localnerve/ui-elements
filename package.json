@@ -1,6 +1,6 @@
 {
   "name": "ui-elements",
-  "version": "10.1.12",
+  "version": "10.1.13",
   "description": "A repo of ui elements",
   "main": "index.js",
   "repository": {
@@ -10,9 +10,9 @@
   "scripts": {
     "rmdist": "node -e 'require(\"fs\").rmSync(\"dist\", {recursive:true,force:true})'",
     "prebuild": "npm run rmdist",
-    "build": "npm run installs && nbs webpack && nbs copy",
+    "build": "nbs --series installs webpack copy",
     "prebuild:dev": "npm run rmdist",
-    "build:dev": "nbs webpack-dev && nbs copy",
+    "build:dev": "nbs --series webpack-dev copy",
     "lint": "eslint .",
     "installs": "nbs installs",
     "copy": "nbs copy",
@@ -29,7 +29,7 @@
   "author": "Alex Grant <alex@localnerve.com> (https://www.localnerve.com)",
   "license": "BSD-3-Clause",
   "devDependencies": {
-    "@babel/core": "^8.0.7",
+    "@babel/core": "^8.0.9",
     "@babel/preset-env": "^8.0.7",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.64.1",
@@ -38,10 +38,10 @@
     "eslint-plugin-n": "18.5.0",
     "express": "^5.3.0",
     "globals": "^17.13.0",
-    "node-build-stream": "^0.10.5",
+    "node-build-stream": "^1.0.0",
     "picklr": "latest",
     "terser-webpack-plugin": "^5.6.1",
-    "webpack": "^5.112.0",
+    "webpack": "^5.112.2",
     "webpack-cli": "^7.2.3"
   },
   "engines": {
