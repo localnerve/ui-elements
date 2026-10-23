@@ -20,7 +20,7 @@ jobs:
     - run: npm ci
     - name: Install Playwright
       run: npx playwright install --with-deps
-    - name: Run Lint
-      run: npm run lint
-    - name: Run Test
-      run: npm test
+    - name: Verify
+      run: |
+        npm run lint
+        npm test
