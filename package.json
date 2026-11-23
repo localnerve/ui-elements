@@ -41,7 +41,7 @@
     "node-build-stream": "^1.0.2",
     "picklr": "latest",
     "terser-webpack-plugin": "^5.6.1",
-    "webpack": "^5.112.2",
+    "webpack": "^5.113.0",
     "webpack-cli": "^7.3.1"
   },
   "overrides": {
